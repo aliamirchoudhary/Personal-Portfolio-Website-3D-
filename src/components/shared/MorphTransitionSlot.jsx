@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import HomeProfilePicture from '../animated/HomeProfilePicture'
@@ -33,6 +33,8 @@ function sideToLeft(vw, side) {
 export default function MorphTransitionSlot() {
   const containerRef = useRef(null)
   const wrapRefs = useRef({})
+  const renderRef = useRef(new Set([0]))
+  const [renderSet, setRenderSet] = useState(() => new Set([0]))
 
   useEffect(() => {
     const sections = document.querySelectorAll('.portfolio-section')
@@ -44,8 +46,10 @@ export default function MorphTransitionSlot() {
     Object.values(wrapRefs.current).forEach((el) => {
       if (el) el.style.opacity = '0'
     })
-    if (wrapRefs.current[0]) wrapRefs.current[0].style.opacity = '1'
-    if (wrapRefs.current[0]) wrapRefs.current[0].style.pointerEvents = 'auto'
+    if (wrapRefs.current[0]) {
+      wrapRefs.current[0].style.opacity = '1'
+      wrapRefs.current[0].style.pointerEvents = 'auto'
+    }
 
     const triggers = []
 
@@ -58,6 +62,22 @@ export default function MorphTransitionSlot() {
         start: `top bottom-=${HALF}`,
         end: `top top+=${HALF}`,
         scrub: 1,
+        onEnter: () => {
+          renderRef.current.add(i + 1)
+          setRenderSet(new Set(renderRef.current))
+        },
+        onLeave: () => {
+          renderRef.current.delete(i)
+          setRenderSet(new Set(renderRef.current))
+        },
+        onEnterBack: () => {
+          renderRef.current.add(i)
+          setRenderSet(new Set(renderRef.current))
+        },
+        onLeaveBack: () => {
+          renderRef.current.delete(i + 1)
+          setRenderSet(new Set(renderRef.current))
+        },
         onUpdate(self) {
           const p = self.progress
           const fromEl = wrapRefs.current[i]
@@ -103,26 +123,29 @@ export default function MorphTransitionSlot() {
         willChange: 'left',
       }}
     >
-      {SEQUENCE.map((item, i) => (
-        <div
-          key={item.id}
-          ref={(el) => { wrapRefs.current[i] = el }}
-          style={{
-            position: 'absolute',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            opacity: 0,
-            pointerEvents: 'none',
-            willChange: 'opacity',
-          }}
-        >
-          <div style={{ pointerEvents: 'inherit', width: 'calc(100% - 1.5rem)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <item.Component {...item.props} />
+      {SEQUENCE.map((item, i) => {
+        if (!renderSet.has(i)) return null
+        return (
+          <div
+            key={item.id}
+            ref={(el) => { wrapRefs.current[i] = el }}
+            style={{
+              position: 'absolute',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              opacity: 0,
+              pointerEvents: 'none',
+              willChange: 'opacity',
+            }}
+          >
+            <div style={{ pointerEvents: 'inherit', width: 'calc(100% - 1.5rem)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <item.Component {...item.props} />
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

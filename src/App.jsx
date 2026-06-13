@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
 import MorphTransitionSlot from './components/shared/MorphTransitionSlot'
 import Navbar from './components/shared/Navbar'
@@ -13,16 +15,61 @@ import ContactSection from './components/sections/ContactSection'
 import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
 
-export default function App() {
-  const [loading, setLoading] = useState(true)
-  const [activeSection, setActiveSection] = useState('home')
+const LOADING_DURATION = 4500
+const INTRO_DURATION = 900
 
-  const LOADING_DURATION = 4500
+gsap.registerPlugin(ScrollTrigger)
+
+export default function App() {
+  const [phase, setPhase] = useState('loading')
+  const [activeSection, setActiveSection] = useState('home')
+  const loadingRef = useRef(null)
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), LOADING_DURATION)
-    return () => clearTimeout(timer)
+    const t1 = setTimeout(() => setPhase('intro'), LOADING_DURATION)
+    return () => clearTimeout(t1)
   }, [])
+
+  useEffect(() => {
+    if (phase !== 'intro') return
+
+    const el = loadingRef.current
+    if (!el) return
+
+    const vw = window.innerWidth
+    const rightX = vw - 460 - 24
+
+    const tl = gsap.timeline({
+      onComplete: () => setPhase('ready'),
+    })
+
+    tl.to(el, {
+      left: rightX,
+      top: 0,
+      width: 460,
+      height: '100vh',
+      duration: 0.7,
+      ease: 'power2.inOut',
+    }, 0)
+
+    tl.to(el, {
+      opacity: 0,
+      duration: 0.35,
+      ease: 'power2.in',
+    }, 0.55)
+
+    tl.to('.loading-name-trace', {
+      opacity: 0,
+      duration: 0.3,
+    }, 0)
+
+    tl.to('.main-wrap', {
+      opacity: 1,
+      duration: 0.5,
+    }, 0.15)
+
+    return () => tl.kill()
+  }, [phase])
 
   const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id)
@@ -30,7 +77,7 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (loading) return
+    if (phase === 'loading') return
     const sectionEls = document.querySelectorAll('.portfolio-section')
     const obs = new IntersectionObserver((entries) => {
       for (const entry of entries) {
@@ -41,34 +88,48 @@ export default function App() {
     }, { rootMargin: '-40% 0px -40% 0px' })
     sectionEls.forEach((el) => obs.observe(el))
     return () => obs.disconnect()
-  }, [loading])
-
-  if (loading) {
-    return (
-      <div style={{ position: 'fixed', inset: 0, background: '#0a0a0f', overflow: 'hidden' }}>
-        <style>{`.lpf-scene { min-height: 45vh !important; margin-top: 0 !important; padding-top: 2vh !important; background: transparent !important; } .lpf-root { margin-top: 5vh !important; }`}</style>
-        <LoadingProfileFrame imageSrc={PERSONAL.profileImage} name={PERSONAL.name} />
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-          <LoadingNameTrace name={PERSONAL.name.toUpperCase()} duration={LOADING_DURATION} />
-        </div>
-      </div>
-    )
-  }
+  }, [phase])
 
   return (
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
-      <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
-      {!loading && <MorphTransitionSlot />}
-      <main style={{ paddingTop: 96 }}>
-        <HomeSection />
-        <AboutSection />
-        <ServicesSection />
-        <EducationSection />
-        <SkillsSection />
-        <ProjectsSection />
-        <ContactSection />
-      </main>
-      <Footer scrollToSection={scrollToSection} />
+      {(phase === 'loading' || phase === 'intro') && (
+        <div
+          ref={loadingRef}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            background: '#0a0a0f',
+            overflow: 'hidden',
+            zIndex: 100,
+          }}
+        >
+          <style>{`.lpf-scene { min-height: 45vh !important; margin-top: 0 !important; padding-top: 2vh !important; background: transparent !important; } .lpf-root { margin-top: 5vh !important; }`}</style>
+          <LoadingProfileFrame imageSrc={PERSONAL.profileImage} name={PERSONAL.name} />
+          <div className="loading-name-trace" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+            <LoadingNameTrace name={PERSONAL.name.toUpperCase()} duration={LOADING_DURATION} />
+          </div>
+        </div>
+      )}
+
+      {phase !== 'loading' && (
+        <>
+          <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
+          <MorphTransitionSlot />
+          <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
+            <HomeSection />
+            <AboutSection />
+            <ServicesSection />
+            <EducationSection />
+            <SkillsSection />
+            <ProjectsSection />
+            <ContactSection />
+          </main>
+          <Footer scrollToSection={scrollToSection} />
+        </>
+      )}
     </div>
   )
 }
