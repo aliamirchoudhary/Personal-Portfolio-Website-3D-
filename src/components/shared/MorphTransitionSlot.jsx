@@ -14,7 +14,6 @@ gsap.registerPlugin(ScrollTrigger)
 
 const W = 460
 const GUTTER = 24
-const HALF = 120
 
 const SEQUENCE = [
   { id: 'home',     Component: HomeProfilePicture,  props: { imageSrc: PERSONAL.profileImage, size: 320 }, side: 'right' },
@@ -59,8 +58,8 @@ export default function MorphTransitionSlot() {
 
       const st = ScrollTrigger.create({
         trigger: nextSec,
-        start: `top bottom-=${HALF}`,
-        end: `top top+=${HALF}`,
+        start: `top bottom`,
+        end: `top top`,
         scrub: 1,
         onEnter: () => {
           renderRef.current.add(i + 1)

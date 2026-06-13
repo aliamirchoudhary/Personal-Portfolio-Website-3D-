@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
@@ -25,14 +25,22 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('home')
   const loadingRef = useRef(null)
 
+  /* ── loading → intro ── */
   useEffect(() => {
     const t1 = setTimeout(() => setPhase('intro'), LOADING_DURATION)
     return () => clearTimeout(t1)
   }, [])
 
-  useEffect(() => {
-    if (phase !== 'intro') return
+  /* ── compact loading layout (no !important CSS) ── */
+  useLayoutEffect(() => {
+    if (phase !== 'loading') return
+    gsap.set('.lpf-scene', { minHeight: '45vh', paddingTop: '2vh' })
+    gsap.set('.lpf-root', { width: 240, height: 240, marginTop: '5vh' })
+  }, [phase])
 
+  /* ── intro: loading profile flows to right slot position, matching HomeProfilePicture ── */
+  useLayoutEffect(() => {
+    if (phase !== 'intro') return
     const el = loadingRef.current
     if (!el) return
 
@@ -42,6 +50,21 @@ export default function App() {
     const tl = gsap.timeline({
       onComplete: () => setPhase('ready'),
     })
+
+    tl.to('.lpf-scene', {
+      minHeight: '100vh',
+      paddingTop: 0,
+      duration: 0.7,
+      ease: 'power2.inOut',
+    }, 0)
+
+    tl.to('.lpf-root', {
+      width: 320,
+      height: 320,
+      marginTop: 0,
+      duration: 0.7,
+      ease: 'power2.inOut',
+    }, 0)
 
     tl.to(el, {
       left: rightX,
@@ -76,6 +99,7 @@ export default function App() {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
+  /* ── IntersectionObserver for navbar highlight ── */
   useEffect(() => {
     if (phase === 'loading') return
     const sectionEls = document.querySelectorAll('.portfolio-section')
@@ -106,7 +130,6 @@ export default function App() {
             zIndex: 100,
           }}
         >
-          <style>{`.lpf-scene { min-height: 45vh !important; margin-top: 0 !important; padding-top: 2vh !important; background: transparent !important; } .lpf-root { margin-top: 5vh !important; }`}</style>
           <LoadingProfileFrame imageSrc={PERSONAL.profileImage} name={PERSONAL.name} />
           <div className="loading-name-trace" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
             <LoadingNameTrace name={PERSONAL.name.toUpperCase()} duration={LOADING_DURATION} />
