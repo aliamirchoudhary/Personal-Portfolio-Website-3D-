@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  background-color: #0a0a0f;
+  color: #f1f5f9;
+  font-family: 'Inter', sans-serif;
+}
+
+.portfolio-section {
+  scroll-margin-top: 96px;
+}
+
+/* Themed scrollbar for body */
+body::-webkit-scrollbar { width: 8px; }
+body::-webkit-scrollbar-track { background: #12121a; }
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #7c3aed, #06b6d4);
+  border-radius: 4px;
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #06b6d4, #7c3aed);
+}
+body {
+  scrollbar-color: #7c3aed #12121a;
+  scrollbar-width: thin;
+}
+
+.content-scroll::-webkit-scrollbar       { width: 6px; }
+.content-scroll::-webkit-scrollbar-track { background: rgba(124,58,237,0.05); border-radius: 10px; }
+.content-scroll::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #7c3aed, #06b6d4); border-radius: 10px; }
+.content-scroll::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #06b6d4, #7c3aed); }
+
+.gradient-text {
+  background: linear-gradient(135deg, #f1f5f9, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-card {
+  background: rgba(18, 18, 26, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 768px) {
+  .animated-slot {
+    display: none !important;
+  }
+
+  .portfolio-section {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+
+  .portfolio-section > [style*="margin-left"],
+  .portfolio-section .content-scroll,
+  .portfolio-section > div {
+    margin-left: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  .portfolio-section > div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+}
