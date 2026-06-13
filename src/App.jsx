@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { PERSONAL } from './data/portfolioData'
-import AnimatedSlot from './components/shared/AnimatedSlot'
+import MorphTransitionSlot from './components/shared/MorphTransitionSlot'
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 import HomeSection from './components/sections/HomeSection'
@@ -12,28 +12,10 @@ import ProjectsSection from './components/sections/ProjectsSection'
 import ContactSection from './components/sections/ContactSection'
 import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
-import HomeProfilePicture from './components/animated/HomeProfilePicture'
-import NeuralNetworkGlobe from './components/animated/NeuralNetworkGlobe'
-import { SkillCube } from './components/animated/SkillCube'
-import { SpinningSkillBox } from './components/animated/FlippingCard3D'
-import { PerceptronAnimation } from './components/animated/PerceptronAnimation'
-import { MorphingCommsIcon } from './components/animated/MorphingCommsIcon'
-import TechFlowDiagram from './components/animated/TechFlowDiagram'
-
-const COMPONENT_CONFIG = {
-  home:     { component: HomeProfilePicture,  props: { imageSrc: PERSONAL.profileImage, size: 320 }, side: 'right' },
-  about:    { component: NeuralNetworkGlobe,  props: { size: 320 },                                  side: 'left' },
-  services: { component: SkillCube,           props: { size: 200 },                                  side: 'right' },
-  education:{ component: SpinningSkillBox,    props: { skills: ['Data Science','ML / AI','Full Stack','Cloud / DevOps','Algorithms','Systems'], sideLabel: 'FAST' }, side: 'left' },
-  skills:   { component: PerceptronAnimation, props: { maxWidth: 600 },                              side: 'right' },
-  projects: { component: TechFlowDiagram,     props: {},                                              side: 'left' },
-  contact:  { component: MorphingCommsIcon,   props: { size: 200 },                                  side: 'right' },
-}
 
 export default function App() {
   const [loading, setLoading] = useState(true)
   const [activeSection, setActiveSection] = useState('home')
-  const slotRef = useRef(null)
 
   const LOADING_DURATION = 4500
 
@@ -49,7 +31,6 @@ export default function App() {
 
   useEffect(() => {
     if (loading) return
-
     const sectionEls = document.querySelectorAll('.portfolio-section')
     const obs = new IntersectionObserver((entries) => {
       for (const entry of entries) {
@@ -58,19 +39,9 @@ export default function App() {
         }
       }
     }, { rootMargin: '-40% 0px -40% 0px' })
-
     sectionEls.forEach((el) => obs.observe(el))
     return () => obs.disconnect()
   }, [loading])
-
-  useEffect(() => {
-    if (!slotRef.current || loading) return
-    slotRef.current.style.opacity = '1'
-    slotRef.current.style.transform = 'scale(1)'
-  }, [activeSection, loading])
-
-  const config = COMPONENT_CONFIG[activeSection]
-  const ActiveComponent = config?.component
 
   if (loading) {
     return (
@@ -87,11 +58,7 @@ export default function App() {
   return (
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
       <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
-      {config && (
-        <AnimatedSlot ref={slotRef} side={config.side}>
-          <ActiveComponent {...config.props} />
-        </AnimatedSlot>
-      )}
+      {!loading && <MorphTransitionSlot />}
       <main style={{ paddingTop: 96 }}>
         <HomeSection />
         <AboutSection />
