@@ -16,7 +16,7 @@ import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
 
 const LOADING_DURATION = 4500
-const INTRO_DURATION = 900
+const INTRO_DURATION = 1050
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -77,9 +77,9 @@ export default function App() {
 
     tl.to(el, {
       opacity: 0,
-      duration: 0.35,
+      duration: 0.3,
       ease: 'power2.in',
-    }, 0.55)
+    }, 0.7)
 
     tl.to('.loading-name-trace', {
       opacity: 0,

@@ -58,7 +58,7 @@ export default function MorphTransitionSlot() {
 
       const st = ScrollTrigger.create({
         trigger: nextSec,
-        start: `top bottom`,
+        start: `top bottom+300`,
         end: `top top`,
         scrub: 1,
         onEnter: () => {
