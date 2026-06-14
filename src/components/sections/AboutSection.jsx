@@ -43,42 +43,49 @@ export default function AboutSection() {
         style={{
           marginLeft: '40vw',
           width: '60vw',
-          padding: '4rem 4rem',
+          height: '100vh',
+          padding: '4rem 4rem 0',
+          display: 'flex',
+          flexDirection: 'column',
+          boxSizing: 'border-box',
         }}
       >
-        <h2
-          className="gradient-text"
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 700,
-            fontSize: '2.5rem',
-            margin: '0 0 2rem',
-          }}
-        >
-          About Me
-        </h2>
-
-        {ABOUT_TEXT.map((para, i) => (
-          <p
-            key={i}
+        <div className="about-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+          <h2
+            className="gradient-text"
             style={{
-              color: '#94a3b8',
-              fontSize: '1.05rem',
-              lineHeight: 1.8,
-              marginBottom: '1.5rem',
-              maxWidth: 680,
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: '2.5rem',
+              margin: '0 0 2rem',
             }}
           >
-            {formatText(para)}
-          </p>
-        ))}
+            About Me
+          </h2>
+
+          {ABOUT_TEXT.map((para, i) => (
+            <p
+              key={i}
+              style={{
+                color: '#94a3b8',
+                fontSize: '1.05rem',
+                lineHeight: 1.8,
+                marginBottom: '1.5rem',
+                maxWidth: 680,
+              }}
+            >
+              {formatText(para)}
+            </p>
+          ))}
+        </div>
 
         <div
           className="glass-card"
           style={{
             padding: '2rem',
-            marginTop: '1rem',
+            margin: '1rem 0',
             maxWidth: 680,
+            flexShrink: 0,
           }}
         >
           <p style={{ color: '#f1f5f9', fontWeight: 600, marginBottom: '1rem' }}>
@@ -108,6 +115,7 @@ export default function AboutSection() {
               borderTop: '1px solid rgba(255, 255, 255, 0.08)',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '0.75rem',
             }}
           >
