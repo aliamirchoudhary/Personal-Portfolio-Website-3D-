@@ -36,7 +36,6 @@ export default forwardRef(function MorphTransitionSlot(_props, ref) {
   const wrapRefs = useRef({})
   const renderRef = useRef(new Set([0]))
   const [renderSet, setRenderSet] = useState(() => new Set([0]))
-  const snapLockRef = useRef(false)
 
   useImperativeHandle(ref, () => ({
     jumpTo(sectionId) {
@@ -59,9 +58,6 @@ export default forwardRef(function MorphTransitionSlot(_props, ref) {
           wrapRefs.current[idx].style.pointerEvents = 'auto'
         }
       })
-
-      snapLockRef.current = true
-      setTimeout(() => { snapLockRef.current = false }, 1200)
     },
   }))
 
@@ -81,7 +77,6 @@ export default forwardRef(function MorphTransitionSlot(_props, ref) {
     }
 
 const triggers = []
-const MORPH_SCROLL = 500
 
 for (let i = 0; i < SEQUENCE.length - 1; i++) {
   const curSec = sections[i]
@@ -89,11 +84,11 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
 
   const st = ScrollTrigger.create({
     trigger: curSec,
-    start: `top top`,
-    end: `+=${MORPH_SCROLL}`,
+    start: `top top+=96`,
+    end: `bottom top+=96`,
+    scrub: 0.5,
     invalidateOnRefresh: true,
-    scrub: 1,
-        onEnter: () => {
+    onEnter: () => {
           renderRef.current.add(i + 1)
           setRenderSet(new Set(renderRef.current))
         },
@@ -119,9 +114,15 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
           fromEl.style.opacity = (1 - fastExit).toFixed(3)
           toEl.style.opacity = p.toFixed(3)
 
-          const peOn = p <= 0 ? fromEl : (p >= 1 ? toEl : null)
-          fromEl.style.pointerEvents = peOn === fromEl ? 'auto' : 'none'
-          toEl.style.pointerEvents = peOn === toEl ? 'auto' : 'none'
+          const enteringEl = self.direction === 1 ? toEl : fromEl
+          const morphDone = p >= 0.99 || p <= 0.01
+          if (morphDone) {
+            enteringEl.style.pointerEvents = 'auto'
+            ;(enteringEl === toEl ? fromEl : toEl).style.pointerEvents = 'none'
+          } else {
+            fromEl.style.pointerEvents = 'none'
+            toEl.style.pointerEvents = 'none'
+          }
 
           const vw2 = window.innerWidth
           const fromX = sideToLeft(vw2, SEQUENCE[i].side)
@@ -134,34 +135,10 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
       triggers.push(st)
     }
 
-    /* ── snap: auto-scroll to next section when 75% past current ── */
-    const snapTriggers = []
-
-    for (let i = 0; i < SEQUENCE.length - 1; i++) {
-      const curSec = sections[i]
-      if (!curSec) continue
-
-      const st = ScrollTrigger.create({
-        trigger: curSec,
-        start: 'top top',
-        end: 'bottom top',
-        onUpdate: (self) => {
-          if (self.direction === 1 && self.progress > 0.75 && !snapLockRef.current) {
-            snapLockRef.current = true
-            const next = sections[i + 1]
-            if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            setTimeout(() => { snapLockRef.current = false }, 1200)
-          }
-        },
-      })
-      snapTriggers.push(st)
-    }
-
     requestAnimationFrame(() => ScrollTrigger.refresh())
 
     return () => {
       triggers.forEach((t) => t.kill())
-      snapTriggers.forEach((t) => t.kill())
     }
   }, [])
 

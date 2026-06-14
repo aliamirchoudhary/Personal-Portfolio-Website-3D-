@@ -50,14 +50,14 @@ export default function EducationSection() {
   }, [])
 
   return (
-    <section id="education" className="portfolio-section" style={{ minHeight: '100vh' }}>
+    <section id="education" className="portfolio-section" style={{ height: '100vh' }}>
       <GlobalStyles />
       <div
         style={{
           marginLeft: '40vw',
           width: '60vw',
           height: '100vh',
-          padding: '4rem 4rem 0',
+          padding: '1rem 4rem 0',
           display: 'flex',
           flexDirection: 'column',
           boxSizing: 'border-box',

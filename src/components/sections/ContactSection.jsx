@@ -30,35 +30,41 @@ export default function ContactSection() {
   }
 
   return (
-    <section id="contact" className="portfolio-section" style={{ minHeight: '100vh' }}>
+    <section id="contact" className="portfolio-section" style={{ height: '100vh' }}>
       <div
         className="content-scroll"
         style={{
           marginLeft: 0,
           width: '60vw',
-          padding: '4rem 4rem',
+          height: '100vh',
+          padding: '1rem 4rem 4rem',
+          display: 'flex',
+          flexDirection: 'column',
+          boxSizing: 'border-box',
         }}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', maxWidth: 960 }}>
-          <div>
-            <h2
-              style={{
-                fontFamily: "'Space Grotesk', sans-serif",
-                fontWeight: 700,
-                fontSize: 'clamp(1.5rem, 3vw, 2rem)',
-                margin: '0 0 0.75rem',
-                background: 'linear-gradient(135deg, #f1f5f9, #a78bfa)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Let's Bring Your Ideas to Life
-            </h2>
-            <p style={{ color: '#94a3b8', marginBottom: '2rem', fontSize: '1rem' }}>
-              Ready to start your next project? Let's discuss how we can work together.
-            </p>
+        <h2
+          style={{
+            flexShrink: 0,
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 700,
+            fontSize: 'clamp(1.5rem, 3vw, 2rem)',
+            margin: '0 0 0.75rem',
+            background: 'linear-gradient(135deg, #f1f5f9, #a78bfa)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Let's Bring Your Ideas to Life
+        </h2>
+        <p style={{ flexShrink: 0, color: '#94a3b8', marginBottom: '1.5rem', fontSize: '1rem' }}>
+          Ready to start your next project? Let's discuss how we can work together.
+        </p>
 
+        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', maxWidth: 960 }}>
+          <div>
             <form action={CONTACT_FORM_ACTION} method="POST" onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', color: '#7c3aed', fontWeight: 600, marginBottom: '0.5rem', fontSize: '0.9rem' }}>Name</label>
@@ -226,6 +232,7 @@ export default function ContactSection() {
           </div>
         </div>
       </div>
+    </div>
 
       {notification && (
         <div

@@ -194,13 +194,17 @@ const mappedProjects = PROJECTS.map((p) => ({
 
 export default function ProjectsSection() {
   return (
-    <section id="projects" className="portfolio-section" style={{ minHeight: '100vh' }}>
+    <section id="projects" className="portfolio-section" style={{ height: '100vh' }}>
       <div
         className="content-scroll"
         style={{
           marginLeft: '40vw',
           width: '60vw',
-          padding: '4rem 4rem',
+          height: '100vh',
+          padding: '1rem 4rem 4rem',
+          display: 'flex',
+          flexDirection: 'column',
+          boxSizing: 'border-box',
         }}
       >
         <h2
@@ -210,12 +214,15 @@ export default function ProjectsSection() {
             fontWeight: 700,
             fontSize: '2.5rem',
             margin: '0 0 2rem',
+            flexShrink: 0,
           }}
         >
           Featured Projects
         </h2>
 
-        <RingCarousel cards={mappedProjects} accentColor="#7c3aed" />
+        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+          <RingCarousel cards={mappedProjects} accentColor="#7c3aed" />
+        </div>
       </div>
     </section>
   )

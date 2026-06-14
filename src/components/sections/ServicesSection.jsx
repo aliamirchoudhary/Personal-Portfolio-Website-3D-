@@ -21,13 +21,17 @@ const mappedServices = SERVICES.map((s) => {
 
 export default function ServicesSection() {
   return (
-    <section id="services" className="portfolio-section" style={{ minHeight: '100vh' }}>
+    <section id="services" className="portfolio-section" style={{ height: '100vh' }}>
       <div
         className="content-scroll"
         style={{
           marginLeft: 0,
           width: '60vw',
-          padding: '4rem 4rem',
+          height: '100vh',
+          padding: '1rem 4rem 4rem',
+          display: 'flex',
+          flexDirection: 'column',
+          boxSizing: 'border-box',
         }}
       >
         <h2
@@ -37,12 +41,15 @@ export default function ServicesSection() {
             fontWeight: 700,
             fontSize: '2.5rem',
             margin: '0 0 2rem',
+            flexShrink: 0,
           }}
         >
           What I Offer
         </h2>
 
-        <RingCarousel cards={mappedServices} accentColor="#7c3aed" />
+        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+          <RingCarousel cards={mappedServices} accentColor="#7c3aed" />
+        </div>
       </div>
     </section>
   )

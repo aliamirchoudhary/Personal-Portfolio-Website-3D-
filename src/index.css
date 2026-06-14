@@ -20,10 +20,14 @@ body {
   background-color: #0a0a0f;
   color: #f1f5f9;
   font-family: 'Inter', sans-serif;
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 96px;
 }
 
 .portfolio-section {
   scroll-margin-top: 96px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 /* Themed scrollbar for body */

@@ -18,7 +18,7 @@ export default function HomeSection() {
   }, [idx, fullTitle])
 
   return (
-    <section id="home" className="portfolio-section" style={{ height: '100vh', minHeight: '100vh' }}>
+    <section id="home" className="portfolio-section" style={{ height: '100vh' }}>
       <div
         style={{
           marginLeft: 0,

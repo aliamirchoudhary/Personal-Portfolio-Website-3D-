@@ -37,14 +37,14 @@ export default function AboutSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} id="about" className="portfolio-section" style={{ minHeight: '100vh' }}>
+    <section ref={sectionRef} id="about" className="portfolio-section" style={{ height: '100vh' }}>
       <div
         className="content-scroll"
         style={{
           marginLeft: '40vw',
           width: '60vw',
           height: '100vh',
-          padding: '4rem 4rem 0',
+          padding: '1rem 4rem 0',
           display: 'flex',
           flexDirection: 'column',
           boxSizing: 'border-box',
