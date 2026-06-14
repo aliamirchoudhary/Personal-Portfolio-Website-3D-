@@ -1,4 +1,7 @@
-import { SOCIAL_LINKS, NAV_LINKS } from '../../data/portfolioData'
+import WebCraftLogo from '../ui/StartupLogoButton'
+import { SOCIAL_LINKS, NAV_LINKS, WEBCRAFT } from '../../data/portfolioData'
+
+const WC_FONT = "'Clash Display', 'Clash Grotesk', 'Space Grotesk', sans-serif"
 
 export default function Footer({ scrollToSection }) {
   const year = new Date().getFullYear()
@@ -14,7 +17,7 @@ export default function Footer({ scrollToSection }) {
         zIndex: 20,
         background: 'linear-gradient(135deg, #050508, #0a0a0f)',
         borderTop: '1px solid rgba(124, 58, 237, 0.2)',
-        padding: '3rem 2rem 2rem',
+        padding: '3rem 2rem 1.5rem',
       }}
     >
       <div
@@ -121,6 +124,80 @@ export default function Footer({ scrollToSection }) {
             {link.label}
           </button>
         ))}
+      </div>
+
+      {/* Branding row */}
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '1rem auto 0',
+          paddingTop: '0.75rem',
+          borderTop: '1px solid rgba(124,58,237,0.12)',
+          textAlign: 'center',
+          lineHeight: 1,
+        }}
+      >
+        <div
+          className="footer-brand"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.5rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>
+            Designed and Developed by my agency:
+          </span>
+
+          <a
+            href={WEBCRAFT.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-brand-link"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              textDecoration: 'none',
+            }}
+          >
+            <WebCraftLogo size={18} color="#99ffcc" replay={false} />
+            <span style={{
+              color: '#99ffcc',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+              fontFamily: WC_FONT,
+              letterSpacing: '0.02em',
+            }}>
+              {WEBCRAFT.name}
+            </span>
+          </a>
+
+          <a
+            href="https://webcraft-dev.vercel.app/#contact"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-brand-btn"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '3px 10px',
+              borderRadius: 6,
+              border: '1px solid #99ffcc',
+              background: 'transparent',
+              color: '#99ffcc',
+              fontWeight: 600,
+              fontSize: '0.82rem',
+              fontFamily: "'Inter', sans-serif",
+              textDecoration: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            Contact
+          </a>
+        </div>
       </div>
     </footer>
   )

@@ -57,6 +57,22 @@ body {
   background-clip: text;
 }
 
+.footer-brand-link {
+  opacity: 0.65;
+  transition: opacity 0.3s ease;
+}
+.footer-brand-link:hover {
+  opacity: 1;
+}
+.footer-brand-btn {
+  opacity: 0.65;
+  transition: opacity 0.3s ease, background 0.3s ease;
+}
+.footer-brand-btn:hover {
+  opacity: 1;
+  background: rgba(153, 255, 204, 0.1);
+}
+
 .glass-card {
   background: rgba(18, 18, 26, 0.8);
   backdrop-filter: blur(12px);
