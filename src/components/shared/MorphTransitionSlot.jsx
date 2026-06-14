@@ -115,8 +115,13 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
           toEl.style.opacity = p.toFixed(3)
 
           const enteringEl = self.direction === 1 ? toEl : fromEl
-          enteringEl.style.pointerEvents = 'auto'
-          ;(enteringEl === toEl ? fromEl : toEl).style.pointerEvents = 'none'
+          if (p >= 0.95) {
+            enteringEl.style.pointerEvents = 'auto'
+            ;(enteringEl === toEl ? fromEl : toEl).style.pointerEvents = 'none'
+          } else {
+            fromEl.style.pointerEvents = 'none'
+            toEl.style.pointerEvents = 'none'
+          }
 
           const vw2 = window.innerWidth
           const fromX = sideToLeft(vw2, SEQUENCE[i].side)
