@@ -184,27 +184,28 @@ function RingCarousel({ cards = [], accentColor = THEME.primary }) {
                   if (dragState.current.moved) return
                   if (!hide) setActive(card)
                 }}
-                style={{
-                  position: "absolute",
-                  width: 200,
-                  height: 260,
-                  borderRadius: 16,
-                  padding: 20,
-                  boxSizing: "border-box",
-                  background: "rgba(18,18,26,0.65)",
-                  backdropFilter: "blur(14px)",
-                  WebkitBackdropFilter: "blur(14px)",
-                  border: `1px solid ${accentColor}30`,
-                  boxShadow: `0 10px 40px -10px ${accentColor}55, 0 0 0 1px ${THEME.border}`,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 12,
-                  transformStyle: "preserve-3d",
-                  transition: `transform 500ms ${EASE}, opacity 500ms ${EASE}, box-shadow 200ms ease-out`,
-                  willChange: "transform, opacity",
-                  cursor: "pointer",
-                  ...t,
-                }}
+                  style={{
+                    position: "absolute",
+                    width: 200,
+                    height: 260,
+                    borderRadius: 16,
+                    padding: 20,
+                    boxSizing: "border-box",
+                    background: "rgba(18,18,26,0.65)",
+                    backdropFilter: "blur(14px)",
+                    WebkitBackdropFilter: "blur(14px)",
+                    border: `1px solid ${accentColor}30`,
+                    boxShadow: `0 10px 40px -10px ${accentColor}55, 0 0 0 1px ${THEME.border}`,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 12,
+                    overflow: "hidden",
+                    transformStyle: "preserve-3d",
+                    transition: `transform 500ms ${EASE}, opacity 500ms ${EASE}, box-shadow 200ms ease-out`,
+                    willChange: "transform, opacity",
+                    cursor: "pointer",
+                    ...t,
+                  }}
               >
                 <div
                   style={{
@@ -242,6 +243,10 @@ function RingCarousel({ cards = [], accentColor = THEME.primary }) {
                     lineHeight: 1.5,
                     color: THEME.textSecondary,
                     margin: 0,
+                    overflow: 'hidden',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: 'vertical',
                   }}
                 >
                   {card.shortDesc}
@@ -250,9 +255,14 @@ function RingCarousel({ cards = [], accentColor = THEME.primary }) {
                 <span
                   style={{
                     marginTop: "auto",
+                    alignSelf: "flex-start",
                     fontFamily: FONT_MONO,
-                    fontSize: 11,
+                    fontSize: 10,
                     letterSpacing: "0.05em",
+                    padding: "4px 10px",
+                    borderRadius: 6,
+                    border: `1px solid ${accentColor}40`,
+                    background: `${accentColor}15`,
                     color: accentColor,
                   }}
                 >

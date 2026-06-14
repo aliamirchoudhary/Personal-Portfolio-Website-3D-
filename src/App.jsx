@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
-import MorphTransitionSlot from './components/shared/MorphTransitionSlot'
+import MorphTransitionSlot, { SLOT_W, SLOT_GUTTER } from './components/shared/MorphTransitionSlot'
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 import HomeSection from './components/sections/HomeSection'
@@ -24,6 +24,7 @@ export default function App() {
   const [phase, setPhase] = useState('loading')
   const [activeSection, setActiveSection] = useState('home')
   const loadingRef = useRef(null)
+  const tlRef = useRef(null)
 
   /* ── loading → intro ── */
   useEffect(() => {
@@ -39,59 +40,73 @@ export default function App() {
   }, [phase])
 
   /* ── intro: loading profile flows to right slot position, matching HomeProfilePicture ── */
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (phase !== 'intro') return
     const el = loadingRef.current
     if (!el) return
 
-    const vw = window.innerWidth
-    const rightX = vw - 460 - 24
+    // HomeProfilePicture sits 58px right of center inside the slot
+    // due to its justify-end Tailwind class. Compensate so the
+    // centered .lpf-root aligns with the right-aligned .hpp-root.
+    const raf = requestAnimationFrame(() => {
+      const slot = document.querySelector('.animated-slot')
+      const slotLeft = slot ? slot.getBoundingClientRect().left : window.innerWidth - SLOT_W - SLOT_GUTTER
+      const targetLeft = slotLeft + 58
 
-    const tl = gsap.timeline({
-      onComplete: () => setPhase('ready'),
+      const tl = gsap.timeline({
+        onComplete: () => setPhase('ready'),
+      })
+      tlRef.current = tl
+
+      tl.to('.lpf-scene', {
+        minHeight: '100vh',
+        paddingTop: 0,
+        duration: 0.7,
+        ease: 'power2.inOut',
+      }, 0)
+
+      tl.to('.lpf-root', {
+        width: 320,
+        height: 320,
+        marginTop: 0,
+        duration: 0.7,
+        ease: 'power2.inOut',
+      }, 0)
+
+      tl.to(el, {
+        left: targetLeft,
+        top: 0,
+        y: -5,
+        width: SLOT_W,
+        height: '100vh',
+        duration: 0.7,
+        ease: 'power2.inOut',
+      }, 0)
+
+      tl.to(el, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+      }, 0.7)
+
+      tl.to('.loading-name-trace', {
+        opacity: 0,
+        duration: 0.3,
+      }, 0)
+
+      tl.to('.main-wrap', {
+        opacity: 1,
+        duration: 0.5,
+      }, 0.15)
     })
 
-    tl.to('.lpf-scene', {
-      minHeight: '100vh',
-      paddingTop: 0,
-      duration: 0.7,
-      ease: 'power2.inOut',
-    }, 0)
-
-    tl.to('.lpf-root', {
-      width: 320,
-      height: 320,
-      marginTop: 0,
-      duration: 0.7,
-      ease: 'power2.inOut',
-    }, 0)
-
-    tl.to(el, {
-      left: rightX,
-      top: 0,
-      width: 460,
-      height: '100vh',
-      duration: 0.7,
-      ease: 'power2.inOut',
-    }, 0)
-
-    tl.to(el, {
-      opacity: 0,
-      duration: 0.3,
-      ease: 'power2.in',
-    }, 0.7)
-
-    tl.to('.loading-name-trace', {
-      opacity: 0,
-      duration: 0.3,
-    }, 0)
-
-    tl.to('.main-wrap', {
-      opacity: 1,
-      duration: 0.5,
-    }, 0.15)
-
-    return () => tl.kill()
+    return () => {
+      cancelAnimationFrame(raf)
+      if (tlRef.current) {
+        tlRef.current.kill()
+        tlRef.current = null
+      }
+    }
   }, [phase])
 
   const scrollToSection = useCallback((id) => {

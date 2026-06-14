@@ -12,8 +12,10 @@ import { PERSONAL } from '../../data/portfolioData'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const W = 460
-const GUTTER = 24
+export const SLOT_W = 460
+export const SLOT_GUTTER = 24
+const W = SLOT_W
+const GUTTER = SLOT_GUTTER
 
 const SEQUENCE = [
   { id: 'home',     Component: HomeProfilePicture,  props: { imageSrc: PERSONAL.profileImage, size: 320 }, side: 'right' },
@@ -53,13 +55,14 @@ export default function MorphTransitionSlot() {
     const triggers = []
 
     for (let i = 0; i < SEQUENCE.length - 1; i++) {
-      const nextSec = sections[i + 1]
-      if (!nextSec) continue
+      const curSec = sections[i]
+      if (!curSec) continue
 
       const st = ScrollTrigger.create({
-        trigger: nextSec,
-        start: `top bottom+300`,
-        end: `top top`,
+        trigger: curSec,
+        start: `top top`,
+        end: `bottom top`,
+        invalidateOnRefresh: true,
         scrub: 1,
         onEnter: () => {
           renderRef.current.add(i + 1)
@@ -83,7 +86,8 @@ export default function MorphTransitionSlot() {
           const toEl = wrapRefs.current[i + 1]
           if (!fromEl || !toEl) return
 
-          fromEl.style.opacity = (1 - p).toFixed(3)
+          const fastExit = 1 - Math.pow(1 - p, 5)
+          fromEl.style.opacity = (1 - fastExit).toFixed(3)
           toEl.style.opacity = p.toFixed(3)
 
           const peOn = p <= 0 ? fromEl : (p >= 1 ? toEl : null)
@@ -93,12 +97,15 @@ export default function MorphTransitionSlot() {
           const vw2 = window.innerWidth
           const fromX = sideToLeft(vw2, SEQUENCE[i].side)
           const toX = sideToLeft(vw2, SEQUENCE[i + 1].side)
-          containerRef.current.style.left = `${(fromX + (toX - fromX) * p).toFixed(1)}px`
+          const easeOut = 1 - Math.pow(1 - p, 2)
+          containerRef.current.style.left = `${(fromX + (toX - fromX) * easeOut).toFixed(1)}px`
         },
       })
 
       triggers.push(st)
     }
+
+    requestAnimationFrame(() => ScrollTrigger.refresh())
 
     return () => {
       triggers.forEach((t) => t.kill())
