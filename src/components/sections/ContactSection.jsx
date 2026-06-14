@@ -194,6 +194,7 @@ export default function ContactSection() {
             </h3>
 
             <div
+              className="contact-social-grid"
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(4, 1fr)',

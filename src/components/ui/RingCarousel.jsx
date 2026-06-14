@@ -48,9 +48,19 @@ function RingCarousel({ cards = [], accentColor = THEME.primary }) {
   const [center, setCenter] = useState(0) // index of the card at "12 o'clock"
   const [hovered, setHovered] = useState(null) // offset of hovered card (-2..2)
   const [active, setActive] = useState(null) // card object for modal
+  const stageRef = useRef(null)
+  const [compact, setCompact] = useState(false)
 
   const dragState = useRef({ dragging: false, startX: 0, moved: false })
   const wheelLock = useRef(false)
+
+  /* ---- read actual stage width so offsets stay within viewport ---- */
+  useEffect(() => {
+    const el = stageRef.current
+    if (!el) return
+    const w = el.getBoundingClientRect().width
+    setCompact(w < 320)
+  }, [])
 
   const total = cards.length
 
@@ -114,7 +124,11 @@ function RingCarousel({ cards = [], accentColor = THEME.primary }) {
   /* ---- per-card transform for the "looking outward from inside" ring ---- */
   const transformFor = (offset) => {
     // base values keyed by absolute offset
-    const map = {
+    const map = compact ? {
+      0: { x: 0, z: -70, ry: 0, scale: 0.55, op: 1 },
+      1: { x: 80, z: 30, ry: 20, scale: 0.85, op: 1 },
+      2: { x: 95, z: 50, ry: 30, scale: 0.95, op: 1 },
+    } : {
       0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 }, // farthest (12 o'clock)
       1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 }, // primary focus
       2: { x: 210, z: 90, ry: 40, scale: 1.1, op: 1 }, // cropped by edges
@@ -146,6 +160,8 @@ function RingCarousel({ cards = [], accentColor = THEME.primary }) {
     <div style={{ fontFamily: FONT_BODY, color: THEME.textPrimary, userSelect: "none" }}>
       {/* ---- stage ---- */}
       <div
+        ref={stageRef}
+        className="ring-carousel-stage"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}

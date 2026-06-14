@@ -70,6 +70,7 @@ export default function Navbar({ activeSection, scrollToSection }) {
             fontSize: '1.5rem',
             cursor: 'pointer',
             padding: 0,
+            marginLeft: 'auto',
           }}
           className="mobile-menu-btn"
         >

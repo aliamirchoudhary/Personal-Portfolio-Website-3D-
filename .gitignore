@@ -28,3 +28,6 @@ SESSION_CONTEXT.md
 
 # Environment variables
 .env
+
+# Credentials / migration docs
+gmail-smtp-to-formspree-migration-guide.md

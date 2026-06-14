@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { PERSONAL } from '../../data/portfolioData'
+import HomeProfilePicture from '../animated/HomeProfilePicture'
 
 const TYPING_SPEED = 50
 
@@ -90,10 +91,22 @@ export default function HomeSection() {
         </a>
       </div>
 
+      <div className="home-mobile-profile">
+        <HomeProfilePicture imageSrc={PERSONAL.profileImage} size={180} />
+      </div>
+
       <style>{`
         @keyframes blink {
           0%, 50% { opacity: 1; }
           51%, 100% { opacity: 0; }
+        }
+        .home-mobile-profile { display: none; }
+        @media (max-width: 1024px) {
+          .home-mobile-profile {
+            display: flex !important;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+          }
         }
       `}</style>
     </section>
