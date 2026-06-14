@@ -59,22 +59,28 @@ export default function EducationSection() {
         style={{
           marginLeft: '40vw',
           width: '60vw',
-          padding: '4rem 4rem',
+          height: '100vh',
+          padding: '4rem 4rem 0',
+          display: 'flex',
+          flexDirection: 'column',
+          boxSizing: 'border-box',
         }}
       >
-        <h2
-          className="gradient-text"
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 700,
-            fontSize: '2.5rem',
-            margin: '0 0 2rem',
-          }}
-        >
-          Education
-        </h2>
+        <div className="edu-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+          <h2
+            className="gradient-text"
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontWeight: 700,
+              fontSize: '2.5rem',
+              margin: '0 0 2rem',
+            }}
+          >
+            Education
+          </h2>
 
-        <EducationTimeline items={eduItems} activeIndex={activeIndex} fill={fill} rowRefs={rowRefs} />
+          <EducationTimeline items={eduItems} activeIndex={activeIndex} fill={fill} rowRefs={rowRefs} />
+        </div>
       </div>
     </section>
   )
