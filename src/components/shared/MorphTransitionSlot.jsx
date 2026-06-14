@@ -52,18 +52,19 @@ export default function MorphTransitionSlot() {
       wrapRefs.current[0].style.pointerEvents = 'auto'
     }
 
-    const triggers = []
+const triggers = []
+const MORPH_SCROLL = 500
 
-    for (let i = 0; i < SEQUENCE.length - 1; i++) {
-      const curSec = sections[i]
-      if (!curSec) continue
+for (let i = 0; i < SEQUENCE.length - 1; i++) {
+  const curSec = sections[i]
+  if (!curSec) continue
 
-      const st = ScrollTrigger.create({
-        trigger: curSec,
-        start: `top top`,
-        end: `bottom top`,
-        invalidateOnRefresh: true,
-        scrub: 1,
+  const st = ScrollTrigger.create({
+    trigger: curSec,
+    start: `top top`,
+    end: `+=${MORPH_SCROLL}`,
+    invalidateOnRefresh: true,
+    scrub: 1,
         onEnter: () => {
           renderRef.current.add(i + 1)
           setRenderSet(new Set(renderRef.current))
