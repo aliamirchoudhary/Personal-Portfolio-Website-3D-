@@ -147,7 +147,9 @@ export default function AboutSection() {
         </div>
 
         <div className="mobile-animated-component">
-          <NeuralNetworkGlobe size={220} />
+          <div style={{ marginTop: 32, marginBottom: 32 }}>
+            <NeuralNetworkGlobe size={220} />
+          </div>
         </div>
       </div>
     </section>

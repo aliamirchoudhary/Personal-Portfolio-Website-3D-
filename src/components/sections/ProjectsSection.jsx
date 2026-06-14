@@ -226,7 +226,9 @@ export default function ProjectsSection() {
         </div>
 
         <div className="mobile-animated-component">
-          <TechFlowDiagram />
+          <div style={{ marginTop: 20, marginBottom: 20, width: '100%', maxWidth: '100vw', overflow: 'hidden' }}>
+            <TechFlowDiagram />
+          </div>
         </div>
       </div>
     </section>
