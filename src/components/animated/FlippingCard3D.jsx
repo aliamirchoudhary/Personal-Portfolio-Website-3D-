@@ -59,7 +59,7 @@ export function SpinningSkillBox({
   // Auto-rotate one quarter-turn at a time while not being dragged.
   useEffect(() => {
     if (dragging) return
-    const id = setInterval(() => setRotation((r) => r - 90), 2000)
+    const id = setInterval(() => setRotation((r) => r - 90), 1200)
     return () => clearInterval(id)
   }, [dragging])
 

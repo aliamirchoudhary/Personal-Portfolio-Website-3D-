@@ -93,7 +93,7 @@ function SkillCube({ size = 200 }) {
   useEffect(() => {
     let frame;
     let prev = performance.now();
-    const speed = 18;
+    const speed = 45;
 
     const loop = (now) => {
       const dt = (now - prev) / 1000;

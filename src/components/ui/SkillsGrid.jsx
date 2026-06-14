@@ -3,19 +3,20 @@ import { useState, useEffect, useRef } from "react";
 // ─── Data (extracted exactly from old HTML) ───────────────────────────────────
 
 const TECHNICAL_SKILLS = [
+  { name: "Python",                pct: 94 },
   { name: "C++",                   pct: 93 },
   { name: "C",                     pct: 90 },
-  { name: "Python",                pct: 88 },
   { name: "JavaScript",            pct: 85 },
   { name: "SQL",                   pct: 87 },
   { name: "React",                 pct: 82 },
   { name: "Flask",                 pct: 80 },
+  { name: "MERN",                  pct: 81 },
+  { name: "Git / GitHub",          pct: 90 },
   { name: "MultiVariable Calculus",pct: 82 },
   { name: "Linear Algebra",        pct: 85 },
   { name: "Assembly Language",     pct: 79 },
   { name: "Model Training",        pct: 83 },
   { name: "Machine Learning",      pct: 84 },
-  { name: "Git / GitHub",          pct: 90 },
 ];
 
 const PROFESSIONAL_SKILLS = [
@@ -24,6 +25,8 @@ const PROFESSIONAL_SKILLS = [
   { name: "Communication",      pct: 88 },
   { name: "Team Collaboration", pct: 90 },
   { name: "Project Management", pct: 85 },
+  { name: "Continuous Learning",pct: 98 },
+  { name: "Public Speaking",    pct: 95 },
 ];
 
 // ─── CSS injected once ────────────────────────────────────────────────────────
@@ -87,7 +90,7 @@ const STYLES = `
 }
 
 .sg-skill-card.visible {
-  animation: skillPopIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: skillPopIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .sg-skill-card::before {
@@ -134,7 +137,7 @@ const STYLES = `
   border-radius: 4px;
   width: 0%;
   position: relative;
-  transition: width 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sg-bar-fill::after {
@@ -165,7 +168,6 @@ const STYLES = `
 .sg-scrollable {
   max-height: calc(100vh - 20rem);
   overflow-y: auto;
-  scroll-snap-type: y mandatory;
   padding-right: 6px;
 }
 
@@ -197,7 +199,7 @@ function SkillCard({ name, pct, delay }) {
           observer.disconnect();
         }
       },
-      { threshold: 0.25 }
+      { threshold: 0 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -266,7 +268,7 @@ export default function SkillsGrid() {
               key={`${activeTab}-${s.name}`}
               name={s.name}
               pct={s.pct}
-              delay={i * 55}
+              delay={i * 15}
             />
           ))}
         </div>
