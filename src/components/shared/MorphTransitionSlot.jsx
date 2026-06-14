@@ -36,6 +36,7 @@ export default forwardRef(function MorphTransitionSlot(_props, ref) {
   const wrapRefs = useRef({})
   const renderRef = useRef(new Set([0]))
   const [renderSet, setRenderSet] = useState(() => new Set([0]))
+  const snapLockRef = useRef(false)
 
   useImperativeHandle(ref, () => ({
     jumpTo(sectionId) {
@@ -58,6 +59,9 @@ export default forwardRef(function MorphTransitionSlot(_props, ref) {
           wrapRefs.current[idx].style.pointerEvents = 'auto'
         }
       })
+
+      snapLockRef.current = true
+      setTimeout(() => { snapLockRef.current = false }, 1200)
     },
   }))
 
@@ -130,10 +134,34 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
       triggers.push(st)
     }
 
+    /* ── snap: auto-scroll to next section when 75% past current ── */
+    const snapTriggers = []
+
+    for (let i = 0; i < SEQUENCE.length - 1; i++) {
+      const curSec = sections[i]
+      if (!curSec) continue
+
+      const st = ScrollTrigger.create({
+        trigger: curSec,
+        start: 'top top',
+        end: 'bottom top',
+        onUpdate: (self) => {
+          if (self.direction === 1 && self.progress > 0.75 && !snapLockRef.current) {
+            snapLockRef.current = true
+            const next = sections[i + 1]
+            if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            setTimeout(() => { snapLockRef.current = false }, 1200)
+          }
+        },
+      })
+      snapTriggers.push(st)
+    }
+
     requestAnimationFrame(() => ScrollTrigger.refresh())
 
     return () => {
       triggers.forEach((t) => t.kill())
+      snapTriggers.forEach((t) => t.kill())
     }
   }, [])
 
