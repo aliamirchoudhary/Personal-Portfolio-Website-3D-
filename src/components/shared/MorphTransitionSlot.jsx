@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react'
+import { forwardRef, useRef, useEffect, useState, useImperativeHandle } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import HomeProfilePicture from '../animated/HomeProfilePicture'
@@ -17,7 +17,7 @@ export const SLOT_GUTTER = 24
 const W = SLOT_W
 const GUTTER = SLOT_GUTTER
 
-const SEQUENCE = [
+export const SEQUENCE = [
   { id: 'home',     Component: HomeProfilePicture,  props: { imageSrc: PERSONAL.profileImage, size: 320 }, side: 'right' },
   { id: 'about',    Component: NeuralNetworkGlobe,  props: { size: 320 },                                  side: 'left' },
   { id: 'services', Component: PerceptronAnimation, props: { maxWidth: 600 },                              side: 'right' },
@@ -31,11 +31,35 @@ function sideToLeft(vw, side) {
   return side === 'right' ? vw - W - GUTTER : GUTTER
 }
 
-export default function MorphTransitionSlot() {
+export default forwardRef(function MorphTransitionSlot(_props, ref) {
   const containerRef = useRef(null)
   const wrapRefs = useRef({})
   const renderRef = useRef(new Set([0]))
   const [renderSet, setRenderSet] = useState(() => new Set([0]))
+
+  useImperativeHandle(ref, () => ({
+    jumpTo(sectionId) {
+      const idx = SEQUENCE.findIndex((s) => s.id === sectionId)
+      if (idx < 0) return
+
+      renderRef.current = new Set([idx])
+      setRenderSet(new Set([idx]))
+
+      const vw = window.innerWidth
+      containerRef.current.style.left = `${sideToLeft(vw, SEQUENCE[idx].side)}px`
+
+      Object.values(wrapRefs.current).forEach((el) => {
+        if (el) { el.style.opacity = '0'; el.style.pointerEvents = 'none' }
+      })
+
+      requestAnimationFrame(() => {
+        if (wrapRefs.current[idx]) {
+          wrapRefs.current[idx].style.opacity = '1'
+          wrapRefs.current[idx].style.pointerEvents = 'auto'
+        }
+      })
+    },
+  }))
 
   useEffect(() => {
     const sections = document.querySelectorAll('.portfolio-section')
@@ -155,4 +179,4 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
       })}
     </div>
   )
-}
+})

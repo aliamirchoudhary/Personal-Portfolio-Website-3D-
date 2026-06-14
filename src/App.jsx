@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
-import MorphTransitionSlot, { SLOT_W, SLOT_GUTTER } from './components/shared/MorphTransitionSlot'
+import MorphTransitionSlot, { SLOT_W, SLOT_GUTTER, SEQUENCE } from './components/shared/MorphTransitionSlot'
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 import HomeSection from './components/sections/HomeSection'
@@ -25,6 +25,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('home')
   const loadingRef = useRef(null)
   const tlRef = useRef(null)
+  const slotRef = useRef(null)
 
   /* ── loading → intro ── */
   useEffect(() => {
@@ -112,6 +113,7 @@ export default function App() {
   const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (slotRef.current) slotRef.current.jumpTo(id)
   }, [])
 
   /* ── IntersectionObserver for navbar highlight ── */
@@ -155,7 +157,7 @@ export default function App() {
       {phase !== 'loading' && (
         <>
           <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
-          <MorphTransitionSlot />
+          <MorphTransitionSlot ref={slotRef} />
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
             <AboutSection />
