@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { SOCIAL_LINKS, PERSONAL } from '../../data/portfolioData'
+import { MorphingCommsIcon } from '../animated/MorphingCommsIcon'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -250,6 +251,10 @@ export default function ContactSection() {
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="mobile-animated-component">
+          <MorphingCommsIcon />
         </div>
       </div>
     </div>

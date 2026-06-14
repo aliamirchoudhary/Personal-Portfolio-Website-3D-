@@ -1,4 +1,5 @@
 import SkillsGrid from '../ui/SkillsGrid'
+import { SkillCube } from '../animated/SkillCube'
 
 export default function SkillsSection() {
   return (
@@ -30,6 +31,10 @@ export default function SkillsSection() {
 
         <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
           <SkillsGrid />
+        </div>
+
+        <div className="mobile-animated-component">
+          <SkillCube />
         </div>
       </div>
     </section>

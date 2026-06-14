@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { ABOUT_TEXT, PERSONAL, WEBCRAFT } from '../../data/portfolioData'
 import WebCraftLogo from '../ui/StartupLogoButton'
+import NeuralNetworkGlobe from '../animated/NeuralNetworkGlobe'
 
 const WC_FONT = "'Clash Display', 'Clash Grotesk', 'Space Grotesk', sans-serif"
 
@@ -143,6 +144,10 @@ export default function AboutSection() {
               </span>
             </a>
           </div>
+        </div>
+
+        <div className="mobile-animated-component">
+          <NeuralNetworkGlobe size={220} />
         </div>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { EducationTimeline, GlobalStyles } from '../ui/EducationTimeline'
 import { EDUCATION } from '../../data/portfolioData'
+import { SpinningSkillBox } from '../animated/FlippingCard3D'
 
 const eduItems = EDUCATION.map((e) => ({
   ...e,
@@ -78,6 +79,10 @@ export default function EducationSection() {
 
         <div ref={scrollRef} className="edu-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
           <EducationTimeline items={eduItems} activeIndex={activeIndex} fill={fill} rowRefs={rowRefs} />
+        </div>
+
+        <div className="mobile-animated-component">
+          <SpinningSkillBox />
         </div>
       </div>
     </section>

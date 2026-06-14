@@ -1,5 +1,6 @@
 import { RingCarousel } from '../ui/RingCarousel'
 import { SERVICES } from '../../data/portfolioData'
+import { PerceptronAnimation } from '../animated/PerceptronAnimation'
 
 const mappedServices = SERVICES.map((s) => {
   const sectionsHtml = (s.modal.sections || []).map((sec) =>
@@ -49,6 +50,10 @@ export default function ServicesSection() {
 
         <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
           <RingCarousel cards={mappedServices} accentColor="#7c3aed" />
+        </div>
+
+        <div className="mobile-animated-component">
+          <PerceptronAnimation maxWidth={300} />
         </div>
       </div>
     </section>

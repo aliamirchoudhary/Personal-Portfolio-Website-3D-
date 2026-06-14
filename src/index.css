@@ -30,6 +30,8 @@ body {
   scroll-snap-stop: always;
 }
 
+.mobile-animated-component { display: none; }
+
 /* Themed scrollbar for body */
 body::-webkit-scrollbar { width: 8px; }
 body::-webkit-scrollbar-track { background: #12121a; }
@@ -157,6 +159,12 @@ body {
   /* Ring carousel cards overflow stage bounds. html overflow:hidden clips them.
      Delegate scroll to html (viewport), make body not clip. Use width:100%
      (not 100vw) so no horizontal scrollbar despite html scrollbar. */
+  .mobile-animated-component {
+    display: flex !important;
+    justify-content: center;
+    padding: 1rem 0;
+  }
+
   html { overflow: visible !important; }
   body {
     overflow-x: visible !important;

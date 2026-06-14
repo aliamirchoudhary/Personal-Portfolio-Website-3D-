@@ -1,5 +1,6 @@
 import { RingCarousel } from '../ui/RingCarousel'
 import { PROJECTS } from '../../data/portfolioData'
+import TechFlowDiagram from '../animated/TechFlowDiagram'
 
 const FULL_CONTENT = {
   criclytics: `<p>Criclytics is an intelligent cricket analytics platform that transforms historical match data into context-aware probabilities and interpretable machine-learning insights for players, teams, and venues. Built to provide cricket enthusiasts, analysts, and fantasy league players with data-driven predictions and comprehensive performance analysis.</p>
@@ -222,6 +223,10 @@ export default function ProjectsSection() {
 
         <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
           <RingCarousel cards={mappedProjects} accentColor="#7c3aed" />
+        </div>
+
+        <div className="mobile-animated-component">
+          <TechFlowDiagram />
         </div>
       </div>
     </section>
