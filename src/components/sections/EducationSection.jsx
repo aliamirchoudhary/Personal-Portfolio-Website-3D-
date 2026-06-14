@@ -82,7 +82,7 @@ export default function EducationSection() {
         </div>
 
         <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
-          <SpinningSkillBox />
+          <SpinningSkillBox skills={["Data Science", "Full Stack", "Machine Learning", "Cloud"]} sideLabel="AI" />
         </div>
       </div>
     </section>

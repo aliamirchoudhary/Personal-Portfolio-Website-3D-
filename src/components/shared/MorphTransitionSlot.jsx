@@ -21,7 +21,7 @@ export const SEQUENCE = [
   { id: 'home',     Component: HomeProfilePicture,  props: { imageSrc: PERSONAL.profileImage, size: 320 }, side: 'right' },
   { id: 'about',    Component: NeuralNetworkGlobe,  props: { size: 320 },                                  side: 'left' },
   { id: 'services', Component: PerceptronAnimation, props: { maxWidth: 600 },                              side: 'right' },
-  { id: 'education',Component: SpinningSkillBox,    props: { skills: ['Data Science','ML / AI','Full Stack','Cloud / DevOps','Algorithms','Systems'], sideLabel: 'FAST' }, side: 'left' },
+  { id: 'education',Component: SpinningSkillBox,    props: { skills: ['Data Science','Full Stack','Machine Learning','Cloud'], sideLabel: 'AI' }, side: 'left' },
   { id: 'skills',   Component: SkillCube,           props: { size: 200 },                                  side: 'right' },
   { id: 'projects', Component: TechFlowDiagram,     props: {},                                              side: 'left' },
   { id: 'contact',  Component: MorphingCommsIcon,   props: { size: 200 },                                  side: 'right' },

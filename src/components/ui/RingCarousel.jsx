@@ -42,10 +42,10 @@ const FONT_MONO = '"JetBrains Mono", ui-monospace, monospace'
 /* ------------------------------------------------------------------ *
  *  RING CAROUSEL
  * ------------------------------------------------------------------ */
-function RingCarousel({ cards = [], accentColor = THEME.primary }) {
+function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }) {
   useGoogleFonts()
 
-  const [center, setCenter] = useState(0) // index of the card at "12 o'clock"
+  const [center, setCenter] = useState(initialCenter ?? 0) // index of the card at "12 o'clock"
   const [hovered, setHovered] = useState(null) // offset of hovered card (-2..2)
   const [active, setActive] = useState(null) // card object for modal
   const stageRef = useRef(null)

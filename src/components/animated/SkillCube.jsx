@@ -202,18 +202,6 @@ function SkillCube({ size = 200 }) {
               overflow: "hidden",
             }}
           >
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 11,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: THEME.textSecondary,
-              }}
-            >
-              {"// " + face.label}
-            </span>
-
             <img
               src={face.logo}
               alt={face.name + " logo"}

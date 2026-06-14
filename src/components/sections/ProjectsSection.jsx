@@ -222,7 +222,7 @@ export default function ProjectsSection() {
         </h2>
 
         <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-          <RingCarousel cards={mappedProjects} accentColor="#7c3aed" />
+          <RingCarousel cards={mappedProjects} accentColor="#7c3aed" initialCenter={1} />
         </div>
 
         <div className="mobile-animated-component">
