@@ -154,7 +154,7 @@ export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration
             strokeDasharray: pathLength,
             strokeDashoffset: pathLength,
             animation: ready
-              ? `lnt-trace ${total * 0.84}s ease-in-out ${total * 0.07}s forwards`
+              ? `lnt-trace ${total * 0.95}s ease-in-out ${total * 0.07}s forwards`
               : "none",
           }}
         >
