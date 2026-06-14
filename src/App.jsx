@@ -1,6 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
-import MorphTransitionSlot from './components/shared/MorphTransitionSlot'
+import MorphTransitionSlot, { SLOT_W, SLOT_GUTTER, SEQUENCE } from './components/shared/MorphTransitionSlot'
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 import HomeSection from './components/sections/HomeSection'
@@ -14,25 +16,99 @@ import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
 
 const LOADING_DURATION = 4500
-const FADE_DURATION = 400
+const INTRO_DURATION = 1050
+
+gsap.registerPlugin(ScrollTrigger)
 
 export default function App() {
   const [phase, setPhase] = useState('loading')
   const [activeSection, setActiveSection] = useState('home')
-  const [showLoading, setShowLoading] = useState(true)
+  const loadingRef = useRef(null)
+  const tlRef = useRef(null)
   const slotRef = useRef(null)
 
-  /* ── loading → fade → ready ── */
+  /* ── loading → intro ── */
   useEffect(() => {
-    const t1 = setTimeout(() => {
-      setPhase('fade')
-      setTimeout(() => {
-        setShowLoading(false)
-        setPhase('ready')
-      }, FADE_DURATION)
-    }, LOADING_DURATION)
+    const t1 = setTimeout(() => setPhase('intro'), LOADING_DURATION)
     return () => clearTimeout(t1)
   }, [])
+
+  /* ── compact loading layout (no !important CSS) ── */
+  useLayoutEffect(() => {
+    if (phase !== 'loading') return
+    gsap.set('.lpf-scene', { minHeight: '45vh', paddingTop: '2vh' })
+    gsap.set('.lpf-root', { width: 240, height: 240, marginTop: '5vh' })
+  }, [phase])
+
+  /* ── intro: loading profile flows to right slot position, matching HomeProfilePicture ── */
+  useEffect(() => {
+    if (phase !== 'intro') return
+    const el = loadingRef.current
+    if (!el) return
+
+    // HomeProfilePicture sits 58px right of center inside the slot
+    // due to its justify-end Tailwind class. Compensate so the
+    // centered .lpf-root aligns with the right-aligned .hpp-root.
+    const raf = requestAnimationFrame(() => {
+      const slot = document.querySelector('.animated-slot')
+      const slotLeft = slot ? slot.getBoundingClientRect().left : window.innerWidth - SLOT_W - SLOT_GUTTER
+      const targetLeft = slotLeft + 58
+
+      const tl = gsap.timeline({
+        onComplete: () => setPhase('ready'),
+      })
+      tlRef.current = tl
+
+      tl.to('.lpf-scene', {
+        minHeight: '100vh',
+        paddingTop: 0,
+        duration: 0.7,
+        ease: 'power2.inOut',
+      }, 0)
+
+      tl.to('.lpf-root', {
+        width: 320,
+        height: 320,
+        marginTop: 0,
+        duration: 0.7,
+        ease: 'power2.inOut',
+      }, 0)
+
+      tl.to(el, {
+        left: targetLeft,
+        top: 0,
+        y: -5,
+        width: SLOT_W,
+        height: '100vh',
+        duration: 0.7,
+        ease: 'power2.inOut',
+      }, 0)
+
+      tl.to(el, {
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+      }, 0.7)
+
+      tl.to('.loading-name-trace', {
+        opacity: 0,
+        duration: 0.3,
+      }, 0)
+
+      tl.to('.main-wrap', {
+        opacity: 1,
+        duration: 0.5,
+      }, 0.15)
+    })
+
+    return () => {
+      cancelAnimationFrame(raf)
+      if (tlRef.current) {
+        tlRef.current.kill()
+        tlRef.current = null
+      }
+    }
+  }, [phase])
 
   const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id)
@@ -57,8 +133,9 @@ export default function App() {
 
   return (
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
-      {showLoading && (
+      {(phase === 'loading' || phase === 'intro') && (
         <div
+          ref={loadingRef}
           style={{
             position: 'fixed',
             top: 0,
@@ -68,12 +145,9 @@ export default function App() {
             background: '#0a0a0f',
             overflow: 'hidden',
             zIndex: 100,
-            transition: `opacity ${FADE_DURATION}ms ease`,
-            opacity: phase === 'fade' ? 0 : 1,
           }}
         >
           <LoadingProfileFrame imageSrc={PERSONAL.profileImage} name={PERSONAL.name} />
-          <style>{`@media (max-width: 1024px) { .lpf-root { margin-bottom: 80px !important; } }`}</style>
           <div className="loading-name-trace" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
             <LoadingNameTrace name={PERSONAL.name.toUpperCase()} duration={LOADING_DURATION} />
           </div>
@@ -84,7 +158,7 @@ export default function App() {
         <>
           <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
           <MorphTransitionSlot ref={slotRef} />
-          <main className="main-wrap" style={{ paddingTop: 96 }}>
+          <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
             <AboutSection />
             <ServicesSection />
