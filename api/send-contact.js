@@ -88,14 +88,14 @@ export default async function handler(req, res) {
           <div class="body">
             <p>Hi ${escHtml(name)},</p>
             <p>Thank you for reaching out! I've received your message and will get back to you within <strong>24 hours</strong>.</p>
-            <p>In the meantime, feel free to check out my work on <a href="https://github.com/aliamirchoudhary" style="color:#a78bfa">GitHub</a> or connect with me on <a href="https://linkedin.com/in/aliamirchoudhary" style="color:#a78bfa">LinkedIn</a>.</p>
+            <p>In the meantime, feel free to check out my work on <a href="https://github.com/aliamirchoudhary" style="color:#a78bfa">GitHub</a> or connect with me on <a href="https://www.linkedin.com/in/muhammad-ali-aamir2558" style="color:#a78bfa">LinkedIn</a>.</p>
           </div>
           <div class="footer">
             <div class="sig">Muhammad Ali Aamir</div>
             <p>Full-Stack Developer &amp; Data Science Enthusiast</p>
             <p style="margin-top:8px">
               <a href="https://github.com/aliamirchoudhary">GitHub</a> &bull;
-              <a href="https://linkedin.com/in/aliamirchoudhary">LinkedIn</a>
+              <a href="https://www.linkedin.com/in/muhammad-ali-aamir2558">LinkedIn</a>
             </p>
           </div>
         </div></body></html>`,
