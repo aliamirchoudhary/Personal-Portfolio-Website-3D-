@@ -36,6 +36,7 @@ export default function App() {
   /* ── compact loading layout (no !important CSS) ── */
   useLayoutEffect(() => {
     if (phase !== 'loading') return
+    if (window.innerWidth <= 1024) return
     gsap.set('.lpf-scene', { minHeight: '45vh', paddingTop: '2vh' })
     gsap.set('.lpf-root', { width: 240, height: 240, marginTop: '5vh' })
   }, [phase])
@@ -43,6 +44,7 @@ export default function App() {
   /* ── intro: loading profile flows to right slot position, matching HomeProfilePicture ── */
   useEffect(() => {
     if (phase !== 'intro') return
+    if (window.innerWidth <= 1024) { setPhase('ready'); return }
     const el = loadingRef.current
     if (!el) return
 
@@ -148,6 +150,7 @@ export default function App() {
           }}
         >
           <LoadingProfileFrame imageSrc={PERSONAL.profileImage} name={PERSONAL.name} />
+          <style>{`@media (max-width: 1024px) { .lpf-root { margin-bottom: 80px !important; } }`}</style>
           <div className="loading-name-trace" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
             <LoadingNameTrace name={PERSONAL.name.toUpperCase()} duration={LOADING_DURATION} />
           </div>
