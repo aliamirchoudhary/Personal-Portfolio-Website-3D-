@@ -81,7 +81,7 @@ export default function EducationSection() {
           <EducationTimeline items={eduItems} activeIndex={activeIndex} fill={fill} rowRefs={rowRefs} />
         </div>
 
-        <div className="mobile-animated-component">
+        <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
           <SpinningSkillBox />
         </div>
       </div>

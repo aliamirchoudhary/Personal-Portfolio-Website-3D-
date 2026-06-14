@@ -29,11 +29,11 @@ export default function SkillsSection() {
           Skills &amp; Expertise
         </h2>
 
-        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        <div className="skills-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
           <SkillsGrid />
         </div>
 
-        <div className="mobile-animated-component">
+        <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
           <SkillCube />
         </div>
       </div>

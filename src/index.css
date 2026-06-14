@@ -165,6 +165,27 @@ body {
     padding: 1rem 0;
   }
 
+  /* education & skills: outer container auto-height so animated component
+     gets room below the scroll-area naturally */
+  #education > div[style*="margin-left"],
+  #skills .content-scroll {
+    height: auto !important;
+  }
+
+  /* fixed-height scroll areas so ~70% of screen shows cards, rest for
+     the animated component below */
+  #education .edu-scroll-area {
+    height: 65vh !important;
+    max-height: 65vh !important;
+    flex: none !important;
+  }
+
+  #skills .skills-scroll-area {
+    height: 65vh !important;
+    max-height: 65vh !important;
+    flex: none !important;
+  }
+
   html { overflow: visible !important; }
   body {
     overflow-x: visible !important;
