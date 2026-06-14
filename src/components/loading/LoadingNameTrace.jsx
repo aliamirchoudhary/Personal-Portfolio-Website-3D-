@@ -79,6 +79,15 @@ export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration
         @keyframes lnt-trace {
           to { stroke-dashoffset: 0; }
         }
+
+        @media (max-width: 1024px) {
+          svg text {
+            letter-spacing: 0.12em !important;
+            stroke: #5a2dc9;
+            stroke-width: 1.2px;
+            paint-order: stroke fill;
+          }
+        }
       `}</style>
 
       <svg
