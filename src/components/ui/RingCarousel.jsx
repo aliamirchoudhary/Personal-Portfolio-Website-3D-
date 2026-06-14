@@ -315,7 +315,9 @@ function RingCarousel({ cards = [], accentColor = THEME.primary }) {
             }}
           >
             <button
-              onClick={() => setActive(null)}
+          onClick={() => setActive(null)}
+          onKeyDown={(e) => { if (e.key === 'Escape') setActive(null) }}
+          tabIndex={-1}
               aria-label="Close"
               style={{
                 position: "absolute",
