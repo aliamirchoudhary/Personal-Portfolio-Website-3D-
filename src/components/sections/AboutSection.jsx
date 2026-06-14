@@ -50,19 +50,20 @@ export default function AboutSection() {
           boxSizing: 'border-box',
         }}
       >
-        <div className="about-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-          <h2
-            className="gradient-text"
-            style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: '2.5rem',
-              margin: '0 0 2rem',
-            }}
-          >
-            About Me
-          </h2>
+        <h2
+          className="gradient-text"
+          style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 700,
+            fontSize: '2.5rem',
+            margin: '0 0 2rem',
+            flexShrink: 0,
+          }}
+        >
+          About Me
+        </h2>
 
+        <div className="about-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
           {ABOUT_TEXT.map((para, i) => (
             <p
               key={i}
