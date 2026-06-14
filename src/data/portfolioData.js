@@ -232,5 +232,3 @@ export const NAV_LINKS = [
   { label: "Projects",  id: "projects"  },
   { label: "Contact",   id: "contact"   },
 ];
-
-export const CONTACT_FORM_ACTION = "https://formspree.io/f/mzzayavg";

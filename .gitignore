@@ -25,3 +25,6 @@ dist-ssr
 
 # Session context
 SESSION_CONTEXT.md
+
+# Environment variables
+.env

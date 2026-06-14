@@ -1,18 +1,19 @@
 import { useState } from 'react'
-import { SOCIAL_LINKS, PERSONAL, CONTACT_FORM_ACTION } from '../../data/portfolioData'
+import { SOCIAL_LINKS, PERSONAL } from '../../data/portfolioData'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function ContactSection() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [notification, setNotification] = useState(null)
+  const [sending, setSending] = useState(false)
 
   const showNotification = (type, text) => {
     setNotification({ type, text })
     setTimeout(() => setNotification(null), 4000)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     if (form.name.length < 2) {
       showNotification('error', 'Name must be at least 2 characters')
@@ -26,7 +27,25 @@ export default function ContactSection() {
       showNotification('error', 'Message must be at least 10 characters')
       return
     }
-    e.target.submit()
+
+    setSending(true)
+    try {
+      const res = await fetch('/send-contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        showNotification('success', data.message)
+        setForm({ name: '', email: '', message: '' })
+      } else {
+        showNotification('error', data.message || 'Something went wrong.')
+      }
+    } catch {
+      showNotification('error', 'Network error — could not send message.')
+    }
+    setSending(false)
   }
 
   return (
@@ -65,7 +84,7 @@ export default function ContactSection() {
         <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', maxWidth: 960 }}>
           <div>
-            <form action={CONTACT_FORM_ACTION} method="POST" onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', color: '#7c3aed', fontWeight: 600, marginBottom: '0.5rem', fontSize: '0.9rem' }}>Name</label>
                 <input
@@ -135,28 +154,28 @@ export default function ContactSection() {
               </div>
               <button
                 type="submit"
+                disabled={sending}
                 style={{
                   width: '100%',
                   padding: '1rem',
                   borderRadius: 50,
                   border: 'none',
-                  background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
-                  color: '#fff',
+                  background: sending ? 'rgba(255,255,255,0.1)' : 'linear-gradient(135deg, #7c3aed, #06b6d4)',
+                  color: sending ? '#94a3b8' : '#fff',
                   fontSize: '1.1rem',
                   fontWeight: 600,
-                  cursor: 'pointer',
+                  cursor: sending ? 'not-allowed' : 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.75rem',
-                  transition: 'transform 0.3s, box-shadow 0.3s',
-                  boxShadow: '0 10px 25px rgba(124,58,237,0.3)',
+                  transition: 'transform 0.3s, box-shadow 0.3s, background 0.3s',
+                  boxShadow: sending ? 'none' : '0 10px 25px rgba(124,58,237,0.3)',
                 }}
-                onMouseEnter={(e) => { e.target.style.transform = 'translateY(-3px)'; e.target.style.boxShadow = '0 15px 35px rgba(124,58,237,0.4)' }}
-                onMouseLeave={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 10px 25px rgba(124,58,237,0.3)' }}
+                onMouseEnter={(e) => { if (!sending) { e.target.style.transform = 'translateY(-3px)'; e.target.style.boxShadow = '0 15px 35px rgba(124,58,237,0.4)' } }}
+                onMouseLeave={(e) => { if (!sending) { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 10px 25px rgba(124,58,237,0.3)' } }}
               >
-                <i className="fas fa-paper-plane" />
-                Send Message
+                {sending ? 'Sending...' : <><i className="fas fa-paper-plane" /> Send Message</>}
               </button>
             </form>
           </div>
