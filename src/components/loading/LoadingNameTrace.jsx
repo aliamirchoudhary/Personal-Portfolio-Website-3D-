@@ -51,10 +51,10 @@ export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration
   const maxTextWidth = "80vw"
 
   const fontStyle = {
-    fontFamily: "'Space Grotesk', sans-serif",
+    fontFamily: "'Orbitron', sans-serif",
     fontWeight: 700,
-    fontSize: "clamp(28px, 7vw, 96px)",
-    letterSpacing: "-0.02em",
+    fontSize: "clamp(24px, 5.5vw, 80px)",
+    letterSpacing: "0.04em",
   }
 
   return (
@@ -66,7 +66,7 @@ export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400&family=JetBrains+Mono:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
         /* Master opacity: blank -> fast fade in -> long hold -> fast fade out */
         @keyframes lnt-stage {
@@ -82,8 +82,8 @@ export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration
 
         @media (max-width: 1024px) {
           svg text {
-            letter-spacing: 0.12em !important;
-            stroke: #5a2dc9;
+            letter-spacing: 0.14em !important;
+            stroke: #a78bfa;
             stroke-width: 1.2px;
             paint-order: stroke fill;
           }
