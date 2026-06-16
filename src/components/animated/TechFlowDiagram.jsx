@@ -218,6 +218,7 @@ export default function TechFlowDiagram() {
 
   return (
     <div
+      className="tfd-wrap"
       style={{
         position: "relative",
         width: "100%",

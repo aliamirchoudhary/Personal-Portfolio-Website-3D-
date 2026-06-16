@@ -125,13 +125,13 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
   const transformFor = (offset) => {
     // base values keyed by absolute offset
     const map = compact ? {
-      0: { x: 0, z: -70, ry: 0, scale: 0.55, op: 1 },
-      1: { x: 80, z: 30, ry: 20, scale: 0.85, op: 1 },
-      2: { x: 95, z: 50, ry: 30, scale: 0.95, op: 1 },
+      0: { x: 0, z: -70, ry: 0, scale: 0.5, op: 1 },
+      1: { x: 82, z: 30, ry: 20, scale: 0.76, op: 1 },
+      2: { x: 84, z: 50, ry: 30, scale: 0.84, op: 1 },
     } : {
-      0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 }, // farthest (12 o'clock)
-      1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 }, // primary focus
-      2: { x: 210, z: 90, ry: 40, scale: 1.1, op: 1 }, // cropped by edges
+      0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 },
+      1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 },
+      2: { x: 210, z: 90, ry: 40, scale: 1.1, op: 1 },
     }
     const abs = Math.abs(offset)
     const sign = offset < 0 ? -1 : 1

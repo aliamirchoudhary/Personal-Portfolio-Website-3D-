@@ -93,21 +93,25 @@ export default function AboutSection() {
           <p style={{ color: '#f1f5f9', fontWeight: 600, marginBottom: '1rem' }}>
             Feel free to reach out for collaboration!
           </p>
-          <p style={{ color: '#94a3b8', marginBottom: '0.5rem' }}>
-            <i className="fas fa-envelope" style={{ color: '#7c3aed', marginRight: 8 }} />
-            <a href={`mailto:${PERSONAL.email}`} style={{ color: '#a78bfa', textDecoration: 'none' }}>
-              {PERSONAL.email}
-            </a>
-            <span style={{ margin: '0 8px', color: '#94a3b8' }}>|</span>
-            <i className="fab fa-linkedin-in" style={{ color: '#7c3aed', marginRight: 8 }} />
-            <a
-              href="https://www.linkedin.com/in/muhammad-ali-aamir2558"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: '#a78bfa', textDecoration: 'none' }}
-            >
-              LinkedIn Profile
-            </a>
+          <p style={{ color: '#94a3b8', marginBottom: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.4rem 0.8rem', alignItems: 'center' }}>
+            <span style={{ whiteSpace: 'nowrap' }}>
+              <i className="fas fa-envelope" style={{ color: '#7c3aed', marginRight: 6 }} />
+              <a href={`mailto:${PERSONAL.email}`} style={{ color: '#a78bfa', textDecoration: 'none' }}>
+                {PERSONAL.email}
+              </a>
+            </span>
+            <span style={{ color: '#94a3b8' }}>|</span>
+            <span style={{ whiteSpace: 'nowrap' }}>
+              <i className="fab fa-linkedin-in" style={{ color: '#7c3aed', marginRight: 6 }} />
+              <a
+                href="https://www.linkedin.com/in/muhammad-ali-aamir2558"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#a78bfa', textDecoration: 'none' }}
+              >
+                LinkedIn Profile
+              </a>
+            </span>
           </p>
 
           <div

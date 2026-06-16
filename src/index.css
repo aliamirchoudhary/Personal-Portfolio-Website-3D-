@@ -128,8 +128,20 @@ body {
 
   /* ring carousel smaller so cards don't clip on narrow viewports */
   .ring-carousel-stage {
-    width: 280px !important;
+    width: 330px !important;
     height: 260px !important;
+    overflow: hidden !important;
+  }
+
+  #projects > div[style*="margin-left"] {
+    height: auto !important;
+  }
+  #projects > div[style*="margin-left"] > div:nth-child(2) {
+    min-height: 55vh !important;
+  }
+
+  .tfd-wrap {
+    overflow: hidden !important;
   }
 
   /* home → flex column, centered (like old html) */
