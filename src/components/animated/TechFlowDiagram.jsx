@@ -25,7 +25,7 @@ const VB_H = 580
 const NODE_W = 116
 const NODE_H = 62
 
-const API = { x: VB_W / 2, y: VB_H / 2, w: 168, h: 86, label: "API", sub: "GATEWAY" }
+const API = { x: VB_W / 2, y: VB_H / 2, w: 168, h: 132, label: "API", sub: "GATEWAY" }
 
 const MODULES = [
   { id: "cloud",  x: 120, y: 90, label: "CLOUD",      icon: "cloud"  },
