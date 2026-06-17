@@ -119,8 +119,8 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
             enteringEl.style.pointerEvents = 'auto'
             ;(enteringEl === toEl ? fromEl : toEl).style.pointerEvents = 'none'
           } else {
-            fromEl.style.pointerEvents = 'none'
-            toEl.style.pointerEvents = 'none'
+            fromEl.style.pointerEvents = +fromEl.style.opacity > +toEl.style.opacity ? 'auto' : 'none'
+            toEl.style.pointerEvents = +toEl.style.opacity > +fromEl.style.opacity ? 'auto' : 'none'
           }
 
           const vw2 = window.innerWidth
