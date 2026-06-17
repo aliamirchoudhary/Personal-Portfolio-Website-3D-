@@ -128,9 +128,8 @@ body {
 
   /* ring carousel smaller so cards don't clip on narrow viewports */
   .ring-carousel-stage {
-    width: 330px !important;
+    width: 280px !important;
     height: 260px !important;
-    overflow: hidden !important;
   }
 
   #projects > div[style*="margin-left"] {

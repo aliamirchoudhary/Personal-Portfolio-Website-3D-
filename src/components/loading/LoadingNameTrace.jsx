@@ -25,10 +25,9 @@ import { useState, useEffect, useRef } from "react"
 export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration = 4500 }) {
   const measureRef = useRef(null)
   const [pathLength, setPathLength] = useState(0)
+  const [textLength, setTextLength] = useState(0)
   const [ready, setReady] = useState(false)
 
-  // Measure the rendered glyph length so the stroke-dash reveal stays in
-  // sync with the actual text.
   useEffect(() => {
     const el = measureRef.current
     if (!el) return
@@ -38,9 +37,10 @@ export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration
     } catch {
       len = 600
     }
-    // getComputedTextLength is the advance width, not the true stroke path
-    // length, so pad it to guarantee the trace fully completes.
-    setPathLength(len * 1.6)
+    const maxW = window.innerWidth * 0.85
+    const constrained = Math.min(len, maxW)
+    setTextLength(constrained)
+    setPathLength(constrained * 1.6)
     requestAnimationFrame(() => requestAnimationFrame(() => setReady(true)))
   }, [name])
 
@@ -122,27 +122,26 @@ export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration
           {name}
         </text>
 
-        {/* 1) Dark base — the name as it first appears */}
         <text
           x="50%"
           y="60%"
           dominantBaseline="central"
           textAnchor="middle"
           lengthAdjust="spacingAndGlyphs"
+          textLength={textLength || undefined}
           fill="#3b1d8f"
           style={fontStyle}
         >
           {name}
         </text>
 
-        {/* 2) Light trace — draws over every letter simultaneously; the
-              traced portion becomes the light neon color */}
         <text
           x="50%"
           y="60%"
           dominantBaseline="central"
           textAnchor="middle"
           lengthAdjust="spacingAndGlyphs"
+          textLength={textLength || undefined}
           fill="none"
           stroke="#a78bfa"
           strokeWidth="2.5"
