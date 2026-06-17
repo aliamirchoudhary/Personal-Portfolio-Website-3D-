@@ -253,10 +253,11 @@ export default function ContactSection() {
           </div>
         </div>
 
-        <div className="mobile-animated-component">
-          <MorphingCommsIcon />
-        </div>
       </div>
+    </div>
+
+    <div className="mobile-animated-component" style={{ marginBottom: 35 }}>
+      <MorphingCommsIcon />
     </div>
 
       {notification && (

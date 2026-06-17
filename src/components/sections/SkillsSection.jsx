@@ -1,5 +1,6 @@
 import SkillsGrid from '../ui/SkillsGrid'
 import { SkillCube } from '../animated/SkillCube'
+import LazyMount from '../shared/LazyMount'
 
 export default function SkillsSection() {
   return (
@@ -34,7 +35,7 @@ export default function SkillsSection() {
         </div>
 
         <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
-          <SkillCube />
+          <LazyMount><SkillCube /></LazyMount>
         </div>
       </div>
     </section>

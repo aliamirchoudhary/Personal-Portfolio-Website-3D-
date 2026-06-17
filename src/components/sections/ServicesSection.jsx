@@ -1,6 +1,7 @@
 import { RingCarousel } from '../ui/RingCarousel'
 import { SERVICES } from '../../data/portfolioData'
 import { PerceptronAnimation } from '../animated/PerceptronAnimation'
+import LazyMount from '../shared/LazyMount'
 
 const mappedServices = SERVICES.map((s) => {
   const sectionsHtml = (s.modal.sections || []).map((sec) =>
@@ -53,7 +54,7 @@ export default function ServicesSection() {
         </div>
 
         <div className="mobile-animated-component">
-          <PerceptronAnimation maxWidth={300} />
+          <LazyMount><PerceptronAnimation maxWidth={300} /></LazyMount>
         </div>
       </div>
     </section>

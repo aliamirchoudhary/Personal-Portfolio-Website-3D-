@@ -251,7 +251,7 @@ export default function TechFlowDiagram() {
           viewBox={`0 0 ${VB_W} ${VB_H}`}
           width="100%"
           height="100%"
-          style={{ position: "absolute", inset: 0, display: "block", overflow: "visible" }}
+          style={{ position: "absolute", inset: 0, display: "block", overflow: "hidden" }}
         >
           <defs>
             <marker
@@ -332,7 +332,7 @@ export default function TechFlowDiagram() {
             transform: "translate(-50%, -50%)",
             width: pct(API.w, VB_W),
             height: pct(API.h, VB_H),
-            minWidth: 130,
+            minWidth: 170,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
