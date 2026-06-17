@@ -9,19 +9,21 @@
 }
 
 html {
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 100%;
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 96px;
 }
 
 body {
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
   height: 100%;
   background-color: #0a0a0f;
   color: #f1f5f9;
   font-family: 'Inter', sans-serif;
-  scroll-snap-type: y proximity;
-  scroll-padding-top: 96px;
+  scrollbar-color: #7c3aed #12121a;
+  scrollbar-width: thin;
 }
 
 .portfolio-section {
@@ -32,19 +34,15 @@ body {
 
 .mobile-animated-component { display: none; }
 
-/* Themed scrollbar for body */
-body::-webkit-scrollbar { width: 8px; }
-body::-webkit-scrollbar-track { background: #12121a; }
-body::-webkit-scrollbar-thumb {
+/* Themed scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #12121a; }
+::-webkit-scrollbar-thumb {
   background: linear-gradient(to bottom, #7c3aed, #06b6d4);
   border-radius: 4px;
 }
-body::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #06b6d4, #7c3aed);
-}
-body {
-  scrollbar-color: #7c3aed #12121a;
-  scrollbar-width: thin;
 }
 
 .about-scroll-area::-webkit-scrollbar,
@@ -93,7 +91,7 @@ body {
 
 /* ---------- 1024px — tablet landscape ---------- */
 @media (max-width: 1024px) {
-  body { scroll-snap-type: none; }
+  html { scroll-snap-type: none; }
 
   .portfolio-section {
     height: auto !important;
