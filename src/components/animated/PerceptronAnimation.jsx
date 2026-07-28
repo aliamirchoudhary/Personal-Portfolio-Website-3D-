@@ -92,6 +92,7 @@ export function PerceptronAnimation({ maxWidth = 560 }) {
   const nodeEls = useRef([]);
   const edgeEls = useRef([]);
   const rafRef = useRef(0);
+  const pausedRef = useRef(false);
 
   useEffect(() => {
     const reduce =
@@ -117,6 +118,10 @@ export function PerceptronAnimation({ maxWidth = 560 }) {
     const triangle = (x) => Math.max(0, 1 - Math.abs(x)); // peak 1 at x=0
 
     const frame = (now) => {
+      if (pausedRef.current) {
+        rafRef.current = requestAnimationFrame(frame);
+        return;
+      }
       const t = (now - start) / 1000;
       const g = t / GAP_DURATION; // global position measured in "gaps"
 
@@ -180,8 +185,11 @@ export function PerceptronAnimation({ maxWidth = 560 }) {
       rafRef.current = requestAnimationFrame(frame);
     };
 
+    const onVisibilityChange = () => { pausedRef.current = document.hidden }
+    document.addEventListener("visibilitychange", onVisibilityChange)
+
     rafRef.current = requestAnimationFrame(frame);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => { cancelAnimationFrame(rafRef.current); document.removeEventListener("visibilitychange", onVisibilityChange) };
   }, [nodeMeta, edgeMeta, numInputs, numGaps]);
 
   const css = `
@@ -257,7 +265,6 @@ export function PerceptronAnimation({ maxWidth = 560 }) {
 /* ---- Standalone demo (default export) -------------------------------- */
 export default function Demo() {
   const fontsCss = `
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&display=swap');
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
 body { margin: 0; }

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { ABOUT_TEXT, PERSONAL, WEBCRAFT } from '../../data/portfolioData'
 import WebCraftLogo from '../ui/StartupLogoButton'
 import NeuralNetworkGlobe from '../animated/NeuralNetworkGlobe'
+import LazyMount from '../shared/LazyMount'
 
 const WC_FONT = "'Clash Display', 'Clash Grotesk', 'Space Grotesk', sans-serif"
 
@@ -152,7 +153,9 @@ export default function AboutSection() {
 
         <div className="mobile-animated-component">
           <div style={{ marginTop: 32, marginBottom: 32 }}>
-            <NeuralNetworkGlobe size={220} />
+            <LazyMount margin="300px" placeholder={<div style={{ height: 220 }} />}>
+              <NeuralNetworkGlobe size={220} />
+            </LazyMount>
           </div>
         </div>
       </div>

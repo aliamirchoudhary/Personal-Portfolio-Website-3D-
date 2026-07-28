@@ -16,8 +16,6 @@ const STYLE_ID = "loading-profile-frame-styles"
 
 const css = `
 /* ---- Fonts ---- */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap');
-
 /* ---- Keyframes ---- */
 
 /* 1. Mount fade-in + scale */

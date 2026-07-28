@@ -66,8 +66,6 @@ export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
-
         /* Master opacity: blank -> fast fade in -> long hold -> fast fade out */
         @keyframes lnt-stage {
           0%   { opacity: 0; }

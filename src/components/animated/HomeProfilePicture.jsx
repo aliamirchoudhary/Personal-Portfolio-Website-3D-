@@ -17,8 +17,6 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
   const cls = (name) => `hpp-${name}-${uid}`
 
   const css = `
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&display=swap');
-
     /* 1. FLOAT — gentle vertical bob */
     @keyframes ${cls("float")} {
       0%, 100% { transform: translateY(0); }

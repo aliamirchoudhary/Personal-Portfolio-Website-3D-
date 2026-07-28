@@ -1,4 +1,3 @@
-"use client"
 import { useState, useRef, useEffect } from "react"
 
 export default function LazyMount({ children, margin = "200px", placeholder = <div style={{ height: 200 }} /> }) {

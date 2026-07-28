@@ -26,6 +26,10 @@ dist-ssr
 # Session context
 SESSION_CONTEXT.md
 
+# Lighthouse reports
+.lh-temp/
+lighthouse-*.json
+
 # Environment variables
 .env
 

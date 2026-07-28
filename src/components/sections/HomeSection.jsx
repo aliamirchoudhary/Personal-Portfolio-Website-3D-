@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { PERSONAL } from '../../data/portfolioData'
 import HomeProfilePicture from '../animated/HomeProfilePicture'
+import LazyMount from '../shared/LazyMount'
 
 const TYPING_SPEED = 50
 
@@ -92,7 +93,9 @@ export default function HomeSection() {
       </div>
 
       <div className="home-mobile-profile">
-        <HomeProfilePicture imageSrc={PERSONAL.profileImage} size={180} />
+        <LazyMount margin="250px" placeholder={<div style={{ height: 180 }} />}>
+          <HomeProfilePicture imageSrc={PERSONAL.profileImage} size={180} />
+        </LazyMount>
       </div>
 
       <style>{`

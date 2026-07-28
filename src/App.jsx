@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
+import { Suspense, lazy, useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
@@ -6,32 +6,52 @@ import MorphTransitionSlot, { SLOT_W, SLOT_GUTTER, SEQUENCE } from './components
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 import HomeSection from './components/sections/HomeSection'
-import AboutSection from './components/sections/AboutSection'
-import ServicesSection from './components/sections/ServicesSection'
-import EducationSection from './components/sections/EducationSection'
-import SkillsSection from './components/sections/SkillsSection'
-import ProjectsSection from './components/sections/ProjectsSection'
-import ContactSection from './components/sections/ContactSection'
 import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
 
+const AboutSection = lazy(() => import('./components/sections/AboutSection'))
+const ServicesSection = lazy(() => import('./components/sections/ServicesSection'))
+const EducationSection = lazy(() => import('./components/sections/EducationSection'))
+const SkillsSection = lazy(() => import('./components/sections/SkillsSection'))
+const ProjectsSection = lazy(() => import('./components/sections/ProjectsSection'))
+const ContactSection = lazy(() => import('./components/sections/ContactSection'))
+
 const LOADING_DURATION = 4500
-const INTRO_DURATION = 1050
+
+const DURATIONS = {
+  normal: { slotMove: 0.7, fade: 0.3, showMain: 0.5 },
+  low:    { slotMove: 0.42, fade: 0.2, showMain: 0.3 },
+}
+
+function detectLowPowerDevice() {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false
+
+  const memory = navigator.deviceMemory ?? 8
+  const cores = navigator.hardwareConcurrency ?? 8
+  const saveData = navigator.connection?.saveData ?? false
+  const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches ?? false
+  const narrowScreen = window.innerWidth <= 768
+
+  return Boolean(saveData || memory <= 4 || cores <= 4 || (coarsePointer && narrowScreen))
+}
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function App() {
   const [phase, setPhase] = useState('loading')
   const [activeSection, setActiveSection] = useState('home')
+  const [lowPower] = useState(() => detectLowPowerDevice())
   const loadingRef = useRef(null)
   const tlRef = useRef(null)
   const slotRef = useRef(null)
+  const loadingDuration = lowPower ? 2200 : LOADING_DURATION
+  const dur = lowPower ? DURATIONS.low : DURATIONS.normal
 
   /* ── loading → intro ── */
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase('intro'), LOADING_DURATION)
+    const t1 = setTimeout(() => setPhase('intro'), loadingDuration)
     return () => clearTimeout(t1)
-  }, [])
+  }, [loadingDuration])
 
   /* ── compact loading layout (no !important CSS) ── */
   useLayoutEffect(() => {
@@ -64,7 +84,7 @@ export default function App() {
       tl.to('.lpf-scene', {
         minHeight: '100vh',
         paddingTop: 0,
-        duration: 0.7,
+        duration: dur.slotMove,
         ease: 'power2.inOut',
       }, 0)
 
@@ -72,7 +92,7 @@ export default function App() {
         width: 320,
         height: 320,
         marginTop: 0,
-        duration: 0.7,
+        duration: dur.slotMove,
         ease: 'power2.inOut',
       }, 0)
 
@@ -82,25 +102,25 @@ export default function App() {
         y: -5,
         width: SLOT_W,
         height: '100vh',
-        duration: 0.7,
+        duration: dur.slotMove,
         ease: 'power2.inOut',
       }, 0)
 
       tl.to(el, {
         opacity: 0,
-        duration: 0.3,
+        duration: dur.fade,
         ease: 'power2.in',
       }, 0.7)
 
       tl.to('.loading-name-trace', {
         opacity: 0,
-        duration: 0.3,
+        duration: dur.fade,
       }, 0)
 
       tl.to('.main-wrap', {
         opacity: 1,
-        duration: 0.5,
-      }, 0.15)
+        duration: dur.showMain,
+      }, lowPower ? 0 : 0.15)
     })
 
     return () => {
@@ -152,7 +172,7 @@ export default function App() {
           <LoadingProfileFrame imageSrc={PERSONAL.profileImage} name={PERSONAL.name} />
           <style>{`@media (max-width: 1024px) { .lpf-root { margin-bottom: 80px !important; } }`}</style>
           <div className="loading-name-trace" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <LoadingNameTrace name={PERSONAL.name.toUpperCase()} duration={LOADING_DURATION} />
+            <LoadingNameTrace name={PERSONAL.name.toUpperCase()} duration={loadingDuration} />
           </div>
         </div>
       )}
@@ -160,19 +180,35 @@ export default function App() {
       {phase !== 'loading' && (
         <>
           <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
-          <MorphTransitionSlot ref={slotRef} />
+          <MorphTransitionSlot ref={slotRef} lowPower={lowPower} />
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
-            <AboutSection />
-            <ServicesSection />
-            <EducationSection />
-            <SkillsSection />
-            <ProjectsSection />
-            <ContactSection />
+            <Suspense fallback={<SectionPlaceholder />}> 
+              <AboutSection />
+            </Suspense>
+            <Suspense fallback={<SectionPlaceholder />}>
+              <ServicesSection />
+            </Suspense>
+            <Suspense fallback={<SectionPlaceholder />}>
+              <EducationSection />
+            </Suspense>
+            <Suspense fallback={<SectionPlaceholder />}>
+              <SkillsSection />
+            </Suspense>
+            <Suspense fallback={<SectionPlaceholder />}>
+              <ProjectsSection />
+            </Suspense>
+            <Suspense fallback={<SectionPlaceholder />}>
+              <ContactSection />
+            </Suspense>
           </main>
           <Footer scrollToSection={scrollToSection} />
         </>
       )}
     </div>
   )
+}
+
+function SectionPlaceholder() {
+  return <section className="portfolio-section" style={{ height: '100vh' }} aria-hidden="true" />
 }

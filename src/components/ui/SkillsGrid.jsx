@@ -32,8 +32,6 @@ const PROFESSIONAL_SKILLS = [
 // ─── CSS injected once ────────────────────────────────────────────────────────
 
 const STYLES = `
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@500;700&display=swap');
-
 @keyframes skillShimmer {
   0%   { transform: translateX(-100%); }
   100% { transform: translateX(100%);  }

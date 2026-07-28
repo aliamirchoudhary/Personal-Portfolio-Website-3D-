@@ -99,6 +99,7 @@ export default function TechFlowDiagram() {
   const lineRefs = useRef([])
   const nodeRefs = useRef({})
   const rafRef = useRef(0)
+  const pausedRef = useRef(false)
 
   const edges = useMemo(() => {
     const off = 3.6
@@ -145,6 +146,10 @@ export default function TechFlowDiagram() {
     const start = performance.now()
 
     const tick = (now) => {
+      if (pausedRef.current) {
+        rafRef.current = requestAnimationFrame(tick)
+        return
+      }
       const base = (now - start) / PERIOD
 
       edges.forEach((e, i) => {
@@ -168,8 +173,11 @@ export default function TechFlowDiagram() {
       rafRef.current = requestAnimationFrame(tick)
     }
 
+    const onVisibilityChange = () => { pausedRef.current = document.hidden }
+    document.addEventListener("visibilitychange", onVisibilityChange)
+
     rafRef.current = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(rafRef.current)
+    return () => { cancelAnimationFrame(rafRef.current); document.removeEventListener("visibilitychange", onVisibilityChange) }
   }, [edges])
 
   const pct = (v, total) => `${(v / total) * 100}%`
@@ -230,7 +238,6 @@ export default function TechFlowDiagram() {
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@500&family=Space+Grotesk:wght@600;700&display=swap');
         @keyframes tfd-breathe {
           0%, 100% { box-shadow: 0 0 0 1px #7c3aed22, 0 8px 30px rgba(0,0,0,0.45), 0 0 18px #7c3aed22; }
           50%       { box-shadow: 0 0 0 1px #a78bfa33, 0 8px 30px rgba(0,0,0,0.45), 0 0 26px #a78bfa3a; }

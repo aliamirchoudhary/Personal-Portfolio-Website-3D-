@@ -16,7 +16,6 @@ import { useState } from "react"
  *   - Rotation keeps going ~0.5s AFTER the scale finishes (2.5s -> 3s)
  *     so the spin is noticeable.
  *   - Each hexagon rotates a whole number of turns (720deg), so the final
- *     shape is pixel-identical to the static logo (shape preserved throughout).
  *
  * Props:
  *   size   -> pixel size of the square logo (default 200). Resize freely
@@ -43,8 +42,6 @@ export default function WebCraftLogo({
     >
       {/* Scoped styles + font import. */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&display=swap');
-
         @keyframes wc-pop-in {
           0%   { transform: scale(0.18); opacity: 0; }
           70%  { opacity: 1; }

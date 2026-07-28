@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 const THEME = {
   bg: "#0a0a0f",
@@ -86,16 +86,27 @@ function SkillCube({ size = 200 }) {
   useGlobalStyles();
 
   const half = size / 2;
-  const [rot, setRot] = useState({ x: -18, y: 24 });
+  const boxRef = useRef(null);
   const rotRef = useRef({ x: -18, y: 24 });
   const drag = useRef({ active: false, lastX: 0, lastY: 0 });
+  const pausedRef = useRef(false);
+  const rafRef = useRef(0);
+
+  const applyRotation = () => {
+    if (!boxRef.current) return;
+    boxRef.current.style.transform = `rotateX(${rotRef.current.x}deg) rotateY(${rotRef.current.y}deg)`;
+  };
 
   useEffect(() => {
-    let frame;
     let prev = performance.now();
     const speed = 45;
 
     const loop = (now) => {
+      if (pausedRef.current) {
+        prev = now
+        rafRef.current = requestAnimationFrame(loop)
+        return
+      }
       const dt = (now - prev) / 1000;
       prev = now;
       if (!drag.current.active) {
@@ -103,11 +114,11 @@ function SkillCube({ size = 200 }) {
           x: rotRef.current.x,
           y: rotRef.current.y + speed * dt,
         };
-        setRot({ x: rotRef.current.x, y: rotRef.current.y });
+        applyRotation();
       }
-      frame = requestAnimationFrame(loop);
+      rafRef.current = requestAnimationFrame(loop);
     };
-    frame = requestAnimationFrame(loop);
+    rafRef.current = requestAnimationFrame(loop);
 
     const onMove = (e) => {
       if (!drag.current.active) return;
@@ -120,18 +131,25 @@ function SkillCube({ size = 200 }) {
         x: rotRef.current.x - dy * 0.4,
         y: rotRef.current.y + dx * 0.4,
       };
-      setRot({ x: rotRef.current.x, y: rotRef.current.y });
+      applyRotation();
     };
     const onUp = () => {
       drag.current.active = false;
       document.body.style.userSelect = "";
     };
+    const onVisibilityChange = () => {
+      pausedRef.current = document.hidden
+      if (!document.hidden) prev = performance.now()
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange)
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchmove", onMove, { passive: false });
     window.addEventListener("touchend", onUp);
+    applyRotation();
     return () => {
-      cancelAnimationFrame(frame);
+      cancelAnimationFrame(rafRef.current);
+      document.removeEventListener("visibilitychange", onVisibilityChange)
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
       window.removeEventListener("touchmove", onMove);
@@ -170,12 +188,13 @@ function SkillCube({ size = 200 }) {
       }}
     >
       <div
+        ref={boxRef}
         style={{
           width: size,
           height: size,
           position: "relative",
           transformStyle: "preserve-3d",
-          transform: `rotateX(${rot.x}deg) rotateY(${rot.y}deg)`,
+          transform: "rotateX(-18deg) rotateY(24deg)",
           willChange: "transform",
         }}
       >

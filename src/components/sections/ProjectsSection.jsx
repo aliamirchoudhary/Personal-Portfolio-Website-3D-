@@ -1,6 +1,7 @@
 import { RingCarousel } from '../ui/RingCarousel'
 import { PROJECTS } from '../../data/portfolioData'
 import TechFlowDiagram from '../animated/TechFlowDiagram'
+import LazyMount from '../shared/LazyMount'
 
 const FULL_CONTENT = {
   criclytics: `<p>Criclytics is an intelligent cricket analytics platform that transforms historical match data into context-aware probabilities and interpretable machine-learning insights for players, teams, and venues. Built to provide cricket enthusiasts, analysts, and fantasy league players with data-driven predictions and comprehensive performance analysis.</p>
@@ -227,7 +228,9 @@ export default function ProjectsSection() {
 
         <div className="mobile-animated-component">
           <div style={{ marginTop: 20, marginBottom: 20, width: '100%', maxWidth: '100vw', overflow: 'hidden' }}>
-            <TechFlowDiagram />
+            <LazyMount margin="300px" placeholder={<div style={{ height: 300 }} />}>
+              <TechFlowDiagram />
+            </LazyMount>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { SOCIAL_LINKS, PERSONAL } from '../../data/portfolioData'
 import { MorphingCommsIcon } from '../animated/MorphingCommsIcon'
+import LazyMount from '../shared/LazyMount'
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -8,10 +9,18 @@ export default function ContactSection() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [notification, setNotification] = useState(null)
   const [sending, setSending] = useState(false)
+  const notificationTimerRef = useRef(null)
+
+  useEffect(() => () => {
+    if (notificationTimerRef.current) {
+      clearTimeout(notificationTimerRef.current)
+    }
+  }, [])
 
   const showNotification = (type, text) => {
     setNotification({ type, text })
-    setTimeout(() => setNotification(null), 4000)
+    if (notificationTimerRef.current) clearTimeout(notificationTimerRef.current)
+    notificationTimerRef.current = setTimeout(() => setNotification(null), 4000)
   }
 
   const handleSubmit = async (e) => {
@@ -257,7 +266,9 @@ export default function ContactSection() {
     </div>
 
     <div className="mobile-animated-component" style={{ marginBottom: 35 }}>
-      <MorphingCommsIcon />
+      <LazyMount margin="250px" placeholder={<div style={{ height: 200 }} />}>
+        <MorphingCommsIcon />
+      </LazyMount>
     </div>
 
       {notification && (

@@ -13,6 +13,7 @@ const COLOR_SIGNAL = "6, 182, 212" // #06b6d4 cyan
 export default function NeuralNetworkGlobe({ size = 320 }) {
   const canvasRef = useRef(null)
   const rafRef = useRef(0)
+  const pausedRef = useRef(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -130,6 +131,10 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
     const waveVisited = new Map() // wave id -> Set of node ids
 
     const render = (now) => {
+      if (pausedRef.current) {
+        rafRef.current = requestAnimationFrame(render)
+        return
+      }
       const elapsed = now - startTime
       const dt = Math.min((now - lastTime) / 1000, 0.05)
       lastTime = now
@@ -296,9 +301,17 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
       canvas.releasePointerCapture?.(e.pointerId)
     }
 
+    const onVisibilityChange = () => {
+      pausedRef.current = document.hidden
+      if (!pausedRef.current) {
+        lastTime = performance.now()
+      }
+    }
+
     canvas.addEventListener("pointerdown", onPointerDown)
     window.addEventListener("pointermove", onPointerMove)
     window.addEventListener("pointerup", onPointerUp)
+    document.addEventListener("visibilitychange", onVisibilityChange)
 
     // seed an initial cascade
     fireWave()
@@ -310,6 +323,7 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
       canvas.removeEventListener("pointerdown", onPointerDown)
       window.removeEventListener("pointermove", onPointerMove)
       window.removeEventListener("pointerup", onPointerUp)
+      document.removeEventListener("visibilitychange", onVisibilityChange)
     }
   }, [size])
 

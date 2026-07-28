@@ -1,14 +1,15 @@
-import { forwardRef, useRef, useEffect, useState, useImperativeHandle } from 'react'
+import { Suspense, forwardRef, lazy, useRef, useEffect, useState, useImperativeHandle } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import HomeProfilePicture from '../animated/HomeProfilePicture'
-import NeuralNetworkGlobe from '../animated/NeuralNetworkGlobe'
-import { SkillCube } from '../animated/SkillCube'
-import { SpinningSkillBox } from '../animated/FlippingCard3D'
-import { PerceptronAnimation } from '../animated/PerceptronAnimation'
-import TechFlowDiagram from '../animated/TechFlowDiagram'
-import { MorphingCommsIcon } from '../animated/MorphingCommsIcon'
 import { PERSONAL } from '../../data/portfolioData'
+
+const NeuralNetworkGlobe = lazy(() => import('../animated/NeuralNetworkGlobe'))
+const PerceptronAnimation = lazy(() => import('../animated/PerceptronAnimation').then((m) => ({ default: m.PerceptronAnimation })))
+const SpinningSkillBox = lazy(() => import('../animated/FlippingCard3D').then((m) => ({ default: m.SpinningSkillBox })))
+const SkillCube = lazy(() => import('../animated/SkillCube').then((m) => ({ default: m.SkillCube })))
+const TechFlowDiagram = lazy(() => import('../animated/TechFlowDiagram'))
+const MorphingCommsIcon = lazy(() => import('../animated/MorphingCommsIcon').then((m) => ({ default: m.MorphingCommsIcon })))
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -31,11 +32,16 @@ function sideToLeft(vw, side) {
   return side === 'right' ? vw - W - GUTTER : GUTTER
 }
 
-export default forwardRef(function MorphTransitionSlot(_props, ref) {
+export default forwardRef(function MorphTransitionSlot({ lowPower = false } = {}, ref) {
   const containerRef = useRef(null)
   const wrapRefs = useRef({})
   const renderRef = useRef(new Set([0]))
   const [renderSet, setRenderSet] = useState(() => new Set([0]))
+
+  const setSlotX = (x) => {
+    if (!containerRef.current) return
+    containerRef.current.style.setProperty('--slot-x', `${x}px`)
+  }
 
   useImperativeHandle(ref, () => ({
     jumpTo(sectionId) {
@@ -46,7 +52,7 @@ export default forwardRef(function MorphTransitionSlot(_props, ref) {
       setRenderSet(new Set([idx]))
 
       const vw = window.innerWidth
-      containerRef.current.style.left = `${sideToLeft(vw, SEQUENCE[idx].side)}px`
+      setSlotX(sideToLeft(vw, SEQUENCE[idx].side))
 
       Object.values(wrapRefs.current).forEach((el) => {
         if (el) { el.style.opacity = '0'; el.style.pointerEvents = 'none' }
@@ -66,7 +72,7 @@ export default forwardRef(function MorphTransitionSlot(_props, ref) {
     if (!sections.length || sections.length < SEQUENCE.length) return
 
     const vw = window.innerWidth
-    containerRef.current.style.left = `${sideToLeft(vw, SEQUENCE[0].side)}px`
+    setSlotX(sideToLeft(vw, SEQUENCE[0].side))
 
     Object.values(wrapRefs.current).forEach((el) => {
       if (el) el.style.opacity = '0'
@@ -86,7 +92,7 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
     trigger: curSec,
     start: `top top+=96`,
     end: `bottom top+=96`,
-    scrub: 0.5,
+      scrub: lowPower ? 0.15 : 0.5,
     invalidateOnRefresh: true,
     onEnter: () => {
           renderRef.current.add(i + 1)
@@ -127,7 +133,7 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
           const fromX = sideToLeft(vw2, SEQUENCE[i].side)
           const toX = sideToLeft(vw2, SEQUENCE[i + 1].side)
           const easeOut = 1 - Math.pow(1 - p, 2)
-          containerRef.current.style.left = `${(fromX + (toX - fromX) * easeOut).toFixed(1)}px`
+          setSlotX((fromX + (toX - fromX) * easeOut).toFixed(1))
         },
       })
 
@@ -155,7 +161,9 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
         justifyContent: 'center',
         pointerEvents: 'none',
         zIndex: 10,
-        willChange: 'left',
+        left: 0,
+        transform: 'translate3d(var(--slot-x, 0px), 0, 0)',
+        willChange: 'transform',
       }}
     >
       {SEQUENCE.map((item, i) => {
@@ -176,7 +184,9 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
             }}
           >
             <div style={{ pointerEvents: 'inherit', width: 'calc(100% - 1.5rem)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <item.Component {...item.props} />
+              <Suspense fallback={<div style={{ width: '100%', height: '100%' }} />}>
+                <item.Component {...item.props} />
+              </Suspense>
             </div>
           </div>
         )

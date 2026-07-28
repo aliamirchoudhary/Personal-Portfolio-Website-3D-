@@ -10,7 +10,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
    ===================================================================== */
 
 const STYLES = `
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap'); */
 
 .njx-root {
   --bg: #0a0a0f;

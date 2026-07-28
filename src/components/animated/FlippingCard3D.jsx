@@ -53,14 +53,23 @@ export function SpinningSkillBox({
   const lastStepRef = useRef(0)
   const nextPtrRef = useRef(4) // next skill index to feed onto a hidden face
   const dragRef = useRef({ startY: 0, startRot: 0 })
+  const pausedRef = useRef(false)
 
   rotationRef.current = rotation
 
   // Auto-rotate one quarter-turn at a time while not being dragged.
   useEffect(() => {
     if (dragging) return
-    const id = setInterval(() => setRotation((r) => r - 90), 1200)
-    return () => clearInterval(id)
+    const id = setInterval(() => {
+      if (!pausedRef.current) setRotation((r) => r - 90)
+    }, 1200)
+
+    const onVisChange = () => { pausedRef.current = document.hidden }
+    document.addEventListener("visibilitychange", onVisChange)
+    return () => {
+      clearInterval(id)
+      document.removeEventListener("visibilitychange", onVisChange)
+    }
   }, [dragging])
 
   // When the rounded step advances, relabel the face that is now hidden at the
@@ -171,8 +180,6 @@ export function SpinningSkillBox({
 }
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@600;700&display=swap');
-
 .ssb-scene {
   perspective: 1100px;
   display: flex;
