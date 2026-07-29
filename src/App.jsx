@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
+import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
@@ -6,15 +6,14 @@ import MorphTransitionSlot, { SLOT_W, SLOT_GUTTER, SEQUENCE } from './components
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 import HomeSection from './components/sections/HomeSection'
+import AboutSection from './components/sections/AboutSection'
+import ServicesSection from './components/sections/ServicesSection'
+import EducationSection from './components/sections/EducationSection'
+import SkillsSection from './components/sections/SkillsSection'
+import ProjectsSection from './components/sections/ProjectsSection'
+import ContactSection from './components/sections/ContactSection'
 import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
-
-const AboutSection = lazy(() => import('./components/sections/AboutSection'))
-const ServicesSection = lazy(() => import('./components/sections/ServicesSection'))
-const EducationSection = lazy(() => import('./components/sections/EducationSection'))
-const SkillsSection = lazy(() => import('./components/sections/SkillsSection'))
-const ProjectsSection = lazy(() => import('./components/sections/ProjectsSection'))
-const ContactSection = lazy(() => import('./components/sections/ContactSection'))
 
 const LOADING_DURATION = 4500
 
@@ -64,7 +63,7 @@ export default function App() {
   /* ── intro: loading profile flows to right slot position, matching HomeProfilePicture ── */
   useEffect(() => {
     if (phase !== 'intro') return
-    if (window.innerWidth <= 1024) { setPhase('ready'); return }
+    if (window.innerWidth <= 1024) { setPhase('ready'); requestAnimationFrame(() => ScrollTrigger.refresh()); return }
     const el = loadingRef.current
     if (!el) return
 
@@ -77,7 +76,10 @@ export default function App() {
       const targetLeft = slotLeft + 58
 
       const tl = gsap.timeline({
-        onComplete: () => setPhase('ready'),
+        onComplete: () => {
+          setPhase('ready')
+          ScrollTrigger.refresh()
+        },
       })
       tlRef.current = tl
 
@@ -183,32 +185,16 @@ export default function App() {
           <MorphTransitionSlot ref={slotRef} lowPower={lowPower} />
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
-            <Suspense fallback={<SectionPlaceholder />}> 
-              <AboutSection />
-            </Suspense>
-            <Suspense fallback={<SectionPlaceholder />}>
-              <ServicesSection />
-            </Suspense>
-            <Suspense fallback={<SectionPlaceholder />}>
-              <EducationSection />
-            </Suspense>
-            <Suspense fallback={<SectionPlaceholder />}>
-              <SkillsSection />
-            </Suspense>
-            <Suspense fallback={<SectionPlaceholder />}>
-              <ProjectsSection />
-            </Suspense>
-            <Suspense fallback={<SectionPlaceholder />}>
-              <ContactSection />
-            </Suspense>
+            <AboutSection />
+            <ServicesSection />
+            <EducationSection />
+            <SkillsSection />
+            <ProjectsSection />
+            <ContactSection />
           </main>
           <Footer scrollToSection={scrollToSection} />
         </>
       )}
     </div>
   )
-}
-
-function SectionPlaceholder() {
-  return <section className="portfolio-section" style={{ height: '100vh' }} aria-hidden="true" />
 }

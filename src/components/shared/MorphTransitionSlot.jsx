@@ -1,15 +1,14 @@
-import { Suspense, forwardRef, lazy, useRef, useEffect, useState, useImperativeHandle } from 'react'
+import { forwardRef, useRef, useEffect, useState, useImperativeHandle } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import HomeProfilePicture from '../animated/HomeProfilePicture'
+import NeuralNetworkGlobe from '../animated/NeuralNetworkGlobe'
+import { PerceptronAnimation } from '../animated/PerceptronAnimation'
+import { SpinningSkillBox } from '../animated/FlippingCard3D'
+import { SkillCube } from '../animated/SkillCube'
+import TechFlowDiagram from '../animated/TechFlowDiagram'
+import { MorphingCommsIcon } from '../animated/MorphingCommsIcon'
 import { PERSONAL } from '../../data/portfolioData'
-
-const NeuralNetworkGlobe = lazy(() => import('../animated/NeuralNetworkGlobe'))
-const PerceptronAnimation = lazy(() => import('../animated/PerceptronAnimation').then((m) => ({ default: m.PerceptronAnimation })))
-const SpinningSkillBox = lazy(() => import('../animated/FlippingCard3D').then((m) => ({ default: m.SpinningSkillBox })))
-const SkillCube = lazy(() => import('../animated/SkillCube').then((m) => ({ default: m.SkillCube })))
-const TechFlowDiagram = lazy(() => import('../animated/TechFlowDiagram'))
-const MorphingCommsIcon = lazy(() => import('../animated/MorphingCommsIcon').then((m) => ({ default: m.MorphingCommsIcon })))
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -184,9 +183,7 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
             }}
           >
             <div style={{ pointerEvents: 'inherit', width: 'calc(100% - 1.5rem)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Suspense fallback={<div style={{ width: '100%', height: '100%' }} />}>
-                <item.Component {...item.props} />
-              </Suspense>
+              <item.Component {...item.props} />
             </div>
           </div>
         )
