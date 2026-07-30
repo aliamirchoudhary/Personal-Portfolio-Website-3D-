@@ -61,6 +61,7 @@ export default function HomeSection() {
         <a
           href={PERSONAL.resumeUrl}
           download="Muhammad_Ali_Aamir_Resume.pdf"
+          className="hover-glow-lift"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -75,16 +76,7 @@ export default function HomeSection() {
             border: 'none',
             cursor: 'pointer',
             alignSelf: 'flex-start',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
             boxShadow: '0 8px 25px rgba(124, 58, 237, 0.3)',
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.transform = 'translateY(-3px)'
-            e.target.style.boxShadow = '0 15px 40px rgba(124, 58, 237, 0.4)'
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.transform = 'translateY(0)'
-            e.target.style.boxShadow = '0 8px 25px rgba(124, 58, 237, 0.3)'
           }}
         >
           <i className="fas fa-download" />

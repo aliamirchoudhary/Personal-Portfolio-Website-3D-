@@ -16,7 +16,6 @@ import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
 
 const LOADING_DURATION = 4500
-
 const DURATIONS = {
   normal: { slotMove: 0.7, fade: 0.3, showMain: 0.5 },
   low:    { slotMove: 0.42, fade: 0.2, showMain: 0.3 },
@@ -43,7 +42,7 @@ export default function App() {
   const loadingRef = useRef(null)
   const tlRef = useRef(null)
   const slotRef = useRef(null)
-  const loadingDuration = lowPower ? 2200 : LOADING_DURATION
+  const loadingDuration = lowPower ? 1200 : LOADING_DURATION
   const dur = lowPower ? DURATIONS.low : DURATIONS.normal
 
   /* ── loading → intro ── */

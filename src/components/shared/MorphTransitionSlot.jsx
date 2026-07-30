@@ -36,6 +36,7 @@ export default forwardRef(function MorphTransitionSlot({ lowPower = false } = {}
   const wrapRefs = useRef({})
   const renderRef = useRef(new Set([0]))
   const [renderSet, setRenderSet] = useState(() => new Set([0]))
+  const vwRef = useRef(typeof window !== 'undefined' ? window.innerWidth : 0)
 
   const setSlotX = (x) => {
     if (!containerRef.current) return
@@ -50,8 +51,7 @@ export default forwardRef(function MorphTransitionSlot({ lowPower = false } = {}
       renderRef.current = new Set([idx])
       setRenderSet(new Set([idx]))
 
-      const vw = window.innerWidth
-      setSlotX(sideToLeft(vw, SEQUENCE[idx].side))
+      setSlotX(sideToLeft(vwRef.current, SEQUENCE[idx].side))
 
       Object.values(wrapRefs.current).forEach((el) => {
         if (el) { el.style.opacity = '0'; el.style.pointerEvents = 'none' }
@@ -70,8 +70,11 @@ export default forwardRef(function MorphTransitionSlot({ lowPower = false } = {}
     const sections = document.querySelectorAll('.portfolio-section')
     if (!sections.length || sections.length < SEQUENCE.length) return
 
-    const vw = window.innerWidth
-    setSlotX(sideToLeft(vw, SEQUENCE[0].side))
+    vwRef.current = window.innerWidth
+    const onResize = () => { vwRef.current = window.innerWidth }
+    window.addEventListener('resize', onResize)
+
+    setSlotX(sideToLeft(vwRef.current, SEQUENCE[0].side))
 
     Object.values(wrapRefs.current).forEach((el) => {
       if (el) el.style.opacity = '0'
@@ -91,7 +94,7 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
     trigger: curSec,
     start: `top top+=96`,
     end: `bottom top+=96`,
-      scrub: lowPower ? 0.15 : 0.5,
+      scrub: lowPower ? true : 0.5,
     invalidateOnRefresh: true,
     onEnter: () => {
           renderRef.current.add(i + 1)
@@ -115,24 +118,30 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
           const toEl = wrapRefs.current[i + 1]
           if (!fromEl || !toEl) return
 
-          const fastExit = 1 - Math.pow(1 - p, 5)
-          fromEl.style.opacity = (1 - fastExit).toFixed(3)
-          toEl.style.opacity = p.toFixed(3)
+          const vw = vwRef.current
+          const fromX = sideToLeft(vw, SEQUENCE[i].side)
+          const toX = sideToLeft(vw, SEQUENCE[i + 1].side)
 
-          const enteringEl = self.direction === 1 ? toEl : fromEl
-          if (p >= 0.95) {
-            enteringEl.style.pointerEvents = 'auto'
-            ;(enteringEl === toEl ? fromEl : toEl).style.pointerEvents = 'none'
+          if (lowPower) {
+            fromEl.style.opacity = (1 - p).toFixed(2)
+            toEl.style.opacity = p.toFixed(2)
+            if (p > 0.8) { toEl.style.pointerEvents = 'auto'; fromEl.style.pointerEvents = 'none' }
+            else if (p < 0.2) { fromEl.style.pointerEvents = 'auto'; toEl.style.pointerEvents = 'none' }
+            setSlotX((fromX + (toX - fromX) * p).toFixed(1))
           } else {
-            fromEl.style.pointerEvents = +fromEl.style.opacity > +toEl.style.opacity ? 'auto' : 'none'
-            toEl.style.pointerEvents = +toEl.style.opacity > +fromEl.style.opacity ? 'auto' : 'none'
+            const fastExit = 1 - Math.pow(1 - p, 4)
+            fromEl.style.opacity = (1 - fastExit).toFixed(2)
+            toEl.style.opacity = p.toFixed(2)
+            if (p >= 0.95) {
+              toEl.style.pointerEvents = 'auto'
+              fromEl.style.pointerEvents = 'none'
+            } else if (p <= 0.05) {
+              fromEl.style.pointerEvents = 'auto'
+              toEl.style.pointerEvents = 'none'
+            }
+            const easeOut = 1 - Math.pow(1 - p, 2)
+            setSlotX((fromX + (toX - fromX) * easeOut).toFixed(1))
           }
-
-          const vw2 = window.innerWidth
-          const fromX = sideToLeft(vw2, SEQUENCE[i].side)
-          const toX = sideToLeft(vw2, SEQUENCE[i + 1].side)
-          const easeOut = 1 - Math.pow(1 - p, 2)
-          setSlotX((fromX + (toX - fromX) * easeOut).toFixed(1))
         },
       })
 
@@ -142,6 +151,7 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
     requestAnimationFrame(() => ScrollTrigger.refresh())
 
     return () => {
+      window.removeEventListener('resize', onResize)
       triggers.forEach((t) => t.kill())
     }
   }, [])

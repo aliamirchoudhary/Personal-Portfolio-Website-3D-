@@ -83,6 +83,31 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
+  will-change: transform;
+}
+
+/* Hover: social link lift */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
+}
+.hover-lift:hover {
+  transform: translateY(-8px) scale(1.1);
+  box-shadow: 0 15px 30px rgba(124,58,237,0.4);
+}
+
+/* Hover: button glow lift */
+.hover-glow-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  will-change: transform;
+}
+.hover-glow-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(124,58,237,0.4);
+}
+.hover-glow-lift:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 25px rgba(124,58,237,0.3);
 }
 
 /* ===================================================================

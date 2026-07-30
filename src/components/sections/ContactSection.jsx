@@ -165,6 +165,7 @@ export default function ContactSection() {
               <button
                 type="submit"
                 disabled={sending}
+                className={sending ? '' : 'hover-glow-lift'}
                 style={{
                   width: '100%',
                   padding: '1rem',
@@ -179,11 +180,8 @@ export default function ContactSection() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.75rem',
-                  transition: 'transform 0.3s, box-shadow 0.3s, background 0.3s',
                   boxShadow: sending ? 'none' : '0 10px 25px rgba(124,58,237,0.3)',
                 }}
-                onMouseEnter={(e) => { if (!sending) { e.target.style.transform = 'translateY(-3px)'; e.target.style.boxShadow = '0 15px 35px rgba(124,58,237,0.4)' } }}
-                onMouseLeave={(e) => { if (!sending) { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 10px 25px rgba(124,58,237,0.3)' } }}
               >
                 {sending ? 'Sending...' : <><i className="fas fa-paper-plane" /> Send Message</>}
               </button>
@@ -219,6 +217,7 @@ export default function ContactSection() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
+                  className="hover-lift"
                   style={{
                     width: 70,
                     height: 70,
@@ -232,15 +231,6 @@ export default function ContactSection() {
                     color: '#f1f5f9',
                     fontSize: '1.6rem',
                     textDecoration: 'none',
-                    transition: 'all 0.3s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-8px) scale(1.1)'
-                    e.target.style.boxShadow = '0 15px 30px rgba(124,58,237,0.4)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0) scale(1)'
-                    e.target.style.boxShadow = 'none'
                   }}
                 >
                   <i className={`${s.fa} ${s.icon}`} />
