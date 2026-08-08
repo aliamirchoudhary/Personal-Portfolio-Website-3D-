@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { ABOUT_TEXT, PERSONAL, WEBCRAFT } from '../../data/portfolioData'
-import WebCraftLogo from '../ui/StartupLogoButton'
+import { ABOUT_TEXT, PERSONAL, KRYZECT } from '../../data/portfolioData'
+import KryzectLogo from '../ui/KryzectLogo'
 import NeuralNetworkGlobe from '../animated/NeuralNetworkGlobe'
 import LazyMount from '../shared/LazyMount'
 
@@ -10,16 +10,16 @@ function formatText(text) {
   const parts = []
   let remaining = text
   while (remaining.length > 0) {
-    const idx = remaining.indexOf('WebCraft')
+    const idx = remaining.indexOf('Kryzect')
     if (idx === -1) { parts.push(remaining); break }
     if (idx > 0) parts.push(remaining.slice(0, idx))
     parts.push(
-      <a key={`wc-${idx}`} href={WEBCRAFT.url} target="_blank" rel="noopener noreferrer"
-        style={{ color: '#99ffcc', fontWeight: 700, textDecoration: 'none', fontFamily: WC_FONT }}>
-        WebCraft
+      <a key={`wc-${idx}`} href={KRYZECT.url} target="_blank" rel="noopener noreferrer"
+        style={{ color: '#8FAEFF', fontWeight: 700, textDecoration: 'none', fontFamily: WC_FONT }}>
+        Kryzect
       </a>
     )
-    remaining = remaining.slice(idx + 8)
+    remaining = remaining.slice(idx + 7)
   }
   return parts
 }
@@ -127,7 +127,7 @@ export default function AboutSection() {
             }}
           >
             <a
-              href={WEBCRAFT.url}
+              href={KRYZECT.url}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -137,15 +137,15 @@ export default function AboutSection() {
                 textDecoration: 'none',
               }}
             >
-              <WebCraftLogo key={animKey} size={28} color="#99ffcc" replay={false} />
+              <KryzectLogo size={28} />
               <span style={{
-                color: '#99ffcc',
+                color: '#8FAEFF',
                 fontWeight: 700,
                 fontSize: '1.15rem',
                 fontFamily: WC_FONT,
                 letterSpacing: '0.02em',
               }}>
-                {WEBCRAFT.name}
+                {KRYZECT.name}
               </span>
             </a>
           </div>

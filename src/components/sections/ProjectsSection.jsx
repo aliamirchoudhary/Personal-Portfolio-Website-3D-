@@ -68,7 +68,7 @@ const FULL_CONTENT = {
 <p><strong style="color:#f1f5f9">Impact:</strong></p>
 <p>This project allowed me to combine backend logic, frontend design, SQL/database management, and AI-driven tools to deliver features that improve trust, budgeting, and overall travel experience.</p>
 <strong>Tech Stack:</strong> ReactJS, NodeJS, Database Systems/SQL, AI`,
-  webcraft: `<p>WebCraft is my professional freelance web developer portfolio featuring animated UI, comprehensive service showcases, fully functional order and contact forms with real email delivery via Gmail SMTP, and serverless deployment on Vercel. A complete business presence demonstrating full-stack capabilities.</p>
+  kryzect: `<p>Kryzect is my professional freelance web developer portfolio featuring animated UI, comprehensive service showcases, fully functional order and contact forms with real email delivery via Gmail SMTP, and serverless deployment on Vercel. A complete business presence demonstrating full-stack capabilities.</p>
 <p><strong style="color:#f1f5f9">Key Features:</strong></p>
 <ul>
 <li>Modern, animated UI with smooth scroll effects and micro-interactions</li>
@@ -93,7 +93,7 @@ const FULL_CONTENT = {
 <li>Set up CI/CD pipeline for automatic deployments on code push</li>
 </ul>
 <p><strong style="color:#f1f5f9">Business Impact:</strong></p>
-<p>WebCraft serves as both a portfolio and a lead generation platform, successfully converting visitors into clients through strategic CTAs, trust-building elements, and seamless inquiry process.</p>
+<p>Kryzect serves as both a portfolio and a lead generation platform, successfully converting visitors into clients through strategic CTAs, trust-building elements, and seamless inquiry process.</p>
 <strong>Tech Stack:</strong> HTML, CSS, JavaScript, Node.js, Gmail SMTP API, Vercel<br/>
 <strong>Performance:</strong> 95+ Lighthouse score, &lt; 2s load time`,
   flappy: `<p>A faithful recreation of the iconic Flappy Bird game written entirely in 16-bit assembly language for iAPX8088 processors. This project demonstrates low-level programming mastery with physics-based gravity simulation, procedurally generated obstacles, smooth scrolling graphics, and real-time score tracking—all implemented without high-level language abstractions.</p>

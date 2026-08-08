@@ -1,6 +1,6 @@
 export const PERSONAL = {
   name:         "Muhammad Ali Aamir",
-  title:        "Data Science & AI Enthusiast | Full Stack Developer | Founder of WebCraft",
+  title:        "Data Science & AI Enthusiast | Full Stack Developer | Founder of Kryzect",
   email:        "aliamirchoudhary@gmail.com",
   phone:        "+923283173130",
   location:     "Lahore, Pakistan",
@@ -13,25 +13,21 @@ export const PERSONAL = {
 export const ABOUT_TEXT = [
   `I am a dedicated Data Science Enthusiast and passionate Full Stack Developer with an insatiable curiosity for technology and innovation, exploring the intersections of machine learning, artificial intelligence, and modern web development.`,
   `Based in Lahore, Pakistan, I'm currently studying BS Data Science at FAST NUCES, Lahore. I love transforming complex problems into clean, efficient code and building digital experiences that are both powerful and elegant.`,
-  `I am also the founder of WebCraft, a professional digital brand I founded to provide high-performance, end-to-end web solutions for service-oriented businesses. My journey in technology is driven by a deep passion for creating meaningful digital experiences. Whether it's training models on real-world data, developing responsive web applications, diving into machine learning algorithms, or exploring the latest in AI, I approach every project with enthusiasm and dedication to excellence.`,
+  `I am also the founder of Kryzect, a professional digital brand I founded to provide high-performance, end-to-end web solutions for service-oriented businesses. My journey in technology is driven by a deep passion for creating meaningful digital experiences. Whether it's training models on real-world data, developing responsive web applications, diving into machine learning algorithms, or exploring the latest in AI, I approach every project with enthusiasm and dedication to excellence.`,
 ];
 
 export const ABOUT_HIGHLIGHTS = [
   "Data Science Enthusiast", "Full Stack Developer",
   "FAST NUCES", "BS Data Science", "Lahore, Pakistan",
-  "WebCraft",
+  "Kryzect",
 ];
 
-export const WEBCRAFT = {
-  name: "WebCraft",
-  url:  "https://webcraft-dev.vercel.app",
+export const KRYZECT = {
+  name: "Kryzect",
+  url:  "http://kryzect.vercel.app/",
   svgInner: `
-    <polygon points="12,2 20,6.5 20,17.5 12,22 4,17.5 4,6.5"
-      stroke="#99FFCC" stroke-width="1.8" stroke-linejoin="round" fill="none"/>
-    <polygon points="12,5.4 17.1,8.4 17.1,15.6 12,18.6 6.9,15.6 6.9,8.4"
-      stroke="#99FFCC" stroke-width="1.6" stroke-linejoin="round" fill="none"/>
-    <text x="12" y="15.25" text-anchor="middle"
-      font-family="sans-serif" font-size="7.5" font-weight="700" fill="#99FFCC">W</text>
+    <circle cx="12" cy="12" r="9" stroke="#8FAEFF" stroke-width="1.8" fill="none"/>
+    <circle cx="12" cy="12" r="5.5" stroke="#6C97F7" stroke-width="1.6" fill="none"/>
   `,
 };
 
@@ -39,7 +35,7 @@ export const SOCIAL_LINKS = [
   { icon: "fa-envelope",    href: "mailto:aliamirchoudhary@gmail.com",                           label: "Email",     fa: "fas" },
   { icon: "fa-phone",       href: "tel:+923283173130",                                           label: "Phone",     fa: "fas" },
   { icon: "fa-facebook-f",  href: "https://www.facebook.com/share/177cJ6ccx3/",                  label: "Facebook",  fa: "fab" },
-  { icon: "fa-instagram",   href: "https://www.instagram.com/maacmarketingservice/",             label: "Instagram", fa: "fab" },
+  { icon: "fa-instagram",   href: "https://www.instagram.com/aliamirchoudhary/",                 label: "Instagram", fa: "fab" },
   { icon: "fa-dollar-sign", href: "https://www.fiverr.com/s/2Kg9QKV",                            label: "Fiverr",    fa: "fas" },
   { icon: "fa-linkedin-in", href: "https://www.linkedin.com/in/muhammad-ali-aamir2558",          label: "LinkedIn",  fa: "fab" },
   { icon: "fa-github",      href: "https://github.com/aliamirchoudhary",                         label: "GitHub",    fa: "fab" },
@@ -52,7 +48,7 @@ export const SERVICES = [
     icon:      "fas fa-code",
     title:     "Full Stack Web Development",
     shortDesc: "High-performance, end-to-end web solutions using React, Node.js, Flask, or MERN stack.",
-    link:      { href: "https://webcraft-dev.vercel.app", label: "Visit" },
+    link:      { href: "http://kryzect.vercel.app/", label: "Visit" },
     modal: {
       title:       "Full Stack Web Development",
       description: "I will provide full stack high-performance, end-to-end web solutions for service-oriented businesses using React, Node.js, Flask, or MERN stack. From responsive frontend designs to scalable backend architectures, database integration, and deployment — I deliver complete solutions that drive business growth.",
@@ -75,7 +71,7 @@ export const SERVICES = [
       tech: "React, Node.js, Flask, MSSQL",
       price: "$299 for basic applications",
       delivery: "1-3 weeks depending on complexity",
-      link: { href: "https://webcraft-dev.vercel.app", label: "Visit" },
+      link: { href: "http://kryzect.vercel.app/", label: "Visit" },
     },
   },
   {
@@ -191,11 +187,11 @@ export const PROJECTS = [
     links: [{ label: "GitHub", icon: "fab fa-github", url: "https://github.com/HassanNawaz14/Travel-Buddy-.git" }],
     modal: { title: "TravelBuddy", description: "TravelBuddy is a full-stack web application designed to revolutionize how people plan and experience travel. Built with ReactJS, NodeJS, SQL, and AI integration, the platform bridges smart trip planning with genuine social connections.", tech: "ReactJS, NodeJS, SQL, AI" },
   },
-  { id: "webcraft", name: "Webcraft",
+  { id: "kryzect", name: "Kryzect",
     description: "Freelance web developer portfolio with animated UI, service showcases, order & contact forms with real email delivery via Gmail SMTP, and serverless deployment.",
     tags: ["HTML","CSS","JavaScript","Node.js"],
-    links: [{ label: "GitHub", icon: "fab fa-github", url: "https://github.com/aliamirchoudhary/webcraft.git" },{ label: "Visit", icon: "fas fa-globe", url: "https://webcraft-dev.vercel.app" }],
-    modal: { title: "Webcraft", description: "WebCraft — freelance web developer portfolio with animated UI, service showcases, order & contact forms with real email delivery via Gmail SMTP, and serverless deployment.", tech: "HTML, CSS, JavaScript, Node.js" },
+    links: [{ label: "GitHub", icon: "fab fa-github", url: "https://github.com/aliamirchoudhary/webcraft.git" },{ label: "Visit", icon: "fas fa-globe", url: "http://kryzect.vercel.app/" }],
+    modal: { title: "Kryzect", description: "Kryzect — freelance web developer portfolio with animated UI, core services, order & contact forms with real email delivery via Gmail SMTP, and serverless deployment.", tech: "HTML, CSS, JavaScript, Node.js" },
   },
   { id: "flappy", name: "Flappy Bird Game",
     description: "Faithful recreation of Flappy Bird in 16-bit assembly language for iAPX8088 processors. Physics-based gravity and procedurally generated pipe obstacles.",

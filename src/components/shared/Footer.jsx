@@ -1,5 +1,5 @@
-import WebCraftLogo from '../ui/StartupLogoButton'
-import { SOCIAL_LINKS, NAV_LINKS, WEBCRAFT } from '../../data/portfolioData'
+import KryzectLogo from '../ui/KryzectLogo'
+import { SOCIAL_LINKS, NAV_LINKS, KRYZECT } from '../../data/portfolioData'
 
 const WC_FONT = "'Clash Display', 'Clash Grotesk', 'Space Grotesk', sans-serif"
 
@@ -16,7 +16,7 @@ export default function Footer({ scrollToSection }) {
         position: 'relative',
         zIndex: 20,
         background: 'linear-gradient(135deg, #050508, #0a0a0f)',
-        borderTop: '1px solid rgba(124, 58, 237, 0.2)',
+        borderTop: '1px solid rgba(108, 151, 247, 0.2)',
         padding: '3rem 2rem 1.5rem',
       }}
     >
@@ -37,7 +37,7 @@ export default function Footer({ scrollToSection }) {
         <div
           style={{
             textAlign: 'center',
-            color: '#7c3aed',
+            color: '#6C97F7',
             fontStyle: 'italic',
             fontWeight: 500,
             fontSize: '0.95rem',
@@ -67,21 +67,21 @@ export default function Footer({ scrollToSection }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'rgba(124, 58, 237, 0.1)',
-                border: '1px solid rgba(124, 58, 237, 0.2)',
-                color: '#7c3aed',
+                background: 'rgba(108, 151, 247, 0.1)',
+                border: '1px solid rgba(108, 151, 247, 0.2)',
+                color: '#6C97F7',
                 textDecoration: 'none',
                 fontSize: '1rem',
                 transition: 'all 0.3s ease',
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = '#7c3aed'
+                e.target.style.background = '#6C97F7'
                 e.target.style.color = 'white'
                 e.target.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(124, 58, 237, 0.1)'
-                e.target.style.color = '#7c3aed'
+                e.target.style.background = 'rgba(108, 151, 247, 0.1)'
+                e.target.style.color = '#6C97F7'
                 e.target.style.transform = 'scale(1)'
               }}
             >
@@ -118,7 +118,7 @@ export default function Footer({ scrollToSection }) {
               fontFamily: "'Inter', sans-serif",
               transition: 'color 0.3s ease',
             }}
-            onMouseEnter={(e) => { e.target.style.color = '#7c3aed' }}
+            onMouseEnter={(e) => { e.target.style.color = '#6C97F7' }}
             onMouseLeave={(e) => { e.target.style.color = '#94a3b8' }}
           >
             {link.label}
@@ -152,7 +152,7 @@ export default function Footer({ scrollToSection }) {
           </span>
 
           <a
-            href={WEBCRAFT.url}
+            href={KRYZECT.url}
             target="_blank"
             rel="noopener noreferrer"
             className="footer-brand-link"
@@ -163,20 +163,20 @@ export default function Footer({ scrollToSection }) {
               textDecoration: 'none',
             }}
           >
-            <WebCraftLogo size={18} color="#99ffcc" replay={false} />
+            <KryzectLogo size={18} />
             <span style={{
-              color: '#99ffcc',
+              color: '#8FAEFF',
               fontWeight: 700,
               fontSize: '0.95rem',
               fontFamily: WC_FONT,
               letterSpacing: '0.02em',
             }}>
-              {WEBCRAFT.name}
+              {KRYZECT.name}
             </span>
           </a>
 
           <a
-            href="https://webcraft-dev.vercel.app/#contact"
+            href="https://kryzect.vercel.app/contact"
             target="_blank"
             rel="noopener noreferrer"
             className="footer-brand-btn"
@@ -185,9 +185,9 @@ export default function Footer({ scrollToSection }) {
               alignItems: 'center',
               padding: '3px 10px',
               borderRadius: 6,
-              border: '1px solid #99ffcc',
+              border: '1px solid #8FAEFF',
               background: 'transparent',
-              color: '#99ffcc',
+              color: '#8FAEFF',
               fontWeight: 600,
               fontSize: '0.82rem',
               fontFamily: "'Inter', sans-serif",
