@@ -200,7 +200,7 @@ export default function ProjectsSection() {
       <div
         className="content-scroll"
         style={{
-          marginLeft: '40vw',
+          marginLeft: 0,
           width: '60vw',
           height: '100vh',
           padding: '1rem 4rem 4rem',

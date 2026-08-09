@@ -8,7 +8,7 @@ export default function SkillsSection() {
       <div
         className="content-scroll"
         style={{
-          marginLeft: 0,
+          marginLeft: '40vw',
           width: '60vw',
           height: '100vh',
           padding: '1rem 4rem 4rem',

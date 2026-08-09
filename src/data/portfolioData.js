@@ -219,12 +219,37 @@ export const PROJECTS = [
   },
 ];
 
+export const EXPERIENCE = [
+  {
+    id: "exp-1",
+    year: "Aug 2026 - Present",
+    role: "Founder & Lead Developer",
+    company: "Kryzect",
+    description: "Founder and lead developer at Kryzect, a globally focused software engineering and AI company. I define the product vision and architecture, lead technical delivery, and partner directly with clients to turn business challenges into reliable, scalable software and AI solutions.",
+  },
+  {
+    id: "exp-2",
+    year: "Jun 2026 - Aug 2026",
+    role: "AI Intern",
+    company: "Vertekx",
+    description: "Contributing to the design and exploration of AI architectures by applying Large Language Models (LLMs) and Generative AI techniques to the company's products. Responsibilities include building intelligent data pipelines, experimenting with model optimization strategies, and supporting architectural design that enhances scalability and efficiency.",
+  },
+  {
+    id: "exp-3",
+    year: "May 2026 - Present",
+    role: "Software Engineering Intern",
+    company: "Exaverse",
+    description: "Applying Generative AI and multi-agent AI systems to real products, designing scalable software architectures, and building solutions on the Cloudflare stack — including agentic AI workflows and Retrieval-Augmented Generation (RAG) pipelines for grounded, high-quality responses.",
+  },
+];
+
 export const NAV_LINKS = [
-  { label: "Home",      id: "home"      },
-  { label: "About",     id: "about"     },
-  { label: "Services",  id: "services"  },
-  { label: "Education", id: "education" },
-  { label: "Skills",    id: "skills"    },
-  { label: "Projects",  id: "projects"  },
-  { label: "Contact",   id: "contact"   },
+  { label: "Home",       id: "home"       },
+  { label: "About",      id: "about"      },
+  { label: "Kryzect",    id: "kryzect"    },
+  { label: "Experience", id: "experience" },
+  { label: "Education",  id: "education"  },
+  { label: "Skills",     id: "skills"     },
+  { label: "Projects",   id: "projects"   },
+  { label: "Contact",    id: "contact"    },
 ];

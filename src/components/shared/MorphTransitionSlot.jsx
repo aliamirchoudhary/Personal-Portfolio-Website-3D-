@@ -8,6 +8,7 @@ import { SpinningSkillBox } from '../animated/FlippingCard3D'
 import { SkillCube } from '../animated/SkillCube'
 import TechFlowDiagram from '../animated/TechFlowDiagram'
 import { MorphingCommsIcon } from '../animated/MorphingCommsIcon'
+import KryzectLogo from '../ui/KryzectLogo'
 import { PERSONAL } from '../../data/portfolioData'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -19,12 +20,13 @@ const GUTTER = SLOT_GUTTER
 
 export const SEQUENCE = [
   { id: 'home',     Component: HomeProfilePicture,  props: { imageSrc: PERSONAL.profileImage, size: 320 }, side: 'right' },
-  { id: 'about',    Component: NeuralNetworkGlobe,  props: { size: 320 },                                  side: 'left' },
-  { id: 'services', Component: PerceptronAnimation, props: { maxWidth: 600 },                              side: 'right' },
-  { id: 'education',Component: SpinningSkillBox,    props: { skills: ['Data Science','Full Stack','Machine Learning','Cloud'], sideLabel: 'AI' }, side: 'left' },
-  { id: 'skills',   Component: SkillCube,           props: { size: 200 },                                  side: 'right' },
-  { id: 'projects', Component: TechFlowDiagram,     props: {},                                              side: 'left' },
-  { id: 'contact',  Component: MorphingCommsIcon,   props: { size: 200 },                                  side: 'right' },
+  { id: 'about',    Component: NeuralNetworkGlobe,   props: { size: 320 },                                  side: 'left' },
+  { id: 'kryzect',  Component: KryzectLogo,          props: { size: 240 },                                 side: 'right' },
+  { id: 'experience', Component: PerceptronAnimation, props: { maxWidth: 600 },                            side: 'left' },
+  { id: 'education', Component: SpinningSkillBox,     props: { skills: ['Data Science','Full Stack','Machine Learning','Cloud'], sideLabel: 'AI' }, side: 'right' },
+  { id: 'skills',   Component: SkillCube,             props: { size: 200 },                                side: 'left' },
+  { id: 'projects', Component: TechFlowDiagram,       props: {},                                            side: 'right' },
+  { id: 'contact',  Component: MorphingCommsIcon,     props: { size: 200 },                                side: 'left' },
 ]
 
 function sideToLeft(vw, side) {

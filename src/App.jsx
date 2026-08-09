@@ -7,7 +7,8 @@ import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 import HomeSection from './components/sections/HomeSection'
 import AboutSection from './components/sections/AboutSection'
-import ServicesSection from './components/sections/ServicesSection'
+import KryzectSection from './components/sections/KryzectSection'
+import ExperienceSection from './components/sections/ExperienceSection'
 import EducationSection from './components/sections/EducationSection'
 import SkillsSection from './components/sections/SkillsSection'
 import ProjectsSection from './components/sections/ProjectsSection'
@@ -185,7 +186,8 @@ export default function App() {
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
             <AboutSection />
-            <ServicesSection />
+            <KryzectSection />
+            <ExperienceSection />
             <EducationSection />
             <SkillsSection />
             <ProjectsSection />

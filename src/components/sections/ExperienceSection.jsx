@@ -1,18 +1,14 @@
-import { useRef, useState, useEffect } from 'react'
-import { EducationTimeline, GlobalStyles } from '../ui/EducationTimeline'
-import { EDUCATION } from '../../data/portfolioData'
-import { SpinningSkillBox } from '../animated/FlippingCard3D'
+import { useState, useEffect, useRef } from 'react'
+import { GlobalStyles } from '../ui/EducationTimeline'
+import { EXPERIENCE } from '../../data/portfolioData'
 import LazyMount from '../shared/LazyMount'
-
-const eduItems = EDUCATION.map((e) => ({
-  ...e,
-  years: e.year,
-}))
+import { PerceptronAnimation } from '../animated/PerceptronAnimation'
+import { Timeline } from '../ui/ExperienceTimeline'
 
 const DOT_CENTER = 29
 const DOT_RADIUS = 7
 
-export default function EducationSection() {
+export default function ExperienceSection() {
   const rowRefs = useRef([])
   const [activeIndex, setActiveIndex] = useState(0)
   const [fill, setFill] = useState({ top: 0, height: 0, opacity: 0 })
@@ -52,11 +48,12 @@ export default function EducationSection() {
   }, [])
 
   return (
-    <section id="education" className="portfolio-section" style={{ height: '100vh' }}>
+    <section id="experience" className="portfolio-section" style={{ height: '100vh' }}>
       <GlobalStyles />
       <div
+        className="content-scroll"
         style={{
-          marginLeft: 0,
+          marginLeft: '40vw',
           width: '60vw',
           height: '100vh',
           padding: '1rem 4rem 0',
@@ -75,15 +72,15 @@ export default function EducationSection() {
             flexShrink: 0,
           }}
         >
-          Education
+          Experience
         </h2>
 
         <div ref={scrollRef} className="edu-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
-          <EducationTimeline items={eduItems} activeIndex={activeIndex} fill={fill} rowRefs={rowRefs} />
+          <Timeline items={EXPERIENCE} activeIndex={activeIndex} fill={fill} rowRefs={rowRefs} />
         </div>
 
         <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
-          <LazyMount><SpinningSkillBox skills={["Data Science", "Full Stack", "Machine Learning", "Cloud"]} sideLabel="AI" /></LazyMount>
+          <LazyMount><PerceptronAnimation maxWidth={300} /></LazyMount>
         </div>
       </div>
     </section>
