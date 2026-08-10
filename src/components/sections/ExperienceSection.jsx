@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import { GlobalStyles } from '../ui/EducationTimeline'
+import { TimelineStyles, Timeline } from '../ui/ExperienceTimeline'
 import { EXPERIENCE } from '../../data/portfolioData'
 import LazyMount from '../shared/LazyMount'
 import { PerceptronAnimation } from '../animated/PerceptronAnimation'
-import { Timeline } from '../ui/ExperienceTimeline'
 
 const DOT_CENTER = 29
 const DOT_RADIUS = 7
@@ -49,7 +48,7 @@ export default function ExperienceSection() {
 
   return (
     <section id="experience" className="portfolio-section" style={{ height: '100vh' }}>
-      <GlobalStyles />
+      <TimelineStyles />
       <div
         className="content-scroll"
         style={{
