@@ -32,6 +32,12 @@ body {
   scroll-snap-stop: always;
 }
 
+/* Vertical crossing room so the animated slot can travel over empty
+   background instead of sweeping across section content. */
+.portfolio-section:not(:last-child) {
+  margin-bottom: var(--slot-cross-gap, 44vh);
+}
+
 .mobile-animated-component { display: none; }
 
 /* Themed scrollbar */
@@ -117,6 +123,12 @@ body {
 /* ---------- 1024px — tablet landscape ---------- */
 @media (max-width: 1024px) {
   html { scroll-snap-type: none; }
+
+  .portfolio-section:not(:last-child) {
+    margin-bottom: 0;
+    margin-bottom: revert;
+    margin-bottom: initial;
+  }
 
   .portfolio-section {
     height: auto !important;

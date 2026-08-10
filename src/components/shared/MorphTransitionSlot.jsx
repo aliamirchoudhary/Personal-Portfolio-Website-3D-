@@ -18,6 +18,15 @@ export const SLOT_GUTTER = 24
 const W = SLOT_W
 const GUTTER = SLOT_GUTTER
 
+// Matches the CSS var(--slot-cross-gap). The slot only crosses over this
+// empty region between sections, so traveling never overlaps section content.
+const CROSS_GAP = 0.44 // fraction of viewport height
+// Tiny delay before the crossing starts (after content clears) so it never
+// begins over visible content; the crossing then spreads over the whole gap.
+const CROSS_DELAY = 0.05
+const CONTENT_VH = typeof window !== 'undefined' ? window.innerHeight : 0
+const CROSS_GAP_PX = CONTENT_VH * CROSS_GAP
+
 export const SEQUENCE = [
   { id: 'home',     Component: HomeProfilePicture,  props: { imageSrc: PERSONAL.profileImage, size: 320 }, side: 'right' },
   { id: 'about',    Component: NeuralNetworkGlobe,   props: { size: 320 },                                  side: 'left' },
@@ -90,13 +99,14 @@ const triggers = []
 
 for (let i = 0; i < SEQUENCE.length - 1; i++) {
   const curSec = sections[i]
-  if (!curSec) continue
+  const nextSec = sections[i + 1]
+  if (!curSec || !nextSec) continue
 
   const st = ScrollTrigger.create({
     trigger: curSec,
     start: `top top+=96`,
-    end: `bottom top+=96`,
-      scrub: lowPower ? true : 0.5,
+    end: () => `bottom top+=${96 + CROSS_GAP_PX}`,
+    scrub: lowPower ? true : 0.5,
     invalidateOnRefresh: true,
     onEnter: () => {
           renderRef.current.add(i + 1)
@@ -120,28 +130,38 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
           const toEl = wrapRefs.current[i + 1]
           if (!fromEl || !toEl) return
 
+          // Crossing window spans the ENTIRE gap so travel is spread over the
+          // most scroll possible (slowest within the fixed gap). Starts only
+          // once content has fully cleared, completes at the very end of the
+          // gap so it never finishes over the destination section's UI.
+          const contentFrac = CONTENT_VH / (CONTENT_VH + CROSS_GAP_PX)
+          const seg = 1 - contentFrac
+          const start = contentFrac + seg * CROSS_DELAY
+          const end = contentFrac + seg
+          const r = p > start ? (p - start) / (end - start) : 0
+
           const vw = vwRef.current
           const fromX = sideToLeft(vw, SEQUENCE[i].side)
           const toX = sideToLeft(vw, SEQUENCE[i + 1].side)
 
           if (lowPower) {
-            fromEl.style.opacity = (1 - p).toFixed(2)
-            toEl.style.opacity = p.toFixed(2)
-            if (p > 0.8) { toEl.style.pointerEvents = 'auto'; fromEl.style.pointerEvents = 'none' }
-            else if (p < 0.2) { fromEl.style.pointerEvents = 'auto'; toEl.style.pointerEvents = 'none' }
-            setSlotX((fromX + (toX - fromX) * p).toFixed(1))
+            fromEl.style.opacity = (1 - r).toFixed(2)
+            toEl.style.opacity = r.toFixed(2)
+            if (r > 0.8) { toEl.style.pointerEvents = 'auto'; fromEl.style.pointerEvents = 'none' }
+            else if (r < 0.2) { fromEl.style.pointerEvents = 'auto'; toEl.style.pointerEvents = 'none' }
+            setSlotX((fromX + (toX - fromX) * r).toFixed(1))
           } else {
-            const fastExit = 1 - Math.pow(1 - p, 4)
+            const fastExit = 1 - Math.pow(1 - r, 4)
             fromEl.style.opacity = (1 - fastExit).toFixed(2)
-            toEl.style.opacity = p.toFixed(2)
-            if (p >= 0.95) {
+            toEl.style.opacity = r.toFixed(2)
+            if (r >= 0.95) {
               toEl.style.pointerEvents = 'auto'
               fromEl.style.pointerEvents = 'none'
-            } else if (p <= 0.05) {
+            } else if (r <= 0.05) {
               fromEl.style.pointerEvents = 'auto'
               toEl.style.pointerEvents = 'none'
             }
-            const easeOut = 1 - Math.pow(1 - p, 2)
+            const easeOut = 1 - Math.pow(1 - r, 2)
             setSlotX((fromX + (toX - fromX) * easeOut).toFixed(1))
           }
         },
