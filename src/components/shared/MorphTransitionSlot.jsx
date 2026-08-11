@@ -20,10 +20,7 @@ const GUTTER = SLOT_GUTTER
 
 // Matches the CSS var(--slot-cross-gap). The slot only crosses over this
 // empty region between sections, so traveling never overlaps section content.
-const CROSS_GAP = 0.44 // fraction of viewport height
-// Tiny delay before the crossing starts (after content clears) so it never
-// begins over visible content; the crossing then spreads over the whole gap.
-const CROSS_DELAY = 0.05
+const CROSS_GAP = 0.6 // fraction of viewport height
 const CONTENT_VH = typeof window !== 'undefined' ? window.innerHeight : 0
 const CROSS_GAP_PX = CONTENT_VH * CROSS_GAP
 
@@ -104,8 +101,12 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
 
   const st = ScrollTrigger.create({
     trigger: curSec,
-    start: `top top+=96`,
-    end: () => `bottom top+=${96 + CROSS_GAP_PX}`,
+    // Travel starts as the current section's UI begins going up (its top
+    // reaches the navbar line) and completes exactly when the destination
+    // section's heading arrives at that same line — so the slot glides at the
+    // pace of the scrolling UI and lands as the new heading reaches the navbar.
+    start: () => curSec.getBoundingClientRect().top + window.scrollY - 96,
+    end: () => nextSec.getBoundingClientRect().top + window.scrollY - 96,
     scrub: lowPower ? true : 0.5,
     invalidateOnRefresh: true,
     onEnter: () => {
@@ -130,15 +131,9 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
           const toEl = wrapRefs.current[i + 1]
           if (!fromEl || !toEl) return
 
-          // Crossing window spans the ENTIRE gap so travel is spread over the
-          // most scroll possible (slowest within the fixed gap). Starts only
-          // once content has fully cleared, completes at the very end of the
-          // gap so it never finishes over the destination section's UI.
-          const contentFrac = CONTENT_VH / (CONTENT_VH + CROSS_GAP_PX)
-          const seg = 1 - contentFrac
-          const start = contentFrac + seg * CROSS_DELAY
-          const end = contentFrac + seg
-          const r = p > start ? (p - start) / (end - start) : 0
+          // Linear over the whole span: starts as the source clears the screen,
+          // ends as the destination clears it. r = p (progress), no rescaling.
+          const r = p
 
           const vw = vwRef.current
           const fromX = sideToLeft(vw, SEQUENCE[i].side)
@@ -151,8 +146,7 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
             else if (r < 0.2) { fromEl.style.pointerEvents = 'auto'; toEl.style.pointerEvents = 'none' }
             setSlotX((fromX + (toX - fromX) * r).toFixed(1))
           } else {
-            const fastExit = 1 - Math.pow(1 - r, 4)
-            fromEl.style.opacity = (1 - fastExit).toFixed(2)
+            fromEl.style.opacity = (1 - r).toFixed(2)
             toEl.style.opacity = r.toFixed(2)
             if (r >= 0.95) {
               toEl.style.pointerEvents = 'auto'
@@ -161,8 +155,8 @@ for (let i = 0; i < SEQUENCE.length - 1; i++) {
               fromEl.style.pointerEvents = 'auto'
               toEl.style.pointerEvents = 'none'
             }
-            const easeOut = 1 - Math.pow(1 - r, 2)
-            setSlotX((fromX + (toX - fromX) * easeOut).toFixed(1))
+            // Linear, steady movement — slow, not a fast snap across.
+            setSlotX((fromX + (toX - fromX) * r).toFixed(1))
           }
         },
       })

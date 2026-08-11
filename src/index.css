@@ -35,7 +35,7 @@ body {
 /* Vertical crossing room so the animated slot can travel over empty
    background instead of sweeping across section content. */
 .portfolio-section:not(:last-child) {
-  margin-bottom: var(--slot-cross-gap, 44vh);
+  margin-bottom: var(--slot-cross-gap, 60vh);
 }
 
 .mobile-animated-component { display: none; }
