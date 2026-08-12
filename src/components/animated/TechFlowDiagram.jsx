@@ -22,16 +22,22 @@ const COLORS = {
 const VB_W = 660
 const VB_H = 580
 
-const NODE_W = 116
+const NODE_W = 132
 const NODE_H = 62
 
 const API = { x: VB_W / 2, y: VB_H / 2, w: 168, h: 132, label: "API", sub: "GATEWAY" }
 
+// Spread the four modules evenly across the width so their proportional boxes
+// never overlap, no matter how narrow the container gets.
+const MODULE_LEFT = NODE_W / 2 + 24
+const MODULE_RIGHT = VB_W - NODE_W / 2 - 24
+const MODULE_STEP = (MODULE_RIGHT - MODULE_LEFT) / 3
+
 const MODULES = [
-  { id: "cloud",  x: 120, y: 90, label: "CLOUD",      icon: "cloud"  },
-  { id: "repo",   x: 268, y: 90, label: "REPOSITORY", icon: "repo"   },
-  { id: "db",     x: 392, y: 90, label: "DATABASE",   icon: "db"     },
-  { id: "ai",     x: 540, y: 90, label: "AI MODULE",  icon: "ai"     },
+  { id: "cloud",  x: MODULE_LEFT + 0 * MODULE_STEP,     y: 90, label: "CLOUD",      icon: "cloud"  },
+  { id: "repo",   x: MODULE_LEFT + 1 * MODULE_STEP,     y: 90, label: "REPOSITORY", icon: "repo"   },
+  { id: "db",     x: MODULE_LEFT + 2 * MODULE_STEP,     y: 90, label: "DATABASE",   icon: "db"     },
+  { id: "ai",     x: MODULE_LEFT + 3 * MODULE_STEP,     y: 90, label: "AI MODULE",  icon: "ai"     },
 ]
 
 const CLIENT = { id: "client", x: VB_W / 2, y: VB_H - 80, label: "CLIENT", icon: "client" }
@@ -194,11 +200,11 @@ export default function TechFlowDiagram() {
         transform: "translate(-50%, -50%)",
         width: pct(NODE_W, VB_W),
         height: pct(NODE_H, VB_H),
-        minWidth: 120,
+        minWidth: 90,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: 10,
+        gap: 8,
         borderRadius: 16,
         border: `1px solid #ffffff14`,
         background: "rgba(18, 18, 26, 0.55)",
@@ -207,14 +213,14 @@ export default function TechFlowDiagram() {
         boxShadow: `0 0 0 1px ${accent}22, 0 8px 30px rgba(0,0,0,0.45), 0 0 22px ${accent}26`,
       }}
     >
-      <span style={{ color: accent, display: "flex" }}>
-        <Icon name={node.icon} color={accent} />
+      <span style={{ color: accent, display: "flex", flexShrink: 0 }}>
+        <Icon name={node.icon} color={accent} size={18} />
       </span>
       <span
         style={{
           fontFamily: '"JetBrains Mono", ui-monospace, monospace',
-          fontSize: 10,
-          letterSpacing: "0.06em",
+          fontSize: 9,
+          letterSpacing: "0.05em",
           color: COLORS.textSecondary,
           whiteSpace: "nowrap",
         }}

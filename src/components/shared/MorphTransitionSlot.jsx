@@ -28,7 +28,7 @@ export const SEQUENCE = [
   { id: 'home',     Component: HomeProfilePicture,  props: { imageSrc: PERSONAL.profileImage, size: 320 }, side: 'right' },
   { id: 'about',    Component: NeuralNetworkGlobe,   props: { size: 320 },                                  side: 'left' },
   { id: 'kryzect',  Component: KryzectLogo,          props: { size: 240 },                                 side: 'right' },
-  { id: 'experience', Component: PerceptronAnimation, props: { maxWidth: 600 },                            side: 'left' },
+{ id: 'experience', Component: PerceptronAnimation, props: { maxWidth: 460 },                             side: 'left' },
   { id: 'education', Component: SpinningSkillBox,     props: { skills: ['Data Science','Full Stack','Machine Learning','Cloud'], sideLabel: 'AI' }, side: 'right' },
   { id: 'skills',   Component: SkillCube,             props: { size: 200 },                                side: 'left' },
   { id: 'projects', Component: TechFlowDiagram,       props: {},                                            side: 'right' },
