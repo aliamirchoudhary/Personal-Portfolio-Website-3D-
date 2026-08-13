@@ -220,16 +220,18 @@ body {
     padding: 1rem 0;
   }
 
-  /* education & skills: outer container auto-height so animated component
-     gets room below the scroll-area naturally */
+  /* education, experience & skills: outer container auto-height so the
+     animated component gets room below the scroll-area naturally */
   #education > div[style*="margin-left"],
+  #experience > div[style*="margin-left"],
   #skills .content-scroll {
     height: auto !important;
   }
 
   /* fixed-height scroll areas so ~70% of screen shows cards, rest for
      the animated component below */
-  #education .edu-scroll-area {
+  #education .edu-scroll-area,
+  #experience .edu-scroll-area {
     height: 65vh !important;
     max-height: 65vh !important;
     flex: none !important;
