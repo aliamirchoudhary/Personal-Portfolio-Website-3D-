@@ -217,7 +217,7 @@ body {
   .mobile-animated-component {
     display: flex !important;
     justify-content: center;
-    padding: 1rem 0;
+    padding: 4rem 0;
   }
 
   /* education, experience & skills: outer container auto-height so the
