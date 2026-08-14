@@ -187,12 +187,7 @@ export const PROJECTS = [
     links: [{ label: "GitHub", icon: "fab fa-github", url: "https://github.com/HassanNawaz14/Travel-Buddy-.git" }],
     modal: { title: "TravelBuddy", description: "TravelBuddy is a full-stack web application designed to revolutionize how people plan and experience travel. Built with ReactJS, NodeJS, SQL, and AI integration, the platform bridges smart trip planning with genuine social connections.", tech: "ReactJS, NodeJS, SQL, AI" },
   },
-  { id: "kryzect", name: "Kryzect",
-    description: "Freelance web developer portfolio with animated UI, service showcases, order & contact forms with real email delivery via Gmail SMTP, and serverless deployment.",
-    tags: ["HTML","CSS","JavaScript","Node.js"],
-    links: [{ label: "GitHub", icon: "fab fa-github", url: "https://github.com/aliamirchoudhary/webcraft.git" },{ label: "Visit", icon: "fas fa-globe", url: "http://kryzect.vercel.app/" }],
-    modal: { title: "Kryzect", description: "Kryzect — freelance web developer portfolio with animated UI, core services, order & contact forms with real email delivery via Gmail SMTP, and serverless deployment.", tech: "HTML, CSS, JavaScript, Node.js" },
-  },
+  
   { id: "flappy", name: "Flappy Bird Game",
     description: "Faithful recreation of Flappy Bird in 16-bit assembly language for iAPX8088 processors. Physics-based gravity and procedurally generated pipe obstacles.",
     tags: ["Assembly Language","iAPX8088"],
