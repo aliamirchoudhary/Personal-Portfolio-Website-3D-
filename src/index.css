@@ -228,6 +228,12 @@ body {
     height: auto !important;
   }
 
+  /* kryzect: drop the fixed 100vh so its content cannot overflow into and
+     get covered by the experience section below on narrow screens */
+  #kryzect > div[style*="margin-left"] {
+    height: auto !important;
+  }
+
   /* fixed-height scroll areas so ~70% of screen shows cards, rest for
      the animated component below */
   #education .edu-scroll-area,
