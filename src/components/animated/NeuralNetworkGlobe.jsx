@@ -29,6 +29,26 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
     canvas.style.height = `${size}px`
     ctx.scale(dpr, dpr)
 
+    // Pre-render soft glow blobs once so we never pay for canvas
+    // shadowBlur every frame (the #1 cost on low-end phones). drawImage of
+    // a cached sprite is GPU-cheap and looks identical.
+    const makeGlow = (r, g, b) => {
+      const px = 64
+      const c = document.createElement("canvas")
+      c.width = px
+      c.height = px
+      const gc = c.getContext("2d")
+      const grad = gc.createRadialGradient(px / 2, px / 2, 0, px / 2, px / 2, px / 2)
+      grad.addColorStop(0, `rgba(${r},${g},${b},1)`)
+      grad.addColorStop(0.4, `rgba(${r},${g},${b},0.55)`)
+      grad.addColorStop(1, `rgba(${r},${g},${b},0)`)
+      gc.fillStyle = grad
+      gc.fillRect(0, 0, px, px)
+      return c
+    }
+    const nodeGlowSprite = makeGlow(167, 139, 250)
+    const signalGlowSprite = makeGlow(6, 182, 212)
+
     const center = size / 2
     const radius = size * 0.42 // globe radius in px
     const fov = 2.2 // perspective field-of-view factor
@@ -219,14 +239,14 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
         const dx = pFrom.sx + (pTo.sx - pFrom.sx) * t
         const dy = pFrom.sy + (pTo.sy - pFrom.sy) * t
         const dotR = (1.5 + depth * 2) * (0.6 + 0.4 * Math.sin(t * Math.PI))
-        ctx.save()
-        ctx.shadowBlur = 12
-        ctx.shadowColor = `rgba(${COLOR_SIGNAL}, 0.9)`
-        ctx.fillStyle = `rgba(${COLOR_SIGNAL}, ${(0.8 + depth * 0.2).toFixed(3)})`
+        const sigAlpha = 0.8 + depth * 0.2
+        ctx.globalAlpha = sigAlpha * 0.5
+        ctx.drawImage(signalGlowSprite, dx - dotR * 2.4, dy - dotR * 2.4, dotR * 4.8, dotR * 4.8)
+        ctx.globalAlpha = 1
+        ctx.fillStyle = `rgba(${COLOR_SIGNAL}, ${sigAlpha.toFixed(3)})`
         ctx.beginPath()
-        ctx.arc(dx, dy, dotR, 0, Math.PI * 2)
+        ctx.arc(dx, dy, dotR * 0.75, 0, Math.PI * 2)
         ctx.fill()
-        ctx.restore()
       }
 
       // periodically start a new cascade from a random node
@@ -262,14 +282,14 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
         const baseAlpha = 0.35 + p.depth * 0.55
         const alpha = Math.min(1, baseAlpha + fired * 0.4)
 
-        ctx.save()
-        ctx.shadowBlur = 6 + p.depth * 8 + fired * 10
-        ctx.shadowColor = `rgba(${COLOR_NODE}, ${(0.6 + fired * 0.4).toFixed(3)})`
+        // cached glow sprite (no shadowBlur) + crisp solid core
+        ctx.globalAlpha = alpha * 0.55
+        ctx.drawImage(nodeGlowSprite, p.sx - r * 2.6, p.sy - r * 2.6, r * 5.2, r * 5.2)
+        ctx.globalAlpha = 1
         ctx.fillStyle = `rgba(${COLOR_NODE}, ${alpha.toFixed(3)})`
         ctx.beginPath()
         ctx.arc(p.sx, p.sy, r, 0, Math.PI * 2)
         ctx.fill()
-        ctx.restore()
       }
 
       rafRef.current = requestAnimationFrame(render)

@@ -40,6 +40,7 @@ export default function App() {
   const [phase, setPhase] = useState('loading')
   const [activeSection, setActiveSection] = useState('home')
   const [lowPower] = useState(() => detectLowPowerDevice())
+  const [isDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth > 1024)
   const loadingRef = useRef(null)
   const tlRef = useRef(null)
   const slotRef = useRef(null)
@@ -55,7 +56,7 @@ export default function App() {
   /* ── compact loading layout (no !important CSS) ── */
   useLayoutEffect(() => {
     if (phase !== 'loading') return
-    if (window.innerWidth <= 1024) return
+    if (!isDesktop || window.innerWidth <= 1024) return
     gsap.set('.lpf-scene', { minHeight: '45vh', paddingTop: '2vh' })
     gsap.set('.lpf-root', { width: 240, height: 240, marginTop: '5vh' })
   }, [phase])
@@ -63,7 +64,7 @@ export default function App() {
   /* ── intro: loading profile flows to right slot position, matching HomeProfilePicture ── */
   useEffect(() => {
     if (phase !== 'intro') return
-    if (window.innerWidth <= 1024) { setPhase('ready'); requestAnimationFrame(() => ScrollTrigger.refresh()); return }
+    if (!isDesktop || window.innerWidth <= 1024) { setPhase('ready'); requestAnimationFrame(() => ScrollTrigger.refresh()); return }
     const el = loadingRef.current
     if (!el) return
 
@@ -182,7 +183,7 @@ export default function App() {
       {phase !== 'loading' && (
         <>
           <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
-          <MorphTransitionSlot ref={slotRef} lowPower={lowPower} />
+          {isDesktop && <MorphTransitionSlot ref={slotRef} lowPower={lowPower} />}
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
             <AboutSection />

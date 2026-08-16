@@ -134,6 +134,9 @@ body {
     min-height: 100vh;
     scroll-snap-align: none !important;
     scroll-snap-stop: normal !important;
+    /* Skip layout/paint for offscreen sections to keep mobile scrolling smooth */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 100vh;
   }
 
   .animated-slot { display: none !important; }
