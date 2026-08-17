@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
+import { useState, useEffect, useCallback, useRef, useLayoutEffect, lazy, Suspense } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
-import MorphTransitionSlot, { SLOT_W, SLOT_GUTTER, SEQUENCE } from './components/shared/MorphTransitionSlot'
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
 import HomeSection from './components/sections/HomeSection'
@@ -15,6 +14,15 @@ import ProjectsSection from './components/sections/ProjectsSection'
 import ContactSection from './components/sections/ContactSection'
 import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
+
+// Loaded only on desktop (>=1024px) and only when the intro animation starts,
+// so mobile never parses/executes the heavy slot + all its animated modules.
+const MorphTransitionSlot = lazy(() => import('./components/shared/MorphTransitionSlot'))
+
+// Mirror the slot constants (SLOT_W = 460, SLOT_GUTTER = 24) locally so the
+// desktop intro layout math doesn't pull in the whole slot module eagerly.
+const SLOT_W = 460
+const SLOT_GUTTER = 24
 
 const LOADING_DURATION = 4500
 const DURATIONS = {
@@ -183,7 +191,11 @@ export default function App() {
       {phase !== 'loading' && (
         <>
           <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
-          {isDesktop && <MorphTransitionSlot ref={slotRef} lowPower={lowPower} />}
+          {isDesktop && (
+            <Suspense fallback={null}>
+              <MorphTransitionSlot ref={slotRef} lowPower={lowPower} />
+            </Suspense>
+          )}
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
             <AboutSection />

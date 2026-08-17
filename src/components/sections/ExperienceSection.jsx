@@ -1,8 +1,11 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { TimelineStyles, Timeline } from '../ui/ExperienceTimeline'
 import { EXPERIENCE } from '../../data/portfolioData'
 import LazyMount from '../shared/LazyMount'
-import { PerceptronAnimation } from '../animated/PerceptronAnimation'
+
+const PerceptronAnimation = lazy(() =>
+  import('../animated/PerceptronAnimation').then((m) => ({ default: m.PerceptronAnimation })),
+)
 
 const DOT_CENTER = 29
 const DOT_RADIUS = 7
@@ -79,7 +82,7 @@ export default function ExperienceSection() {
         </div>
 
         <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
-          <LazyMount><PerceptronAnimation maxWidth={300} /></LazyMount>
+          <LazyMount><Suspense fallback={null}><PerceptronAnimation maxWidth={300} /></Suspense></LazyMount>
         </div>
       </div>
     </section>

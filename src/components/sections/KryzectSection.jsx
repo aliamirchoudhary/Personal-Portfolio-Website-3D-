@@ -1,6 +1,8 @@
+import { lazy, Suspense } from 'react'
 import { PERSONAL } from '../../data/portfolioData'
-import KryzectLogo from '../ui/KryzectLogo'
 import LazyMount from '../shared/LazyMount'
+
+const KryzectLogo = lazy(() => import('../ui/KryzectLogo'))
 
 const ACCENT = '#8FAEFF'
 const CTA_BG = '#7c3aed'
@@ -141,7 +143,7 @@ export default function KryzectSection() {
         </p>
 
         <div className="mobile-animated-component" style={{ marginTop: 'auto' }}>
-          <LazyMount><KryzectLogo size={260} /></LazyMount>
+          <LazyMount><Suspense fallback={null}><KryzectLogo size={260} /></Suspense></LazyMount>
         </div>
       </div>
     </section>

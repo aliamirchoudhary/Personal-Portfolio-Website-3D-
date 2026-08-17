@@ -1,7 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { SOCIAL_LINKS, PERSONAL } from '../../data/portfolioData'
-import { MorphingCommsIcon } from '../animated/MorphingCommsIcon'
 import LazyMount from '../shared/LazyMount'
+
+const MorphingCommsIcon = lazy(() =>
+  import('../animated/MorphingCommsIcon').then((m) => ({ default: m.MorphingCommsIcon })),
+)
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -257,7 +260,9 @@ export default function ContactSection() {
 
     <div className="mobile-animated-component" style={{ marginBottom: 35 }}>
       <LazyMount margin="250px" placeholder={<div style={{ height: 200 }} />}>
-        <MorphingCommsIcon />
+        <Suspense fallback={null}>
+          <MorphingCommsIcon />
+        </Suspense>
       </LazyMount>
     </div>
 

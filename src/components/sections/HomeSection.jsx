@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { PERSONAL } from '../../data/portfolioData'
-import HomeProfilePicture from '../animated/HomeProfilePicture'
 import LazyMount from '../shared/LazyMount'
+
+const HomeProfilePicture = lazy(() => import('../animated/HomeProfilePicture'))
 
 const TYPING_SPEED = 50
 
@@ -86,7 +87,9 @@ export default function HomeSection() {
 
       <div className="home-mobile-profile">
         <LazyMount margin="250px" placeholder={<div style={{ height: 180 }} />}>
-          <HomeProfilePicture imageSrc={PERSONAL.profileImage} size={180} />
+          <Suspense fallback={null}>
+            <HomeProfilePicture imageSrc={PERSONAL.profileImage} size={180} />
+          </Suspense>
         </LazyMount>
       </div>
 

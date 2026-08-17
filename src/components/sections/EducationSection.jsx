@@ -1,8 +1,11 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, lazy, Suspense } from 'react'
 import { EducationTimeline, GlobalStyles } from '../ui/EducationTimeline'
 import { EDUCATION } from '../../data/portfolioData'
-import { SpinningSkillBox } from '../animated/FlippingCard3D'
 import LazyMount from '../shared/LazyMount'
+
+const SpinningSkillBox = lazy(() =>
+  import('../animated/FlippingCard3D').then((m) => ({ default: m.SpinningSkillBox })),
+)
 
 const eduItems = EDUCATION.map((e) => ({
   ...e,
@@ -83,7 +86,7 @@ export default function EducationSection() {
         </div>
 
         <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
-          <LazyMount><SpinningSkillBox skills={["Data Science", "Full Stack", "Machine Learning", "Cloud"]} sideLabel="AI" /></LazyMount>
+          <LazyMount><Suspense fallback={null}><SpinningSkillBox skills={["Data Science", "Full Stack", "Machine Learning", "Cloud"]} sideLabel="AI" /></Suspense></LazyMount>
         </div>
       </div>
     </section>

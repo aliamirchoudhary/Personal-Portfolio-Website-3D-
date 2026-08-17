@@ -1,6 +1,10 @@
+import { lazy, Suspense } from 'react'
 import SkillsGrid from '../ui/SkillsGrid'
-import { SkillCube } from '../animated/SkillCube'
 import LazyMount from '../shared/LazyMount'
+
+const SkillCube = lazy(() =>
+  import('../animated/SkillCube').then((m) => ({ default: m.SkillCube })),
+)
 
 export default function SkillsSection() {
   return (
@@ -35,7 +39,7 @@ export default function SkillsSection() {
         </div>
 
         <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
-          <LazyMount><SkillCube /></LazyMount>
+          <LazyMount><Suspense fallback={null}><SkillCube /></Suspense></LazyMount>
         </div>
       </div>
     </section>

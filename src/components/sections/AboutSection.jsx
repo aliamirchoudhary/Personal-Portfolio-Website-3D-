@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { ABOUT_TEXT, PERSONAL, KRYZECT } from '../../data/portfolioData'
 import KryzectLogo from '../ui/KryzectLogo'
-import NeuralNetworkGlobe from '../animated/NeuralNetworkGlobe'
 import LazyMount from '../shared/LazyMount'
+
+const NeuralNetworkGlobe = lazy(() => import('../animated/NeuralNetworkGlobe'))
 
 const WC_FONT = "'Clash Display', 'Clash Grotesk', 'Space Grotesk', sans-serif"
 
@@ -154,7 +155,9 @@ export default function AboutSection() {
         <div className="mobile-animated-component">
           <div style={{ marginTop: 32, marginBottom: 32 }}>
             <LazyMount margin="300px" placeholder={<div style={{ height: 220 }} />}>
-              <NeuralNetworkGlobe size={220} />
+              <Suspense fallback={null}>
+                <NeuralNetworkGlobe size={220} />
+              </Suspense>
             </LazyMount>
           </div>
         </div>
