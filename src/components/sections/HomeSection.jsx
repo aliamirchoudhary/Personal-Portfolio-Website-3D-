@@ -53,10 +53,15 @@ export default function HomeSection() {
             color: '#94a3b8',
             margin: '0 0 2rem',
             minHeight: '1.6em',
+            position: 'relative',
           }}
         >
-          {displayed}
-          <span style={{ animation: 'blink 1s infinite', color: '#a78bfa' }}>|</span>
+          {/* Hidden full title locks the height so typing never reflows/CLSes */}
+          <span aria-hidden="true" style={{ visibility: 'hidden' }}>{fullTitle}</span>
+          <span style={{ position: 'absolute', left: 0, top: 0 }}>
+            {displayed}
+            <span style={{ animation: 'blink 1s infinite', color: '#a78bfa' }}>|</span>
+          </span>
         </p>
 
         <a

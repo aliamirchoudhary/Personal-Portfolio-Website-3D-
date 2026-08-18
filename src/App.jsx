@@ -48,12 +48,15 @@ export default function App() {
   const [phase, setPhase] = useState('loading')
   const [activeSection, setActiveSection] = useState('home')
   const [lowPower] = useState(() => detectLowPowerDevice())
+  const [isNarrow] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 1024)
   const [isDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth > 1024)
   const loadingRef = useRef(null)
   const tlRef = useRef(null)
   const slotRef = useRef(null)
-  const loadingDuration = lowPower ? 1200 : LOADING_DURATION
-  const dur = lowPower ? DURATIONS.low : DURATIONS.normal
+  // Short, snappy loading on any narrow/low-power screen so real content paints
+  // fast (the fancy 4.5s sequence is kept for desktop where it's not a core-vital blocker).
+  const loadingDuration = (lowPower || isNarrow) ? 900 : LOADING_DURATION
+  const dur = (lowPower || isNarrow) ? DURATIONS.low : DURATIONS.normal
 
   /* ── loading → intro ── */
   useEffect(() => {
