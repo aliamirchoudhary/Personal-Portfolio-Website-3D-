@@ -1,0 +1,26 @@
+/*! Minimal Font Awesome 6.4.0 subset — only the icons used by this app.
+    Solid (Free, weight 900) + Brands (400), glyph-subsetted locally. */
+@font-face{font-family:"Font Awesome 6 Free";font-style:normal;font-weight:900;font-display:block;src:url(../fonts/fa-solid-subset.woff2) format("woff2")}
+@font-face{font-family:"Font Awesome 6 Brands";font-style:normal;font-weight:400;font-display:block;src:url(../fonts/fa-brands-subset.woff2) format("woff2")}
+.fas,.fa-solid{font-family:"Font Awesome 6 Free";font-weight:900}
+.fab{font-family:"Font Awesome 6 Brands";font-weight:400}
+.fas:before,.fa-solid:before,.fab:before{display:inline-block;font-style:normal;font-variant:normal;text-rendering:auto;-webkit-font-smoothing:antialiased;}
+.fa-download:before{content:"\f019"}
+.fa-globe:before{content:"\f0ac"}
+.fa-layer-group:before{content:"\f5fd"}
+.fa-envelope:before{content:"\f0e0"}
+.fa-feather-alt:before{content:"\f56b"}
+.fa-paper-plane:before{content:"\f1d8"}
+.fa-code:before{content:"\f121"}
+.fa-phone:before{content:"\f095"}
+.fa-dollar-sign:before{content:"\0024"}
+.fa-paint-brush:before{content:"\f1fc"}
+.fa-laptop-code:before{content:"\f5fc"}
+.fa-arrow-up-right-from-square:before{content:"\f08e"}
+.fa-times:before{content:"\f00d"}
+.fa-bars:before{content:"\f0c9"}
+.fa-linkedin-in:before{content:"\f0e1"}
+.fa-facebook-f:before{content:"\f39e"}
+.fa-instagram:before{content:"\f16d"}
+.fa-github:before{content:"\f09b"}
+.fa-twitter:before{content:"\f099"}
