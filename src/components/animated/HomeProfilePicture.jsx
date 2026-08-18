@@ -224,7 +224,7 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
         <div className={cls("photoWrap")}>
           {imageSrc ? (
             /*// eslint-disable-next-line @next/next/no-img-element*/
-            <img className={cls("photo")} src={imageSrc} alt="Portrait" crossOrigin="anonymous" />
+            <img className={cls("photo")} src={imageSrc} alt="Portrait" crossOrigin="anonymous" fetchPriority="high" />
           ) : (
             <div className={cls("placeholder")}>NO IMAGE</div>
           )}

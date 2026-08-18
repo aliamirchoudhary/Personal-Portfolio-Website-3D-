@@ -1,6 +1,4 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect, lazy, Suspense } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { PERSONAL } from './data/portfolioData'
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
@@ -42,7 +40,13 @@ function detectLowPowerDevice() {
   return Boolean(saveData || memory <= 4 || cores <= 4 || (coarsePointer && narrowScreen))
 }
 
-gsap.registerPlugin(ScrollTrigger)
+// GSAP is only needed for the desktop intro/slot animations. Load it lazily so
+// mobile never downloads, parses, or runs it (keeps the initial bundle lean).
+const loadGSAP = () =>
+  Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([gs, st]) => {
+    gs.gsap.registerPlugin(st.ScrollTrigger)
+    return { gsap: gs.gsap, ScrollTrigger: st.ScrollTrigger }
+  })
 
 export default function App() {
   const [phase, setPhase] = useState('loading')
@@ -68,76 +72,89 @@ export default function App() {
   useLayoutEffect(() => {
     if (phase !== 'loading') return
     if (!isDesktop || window.innerWidth <= 1024) return
-    gsap.set('.lpf-scene', { minHeight: '45vh', paddingTop: '2vh' })
-    gsap.set('.lpf-root', { width: 240, height: 240, marginTop: '5vh' })
-  }, [phase])
+    let cancelled = false
+    loadGSAP().then(({ gsap }) => {
+      if (cancelled) return
+      gsap.set('.lpf-scene', { minHeight: '45vh', paddingTop: '2vh' })
+      gsap.set('.lpf-root', { width: 240, height: 240, marginTop: '5vh' })
+    })
+    return () => { cancelled = true }
+  }, [phase, isDesktop])
 
   /* ── intro: loading profile flows to right slot position, matching HomeProfilePicture ── */
   useEffect(() => {
     if (phase !== 'intro') return
-    if (!isDesktop || window.innerWidth <= 1024) { setPhase('ready'); requestAnimationFrame(() => ScrollTrigger.refresh()); return }
+    if (!isDesktop || window.innerWidth <= 1024) {
+      requestAnimationFrame(() => setPhase('ready'))
+      return
+    }
     const el = loadingRef.current
     if (!el) return
 
     // HomeProfilePicture sits 58px right of center inside the slot
     // due to its justify-end Tailwind class. Compensate so the
     // centered .lpf-root aligns with the right-aligned .hpp-root.
+    let cancelled = false
     const raf = requestAnimationFrame(() => {
-      const slot = document.querySelector('.animated-slot')
-      const slotLeft = slot ? slot.getBoundingClientRect().left : window.innerWidth - SLOT_W - SLOT_GUTTER
-      const targetLeft = slotLeft + 58
+      loadGSAP().then(({ gsap, ScrollTrigger }) => {
+        if (cancelled) return
+        const slot = document.querySelector('.animated-slot')
+        const slotLeft = slot ? slot.getBoundingClientRect().left : window.innerWidth - SLOT_W - SLOT_GUTTER
+        const targetLeft = slotLeft + 58
 
-      const tl = gsap.timeline({
-        onComplete: () => {
-          setPhase('ready')
-          ScrollTrigger.refresh()
-        },
+        const tl = gsap.timeline({
+          onComplete: () => {
+            setPhase('ready')
+            ScrollTrigger.refresh()
+          },
+        })
+        tlRef.current = tl
+
+        tl.to('.lpf-scene', {
+          minHeight: '100vh',
+          paddingTop: 0,
+          duration: dur.slotMove,
+          ease: 'power2.inOut',
+        }, 0)
+
+        tl.to('.lpf-root', {
+          width: 320,
+          height: 320,
+          marginTop: 0,
+          duration: dur.slotMove,
+          ease: 'power2.inOut',
+        }, 0)
+
+        tl.to(el, {
+          left: targetLeft,
+          top: 0,
+          y: -5,
+          width: SLOT_W,
+          height: '100vh',
+          duration: dur.slotMove,
+          ease: 'power2.inOut',
+        }, 0)
+
+        tl.to(el, {
+          opacity: 0,
+          duration: dur.fade,
+          ease: 'power2.in',
+        }, 0.7)
+
+        tl.to('.loading-name-trace', {
+          opacity: 0,
+          duration: dur.fade,
+        }, 0)
+
+        tl.to('.main-wrap', {
+          opacity: 1,
+          duration: dur.showMain,
+        }, lowPower ? 0 : 0.15)
       })
-      tlRef.current = tl
-
-      tl.to('.lpf-scene', {
-        minHeight: '100vh',
-        paddingTop: 0,
-        duration: dur.slotMove,
-        ease: 'power2.inOut',
-      }, 0)
-
-      tl.to('.lpf-root', {
-        width: 320,
-        height: 320,
-        marginTop: 0,
-        duration: dur.slotMove,
-        ease: 'power2.inOut',
-      }, 0)
-
-      tl.to(el, {
-        left: targetLeft,
-        top: 0,
-        y: -5,
-        width: SLOT_W,
-        height: '100vh',
-        duration: dur.slotMove,
-        ease: 'power2.inOut',
-      }, 0)
-
-      tl.to(el, {
-        opacity: 0,
-        duration: dur.fade,
-        ease: 'power2.in',
-      }, 0.7)
-
-      tl.to('.loading-name-trace', {
-        opacity: 0,
-        duration: dur.fade,
-      }, 0)
-
-      tl.to('.main-wrap', {
-        opacity: 1,
-        duration: dur.showMain,
-      }, lowPower ? 0 : 0.15)
     })
 
     return () => {
+      cancelled = true
       cancelAnimationFrame(raf)
       if (tlRef.current) {
         tlRef.current.kill()
