@@ -167,17 +167,24 @@ export default function App() {
     }
   }, [phase])
 
-  /* ── stagger-mount the below-fold sections after first paint ── */
+  /* ── stagger-mount the below-fold sections after first paint ──
+     Deliberately NOT gated on the intro/ready transition (which on desktop
+     depends on the GSAP timeline) so the sections are guaranteed to appear.
+     Starting from a small stacked set keeps the initial commit tiny, and each
+     committed section lands in its own small task instead of one giant block. */
   useEffect(() => {
-    if (phase !== 'ready') return
     let i = 0
     const iv = setInterval(() => {
       i += 1
       setMountedDepth(i)
       if (i >= 7) clearInterval(iv)
-    }, 90)
-    return () => clearInterval(iv)
-  }, [phase])
+    }, 120)
+    const stop = setTimeout(() => clearInterval(iv), 7 * 120 + 400)
+    return () => {
+      clearInterval(iv)
+      clearTimeout(stop)
+    }
+  }, [])
 
   const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id)
