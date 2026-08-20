@@ -51,6 +51,10 @@ const loadGSAP = () =>
 export default function App() {
   const [phase, setPhase] = useState('loading')
   const [activeSection, setActiveSection] = useState('home')
+  // Below-fold sections mount in small staggered chunks after the hero has
+  // painted. Keeps the initial commit tiny (so no single >50ms blocking task)
+  // without ever dropping a section from the layout.
+  const [mountedDepth, setMountedDepth] = useState(0)
   const [lowPower] = useState(() => detectLowPowerDevice())
   const [isNarrow] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 1024)
   const [isDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth > 1024)
@@ -163,6 +167,18 @@ export default function App() {
     }
   }, [phase])
 
+  /* ── stagger-mount the below-fold sections after first paint ── */
+  useEffect(() => {
+    if (phase !== 'ready') return
+    let i = 0
+    const iv = setInterval(() => {
+      i += 1
+      setMountedDepth(i)
+      if (i >= 7) clearInterval(iv)
+    }, 90)
+    return () => clearInterval(iv)
+  }, [phase])
+
   const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -182,7 +198,7 @@ export default function App() {
     }, { rootMargin: '-40% 0px -40% 0px' })
     sectionEls.forEach((el) => obs.observe(el))
     return () => obs.disconnect()
-  }, [phase])
+  }, [phase, mountedDepth])
 
   return (
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
@@ -218,13 +234,13 @@ export default function App() {
           )}
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
-            <AboutSection />
-            <KryzectSection />
-            <ExperienceSection />
-            <EducationSection />
-            <SkillsSection />
-            <ProjectsSection />
-            <ContactSection />
+            {mountedDepth >= 1 && <AboutSection />}
+            {mountedDepth >= 2 && <KryzectSection />}
+            {mountedDepth >= 3 && <ExperienceSection />}
+            {mountedDepth >= 4 && <EducationSection />}
+            {mountedDepth >= 5 && <SkillsSection />}
+            {mountedDepth >= 6 && <ProjectsSection />}
+            {mountedDepth >= 7 && <ContactSection />}
           </main>
           <Footer scrollToSection={scrollToSection} />
         </>
