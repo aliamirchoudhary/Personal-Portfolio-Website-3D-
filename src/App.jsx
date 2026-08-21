@@ -12,7 +12,6 @@ import ProjectsSection from './components/sections/ProjectsSection'
 import ContactSection from './components/sections/ContactSection'
 import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
-import ScrollGate from './components/shared/ScrollGate'
 
 // Loaded only on desktop (>=1024px) and only when the intro animation starts,
 // so mobile never parses/executes the heavy slot + all its animated modules.
@@ -219,15 +218,13 @@ export default function App() {
           )}
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
-            <ScrollGate>
-              <AboutSection />
-              <KryzectSection />
-              <ExperienceSection />
-              <EducationSection />
-              <SkillsSection />
-              <ProjectsSection />
-              <ContactSection />
-            </ScrollGate>
+            <AboutSection />
+            <KryzectSection />
+            <ExperienceSection />
+            <EducationSection />
+            <SkillsSection />
+            <ProjectsSection />
+            <ContactSection />
           </main>
           <Footer scrollToSection={scrollToSection} />
         </>
