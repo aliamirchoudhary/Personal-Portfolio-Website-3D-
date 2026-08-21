@@ -12,6 +12,7 @@ import ProjectsSection from './components/sections/ProjectsSection'
 import ContactSection from './components/sections/ContactSection'
 import LoadingNameTrace from './components/loading/LoadingNameTrace'
 import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
+import ScrollGate from './components/shared/ScrollGate'
 
 // Loaded only on desktop (>=1024px) and only when the intro animation starts,
 // so mobile never parses/executes the heavy slot + all its animated modules.
@@ -51,10 +52,6 @@ const loadGSAP = () =>
 export default function App() {
   const [phase, setPhase] = useState('loading')
   const [activeSection, setActiveSection] = useState('home')
-  // Below-fold sections mount in small staggered chunks after the hero has
-  // painted. Keeps the initial commit tiny (so no single >50ms blocking task)
-  // without ever dropping a section from the layout.
-  const [mountedDepth, setMountedDepth] = useState(0)
   const [lowPower] = useState(() => detectLowPowerDevice())
   const [isNarrow] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 1024)
   const [isDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth > 1024)
@@ -167,25 +164,6 @@ export default function App() {
     }
   }, [phase])
 
-  /* ── stagger-mount the below-fold sections after first paint ──
-     Deliberately NOT gated on the intro/ready transition (which on desktop
-     depends on the GSAP timeline) so the sections are guaranteed to appear.
-     Starting from a small stacked set keeps the initial commit tiny, and each
-     committed section lands in its own small task instead of one giant block. */
-  useEffect(() => {
-    let i = 0
-    const iv = setInterval(() => {
-      i += 1
-      setMountedDepth(i)
-      if (i >= 7) clearInterval(iv)
-    }, 120)
-    const stop = setTimeout(() => clearInterval(iv), 7 * 120 + 400)
-    return () => {
-      clearInterval(iv)
-      clearTimeout(stop)
-    }
-  }, [])
-
   const scrollToSection = useCallback((id) => {
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -205,7 +183,7 @@ export default function App() {
     }, { rootMargin: '-40% 0px -40% 0px' })
     sectionEls.forEach((el) => obs.observe(el))
     return () => obs.disconnect()
-  }, [phase, mountedDepth])
+  }, [phase])
 
   return (
     <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
@@ -241,13 +219,15 @@ export default function App() {
           )}
           <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
             <HomeSection />
-            {mountedDepth >= 1 && <AboutSection />}
-            {mountedDepth >= 2 && <KryzectSection />}
-            {mountedDepth >= 3 && <ExperienceSection />}
-            {mountedDepth >= 4 && <EducationSection />}
-            {mountedDepth >= 5 && <SkillsSection />}
-            {mountedDepth >= 6 && <ProjectsSection />}
-            {mountedDepth >= 7 && <ContactSection />}
+            <ScrollGate>
+              <AboutSection />
+              <KryzectSection />
+              <ExperienceSection />
+              <EducationSection />
+              <SkillsSection />
+              <ProjectsSection />
+              <ContactSection />
+            </ScrollGate>
           </main>
           <Footer scrollToSection={scrollToSection} />
         </>
