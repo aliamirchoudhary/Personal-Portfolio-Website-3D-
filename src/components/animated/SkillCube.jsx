@@ -77,6 +77,23 @@ function useGlobalStyles() {
         0%, 100% { box-shadow: inset 0 0 24px rgba(167,139,250,0.10), 0 0 18px rgba(124,58,237,0.18); }
         50%      { box-shadow: inset 0 0 40px rgba(167,139,250,0.32), 0 0 34px rgba(124,58,237,0.42); }
       }
+      @keyframes skillcube-spin {
+        from { transform: rotateX(-18deg) rotateY(0deg); }
+        to   { transform: rotateX(-18deg) rotateY(360deg); }
+      }
+      .skillcube-box--spinning {
+        animation: skillcube-spin 20s linear infinite;
+      }
+      @media (max-width: 768px) {
+        .skillcube-box--spinning {
+          animation-duration: 30s;
+        }
+        .skillcube-face {
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+          background: rgba(18, 18, 26, 0.9);
+        }
+      }
     `;
     document.head.appendChild(style);
   }, []);
@@ -89,8 +106,6 @@ function SkillCube({ size = 200 }) {
   const boxRef = useRef(null);
   const rotRef = useRef({ x: -18, y: 24 });
   const drag = useRef({ active: false, lastX: 0, lastY: 0 });
-  const pausedRef = useRef(false);
-  const rafRef = useRef(0);
 
   const applyRotation = () => {
     if (!boxRef.current) return;
@@ -99,35 +114,12 @@ function SkillCube({ size = 200 }) {
 
   useEffect(() => {
     const isNarrow = typeof window !== 'undefined' && window.innerWidth <= 768;
-    const frameInterval = isNarrow ? 1000 / 30 : 1000 / 60; // 30fps mobile, 60fps desktop
-    const speed = isNarrow ? 22 : 45; // half speed on mobile
-    let prev = performance.now();
-    let lastFrameTime = 0;
+    const initialSpinDuration = isNarrow ? '30s' : '20s';
 
-    const loop = (now) => {
-      if (pausedRef.current) {
-        prev = now;
-        lastFrameTime = now;
-        rafRef.current = requestAnimationFrame(loop);
-        return;
-      }
-      if (now - lastFrameTime < frameInterval) {
-        rafRef.current = requestAnimationFrame(loop);
-        return;
-      }
-      lastFrameTime = now;
-      const dt = (now - prev) / 1000;
-      prev = now;
-      if (!drag.current.active) {
-        rotRef.current = {
-          x: rotRef.current.x,
-          y: rotRef.current.y + speed * dt,
-        };
-        applyRotation();
-      }
-      rafRef.current = requestAnimationFrame(loop);
-    };
-    rafRef.current = requestAnimationFrame(loop);
+    // Start CSS animation
+    if (boxRef.current) {
+      boxRef.current.style.animation = `skillcube-spin ${initialSpinDuration} linear infinite`;
+    }
 
     const onMove = (e) => {
       if (!drag.current.active) return;
@@ -145,32 +137,46 @@ function SkillCube({ size = 200 }) {
     const onUp = () => {
       drag.current.active = false;
       document.body.style.userSelect = "";
+      // Resume CSS animation after drag
+      if (boxRef.current && !drag.current.active) {
+        const dur = typeof window !== 'undefined' && window.innerWidth <= 768 ? '30s' : '20s';
+        boxRef.current.style.animation = `skillcube-spin ${dur} linear infinite`;
+      }
+    };
+    const onDown = () => {
+      drag.current.active = true;
+      document.body.style.userSelect = "none";
+      // Pause CSS animation during drag
+      if (boxRef.current) {
+        boxRef.current.style.animation = 'none';
+      }
     };
     const onVisibilityChange = () => {
-      pausedRef.current = document.hidden
-      if (!document.hidden) prev = performance.now()
-    }
-    document.addEventListener("visibilitychange", onVisibilityChange)
+      if (boxRef.current) {
+        boxRef.current.style.animationPlayState = document.hidden ? 'paused' : 'running';
+      }
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
+    window.addEventListener("mousedown", onDown);
     window.addEventListener("touchmove", onMove, { passive: false });
     window.addEventListener("touchend", onUp);
+    window.addEventListener("touchstart", onDown, { passive: true });
+
     applyRotation();
+
     return () => {
-      cancelAnimationFrame(rafRef.current);
-      document.removeEventListener("visibilitychange", onVisibilityChange)
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("mousedown", onDown);
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("touchend", onUp);
+      window.removeEventListener("touchstart", onDown);
     };
   }, []);
-
-  const startDrag = (e) => {
-    const point = e.touches ? e.touches[0] : e;
-    drag.current = { active: true, lastX: point.clientX, lastY: point.clientY };
-    document.body.style.userSelect = "none";
-  };
 
   const faceTransforms = {
     front: `rotateY(0deg) translateZ(${half}px)`,
@@ -183,8 +189,6 @@ function SkillCube({ size = 200 }) {
 
   return (
     <div
-      onMouseDown={startDrag}
-      onTouchStart={startDrag}
       style={{
         perspective: "900px",
         width: size,
@@ -198,6 +202,7 @@ function SkillCube({ size = 200 }) {
     >
       <div
         ref={boxRef}
+        className="skillcube-box--spinning"
         style={{
           width: size,
           height: size,
@@ -210,14 +215,13 @@ function SkillCube({ size = 200 }) {
         {FACES.map((face, i) => (
           <div
             key={face.key}
+            className="skillcube-face"
             style={{
               position: "absolute",
               width: size,
               height: size,
               transform: faceTransforms[face.key],
               background: "rgba(18, 18, 26, 0.78)",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
               border: "1px solid #7c3aed30",
               borderRadius: 16,
               display: "flex",
