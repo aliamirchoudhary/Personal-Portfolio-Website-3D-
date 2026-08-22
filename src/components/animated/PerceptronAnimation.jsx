@@ -63,9 +63,11 @@ function lerpColor(a, b, t) {
 }
 
 export function PerceptronAnimation({ maxWidth = 560 }) {
-  const positions = useMemo(() => buildPositions(LAYERS), []);
-  const numInputs = LAYERS[0];
-  const numGaps = LAYERS.length - 1;
+  const isNarrow = typeof window !== 'undefined' && window.innerWidth <= 768;
+  const positions = useMemo(() => buildPositions(isNarrow ? [4, 5, 5, 3, 2] : LAYERS), [isNarrow]);
+  const layers = isNarrow ? [4, 5, 5, 3, 2] : LAYERS;
+  const numInputs = layers[0];
+  const numGaps = layers.length - 1;
 
   // Node metadata + element refs (parallel arrays).
   const nodeMeta = useMemo(() => {
@@ -101,7 +103,6 @@ export function PerceptronAnimation({ maxWidth = 560 }) {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (reduce) {
-      // Static, gently lit fallback.
       nodeEls.current.forEach((el) => {
         if (!el) return;
         el.style.fill = COLORS.surface;
@@ -114,16 +115,25 @@ export function PerceptronAnimation({ maxWidth = 560 }) {
       return;
     }
 
+    const isNarrow = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const frameInterval = isNarrow ? 1000 / 30 : 1000 / 60; // 30fps mobile, 60fps desktop
+    let lastFrameTime = 0;
+
     const start = performance.now();
-    const triangle = (x) => Math.max(0, 1 - Math.abs(x)); // peak 1 at x=0
+    const triangle = (x) => Math.max(0, 1 - Math.abs(x));
 
     const frame = (now) => {
       if (pausedRef.current) {
         rafRef.current = requestAnimationFrame(frame);
         return;
       }
+      if (now - lastFrameTime < frameInterval) {
+        rafRef.current = requestAnimationFrame(frame);
+        return;
+      }
+      lastFrameTime = now;
       const t = (now - start) / 1000;
-      const g = t / GAP_DURATION; // global position measured in "gaps"
+      const g = t / GAP_DURATION;
 
       // Active waves: wave k started at k * GAP_DURATION, front = g - k.
       // It is in-flight while front in [0, numGaps].

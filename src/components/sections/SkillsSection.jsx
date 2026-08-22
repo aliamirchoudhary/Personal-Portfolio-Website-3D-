@@ -6,7 +6,7 @@ const SkillCube = lazy(() =>
   import('../animated/SkillCube').then((m) => ({ default: m.SkillCube })),
 )
 
-export default function SkillsSection({ lowPower }) {
+export default function SkillsSection() {
   return (
     <section id="skills" className="portfolio-section" style={{ height: '100vh' }}>
       <div
@@ -39,7 +39,7 @@ export default function SkillsSection({ lowPower }) {
         </div>
 
         <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
-          <LazyMount><Suspense fallback={null}><SkillCube lowPower={lowPower} /></Suspense></LazyMount>
+          <LazyMount><Suspense fallback={null}><SkillCube /></Suspense></LazyMount>
         </div>
       </div>
     </section>

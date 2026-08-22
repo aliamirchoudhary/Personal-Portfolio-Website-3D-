@@ -82,7 +82,7 @@ function useGlobalStyles() {
   }, []);
 }
 
-function SkillCube({ size = 200, lowPower }) {
+function SkillCube({ size = 200 }) {
   useGlobalStyles();
 
   const half = size / 2;
@@ -98,17 +98,24 @@ function SkillCube({ size = 200, lowPower }) {
   };
 
   useEffect(() => {
-    if (lowPower) return
-
+    const isNarrow = typeof window !== 'undefined' && window.innerWidth <= 768;
+    const frameInterval = isNarrow ? 1000 / 30 : 1000 / 60; // 30fps mobile, 60fps desktop
+    const speed = isNarrow ? 22 : 45; // half speed on mobile
     let prev = performance.now();
-    const speed = 45;
+    let lastFrameTime = 0;
 
     const loop = (now) => {
       if (pausedRef.current) {
-        prev = now
-        rafRef.current = requestAnimationFrame(loop)
-        return
+        prev = now;
+        lastFrameTime = now;
+        rafRef.current = requestAnimationFrame(loop);
+        return;
       }
+      if (now - lastFrameTime < frameInterval) {
+        rafRef.current = requestAnimationFrame(loop);
+        return;
+      }
+      lastFrameTime = now;
       const dt = (now - prev) / 1000;
       prev = now;
       if (!drag.current.active) {
@@ -157,7 +164,7 @@ function SkillCube({ size = 200, lowPower }) {
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("touchend", onUp);
     };
-  }, [lowPower]);
+  }, []);
 
   const startDrag = (e) => {
     const point = e.touches ? e.touches[0] : e;
