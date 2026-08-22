@@ -91,8 +91,11 @@ function useGlobalStyles() {
         .skillcube-face {
           backdrop-filter: none;
           -webkit-backdrop-filter: none;
-          background: rgba(18, 18, 26, 0.9);
+          background: rgba(18, 18, 26, 0.95);
         }
+      }
+      .skillcube-face {
+        background: rgba(18, 18, 26, 0.95);
       }
     `;
     document.head.appendChild(style);
@@ -114,11 +117,33 @@ function SkillCube({ size = 200 }) {
 
   useEffect(() => {
     const isNarrow = typeof window !== 'undefined' && window.innerWidth <= 768;
-    const initialSpinDuration = isNarrow ? '30s' : '20s';
+    const spinDuration = isNarrow ? 30000 : 20000; // ms
+
+    // Helper: extract Y rotation (degrees) from element's transform matrix
+    const getYRotation = (el) => {
+      const style = window.getComputedStyle(el);
+      const matrix = style.transform;
+      if (matrix === 'none') return 0;
+      // matrix3d(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
+      // For rotateX(rx) rotateY(ry): we can extract ry from the matrix
+      const values = matrix.match(/matrix3d?\(([^)]+)\)/);
+      if (!values) return 0;
+      const nums = values[1].split(',').map(Number);
+      if (nums.length === 16) {
+        // matrix3d: [0]=m11, [1]=m12, [2]=m13, [4]=m21, [5]=m22, [6]=m23, [8]=m31, [9]=m32, [10]=m33
+        // rotateY(ry): m11=cos(ry), m13=-sin(ry), m31=sin(ry), m33=cos(ry)
+        const ry = Math.atan2(nums[8], nums[10]) * (180 / Math.PI);
+        return ry;
+      } else if (nums.length === 6) {
+        // 2D matrix - shouldn't happen for 3D
+        return 0;
+      }
+      return 0;
+    };
 
     // Start CSS animation
     if (boxRef.current) {
-      boxRef.current.style.animation = `skillcube-spin ${initialSpinDuration} linear infinite`;
+      boxRef.current.style.animation = `skillcube-spin ${isNarrow ? '30s' : '20s'} linear infinite`;
     }
 
     const onMove = (e) => {
@@ -134,15 +159,22 @@ function SkillCube({ size = 200 }) {
       };
       applyRotation();
     };
+
     const onUp = () => {
       drag.current.active = false;
       document.body.style.userSelect = "";
-      // Resume CSS animation after drag
-      if (boxRef.current && !drag.current.active) {
-        const dur = typeof window !== 'undefined' && window.innerWidth <= 768 ? '30s' : '20s';
-        boxRef.current.style.animation = `skillcube-spin ${dur} linear infinite`;
+
+      // Resume CSS animation from current rotation
+      if (boxRef.current) {
+        const currentY = getYRotation(boxRef.current);
+        const progress = ((currentY % 360) + 360) % 360 / 360; // 0-1
+        const delay = -progress * spinDuration; // negative delay jumps into animation
+        boxRef.current.style.animation = `skillcube-spin ${spinDuration}ms linear infinite`;
+        boxRef.current.style.animationDelay = `${delay}ms`;
+        boxRef.current.style.animationPlayState = 'running';
       }
     };
+
     const onDown = () => {
       drag.current.active = true;
       document.body.style.userSelect = "none";
@@ -151,6 +183,7 @@ function SkillCube({ size = 200 }) {
         boxRef.current.style.animation = 'none';
       }
     };
+
     const onVisibilityChange = () => {
       if (boxRef.current) {
         boxRef.current.style.animationPlayState = document.hidden ? 'paused' : 'running';
