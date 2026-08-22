@@ -168,7 +168,7 @@ const mappedProjects = PROJECTS.map((p) => ({
   links: p.links,
 }))
 
-export default function ProjectsSection() {
+export default function ProjectsSection({ lowPower }) {
   return (
     <section id="projects" className="portfolio-section" style={{ height: '100vh' }}>
       <div
@@ -204,7 +204,7 @@ export default function ProjectsSection() {
           <div style={{ marginTop: 20, marginBottom: 20, width: '100%', maxWidth: '100vw', overflow: 'hidden' }}>
             <LazyMount margin="300px" placeholder={<div style={{ height: 300 }} />}>
               <Suspense fallback={null}>
-                <TechFlowDiagram />
+                <TechFlowDiagram lowPower={lowPower} />
               </Suspense>
             </LazyMount>
           </div>

@@ -82,7 +82,7 @@ function useGlobalStyles() {
   }, []);
 }
 
-function SkillCube({ size = 200 }) {
+function SkillCube({ size = 200, lowPower }) {
   useGlobalStyles();
 
   const half = size / 2;
@@ -98,6 +98,8 @@ function SkillCube({ size = 200 }) {
   };
 
   useEffect(() => {
+    if (lowPower) return
+
     let prev = performance.now();
     const speed = 45;
 
@@ -155,7 +157,7 @@ function SkillCube({ size = 200 }) {
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("touchend", onUp);
     };
-  }, []);
+  }, [lowPower]);
 
   const startDrag = (e) => {
     const point = e.touches ? e.touches[0] : e;

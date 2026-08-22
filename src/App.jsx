@@ -222,8 +222,8 @@ export default function App() {
             <KryzectSection />
             <ExperienceSection />
             <EducationSection />
-            <SkillsSection />
-            <ProjectsSection />
+            <SkillsSection lowPower={lowPower} />
+            <ProjectsSection lowPower={lowPower} />
             <ContactSection />
           </main>
           <Footer scrollToSection={scrollToSection} />

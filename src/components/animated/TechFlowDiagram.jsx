@@ -101,7 +101,7 @@ function Icon({ name, size = 22, color }) {
   }
 }
 
-export default function TechFlowDiagram() {
+export default function TechFlowDiagram({ lowPower }) {
   const lineRefs = useRef([])
   const nodeRefs = useRef({})
   const rafRef = useRef(0)
@@ -147,6 +147,8 @@ export default function TechFlowDiagram() {
   }, [])
 
   useEffect(() => {
+    if (lowPower) return
+
     const PERIOD = 1500
     const SEG = 30
     const start = performance.now()
@@ -184,7 +186,7 @@ export default function TechFlowDiagram() {
 
     rafRef.current = requestAnimationFrame(tick)
     return () => { cancelAnimationFrame(rafRef.current); document.removeEventListener("visibilitychange", onVisibilityChange) }
-  }, [edges])
+  }, [edges, lowPower])
 
   const pct = (v, total) => `${(v / total) * 100}%`
 
