@@ -196,7 +196,7 @@ export default function ProjectsSection() {
           Featured Projects
         </h2>
 
-        <div style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
           <RingCarousel cards={mappedProjects} accentColor="#7c3aed" initialCenter={1} />
         </div>
 
