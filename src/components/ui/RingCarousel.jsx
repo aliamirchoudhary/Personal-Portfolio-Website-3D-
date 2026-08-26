@@ -124,12 +124,12 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
     // base values keyed by absolute offset
     const map = compact ? {
       0: { x: 0, z: 0, ry: 0, scale: 0.65, op: 1 },
-      1: { x: 100, z: 0, ry: 20, scale: 0.85, op: 1 },
-      2: { x: 200, z: 0, ry: 30, scale: 0.3, op: 0 },
+      1: { x: 80, z: 0, ry: 15, scale: 0.8, op: 1 },
+      2: { x: 140, z: 0, ry: 25, scale: 0.3, op: 0 },
     } : {
-      0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 },
-      1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 },
-      2: { x: 210, z: 90, ry: 40, scale: 1.1, op: 1 },
+      0: { x: 0, z: -100, ry: 0, scale: 0.75, op: 1 },
+      1: { x: 100, z: 30, ry: 20, scale: 0.95, op: 1 },
+      2: { x: 160, z: 60, ry: 35, scale: 1.0, op: 1 },
     }
     const abs = Math.abs(offset)
     const sign = offset < 0 ? -1 : 1
@@ -166,13 +166,15 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
         onPointerLeave={endDrag}
         onWheel={onWheel}
         style={{
-          width: 380,
+          width: "100%",
+          maxWidth: 380,
           height: 340,
           margin: "0 auto",
           position: "relative",
           perspective: "1100px",
           cursor: "grab",
           touchAction: "pan-y",
+          overflow: "hidden",
         }}
       >
         <div
@@ -183,6 +185,7 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            overflow: "hidden",
           }}
         >
           {cards.map((card, i) => {
