@@ -56,8 +56,14 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
   useEffect(() => {
     const el = stageRef.current
     if (!el) return
-    const w = el.getBoundingClientRect().width
-    setCompact(w < 320)
+    const observe = () => {
+      const w = el.getBoundingClientRect().width
+      setCompact(w < 500)
+    }
+    observe()
+    const ro = new ResizeObserver(observe)
+    ro.observe(el)
+    return () => ro.disconnect()
   }, [])
 
   const total = cards.length
@@ -123,9 +129,9 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
   const transformFor = (offset) => {
     // base values keyed by absolute offset
     const map = compact ? {
-      0: { x: 0, z: 0, ry: 0, scale: 0.65, op: 1 },
-      1: { x: 100, z: 0, ry: 20, scale: 0.85, op: 1 },
-      2: { x: 200, z: 0, ry: 30, scale: 0.3, op: 0 },
+      0: { x: 0, z: 0, ry: 0, scale: 0.7, op: 1 },
+      1: { x: 90, z: 0, ry: 15, scale: 0.9, op: 1 },
+      2: { x: 160, z: 0, ry: 25, scale: 0.4, op: 0 },
     } : {
       0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 },
       1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 },
@@ -166,8 +172,9 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
         onPointerLeave={endDrag}
         onWheel={onWheel}
         style={{
-          width: 700,
-          height: 420,
+          width: "100%",
+          maxWidth: 900,
+          height: compact ? 320 : 420,
           margin: "0 auto",
           position: "relative",
           perspective: "1100px",
