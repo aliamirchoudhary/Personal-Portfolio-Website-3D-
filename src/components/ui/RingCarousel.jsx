@@ -166,8 +166,8 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
         onPointerLeave={endDrag}
         onWheel={onWheel}
         style={{
-          width: 380,
-          height: 340,
+          width: 700,
+          height: 420,
           margin: "0 auto",
           position: "relative",
           perspective: "1100px",
