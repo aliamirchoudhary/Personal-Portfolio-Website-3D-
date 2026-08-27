@@ -129,9 +129,9 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
   const transformFor = (offset) => {
     // base values keyed by absolute offset
     const map = compact ? {
-      0: { x: 0, z: 0, ry: 0, scale: 0.6, op: 1 },
-      1: { x: 85, z: 0, ry: 12, scale: 0.75, op: 1 },
-      2: { x: 140, z: 0, ry: 20, scale: 0.3, op: 0 },
+      0: { x: 0, z: 0, ry: 0, scale: 0.7, op: 1 },
+      1: { x: 100, z: 0, ry: 12, scale: 0.85, op: 1 },
+      2: { x: 160, z: 0, ry: 18, scale: 0.35, op: 0 },
     } : {
       0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 },
       1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 },
@@ -208,10 +208,10 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
                 }}
                   style={{
                     position: "absolute",
-                    width: 200,
-                    height: 260,
+                    width: compact ? 140 : 200,
+                    height: compact ? 190 : 260,
                     borderRadius: 16,
-                    padding: 20,
+                    padding: compact ? 12 : 20,
                     boxSizing: "border-box",
                     background: "rgba(18,18,26,0.65)",
                     backdropFilter: "blur(14px)",
@@ -220,7 +220,7 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
                     boxShadow: `0 10px 40px -10px ${accentColor}55, 0 0 0 1px ${THEME.border}`,
                     display: "flex",
                     flexDirection: "column",
-                    gap: 12,
+                    gap: compact ? 8 : 12,
                     overflow: "hidden",
                     transformStyle: "preserve-3d",
                     transition: `transform 500ms ${EASE}, opacity 500ms ${EASE}, box-shadow 200ms ease-out`,
