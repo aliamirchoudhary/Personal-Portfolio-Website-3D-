@@ -129,9 +129,9 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
   const transformFor = (offset) => {
     // base values keyed by absolute offset
     const map = compact ? {
-      0: { x: 0, z: 0, ry: 0, scale: 0.7, op: 1 },
-      1: { x: 90, z: 0, ry: 15, scale: 0.9, op: 1 },
-      2: { x: 160, z: 0, ry: 25, scale: 0.4, op: 0 },
+      0: { x: 0, z: 0, ry: 0, scale: 0.6, op: 1 },
+      1: { x: 85, z: 0, ry: 12, scale: 0.75, op: 1 },
+      2: { x: 140, z: 0, ry: 20, scale: 0.3, op: 0 },
     } : {
       0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 },
       1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 },
@@ -172,9 +172,9 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
         onPointerLeave={endDrag}
         onWheel={onWheel}
         style={{
-          width: "100%",
+          width: compact ? "calc(100% - 40px)" : "100%",
           maxWidth: 900,
-          height: compact ? 320 : 420,
+          height: compact ? 280 : 420,
           margin: "0 auto",
           position: "relative",
           perspective: "1100px",
