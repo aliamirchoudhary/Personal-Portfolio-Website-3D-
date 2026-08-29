@@ -129,9 +129,9 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
   const transformFor = (offset) => {
     // base values keyed by absolute offset
     const map = compact ? {
-      0: { x: 0, z: -30, ry: 0, scale: 0.75, op: 1 },
-      1: { x: 85, z: 10, ry: 12, scale: 0.85, op: 1 },
-      2: { x: 140, z: 25, ry: 20, scale: 0.6, op: 1 },
+      0: { x: 0, z: -30, ry: 0, scale: 0.65, op: 1 },
+      1: { x: 70, z: 10, ry: 12, scale: 0.8, op: 1 },
+      2: { x: 110, z: 25, ry: 20, scale: 0.9, op: 1 },
     } : {
       0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 },
       1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 },
@@ -208,8 +208,8 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
                 }}
                   style={{
                     position: "absolute",
-                    width: compact ? 140 : 200,
-                    height: compact ? 195 : 260,
+                    width: compact ? 130 : 200,
+                    height: compact ? 185 : 260,
                     borderRadius: 16,
                     padding: compact ? 12 : 20,
                     boxSizing: "border-box",
