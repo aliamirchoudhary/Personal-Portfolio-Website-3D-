@@ -53,6 +53,35 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 
 ---
 
+## Performance
+
+Lighthouse scores across browsers and devices (Aug 2026):
+
+| Metric | Edge Mobile | Chrome Mobile | Edge Desktop | Chrome Desktop |
+|---|---|---|---|---|
+| **Performance** | 39 | **79** | 55 | **91** |
+| FCP | 3.6 s | 1.5 s | 2.4 s | 0.5 s |
+| LCP | 8.8 s | 3.5 s | 4.8 s | 1.2 s |
+| TBT | 770 ms | 350 ms | 60 ms | 100 ms |
+| CLS | 0.079 | 0.105 | 0.121 | 0.129 |
+| Speed Index | 12.5 s | 3.0 s | 5.2 s | 1.0 s |
+| TTI | 8.8 s | 4.2 s | 4.8 s | 1.2 s |
+
+### Performance Practices Applied
+
+- **Lazy-loaded animated components** — `React.lazy()` + `Suspense` for all 7 animated 3D components; only the current section's component mounts in the morph slot, others render on demand
+- **Low-power mobile mode** — `requestAnimationFrame` loops gated behind a `lowPower` flag; on mobile, canvas animations (NeuralNetworkGlobe, TechFlowDiagram) throttle to 30fps and reduce node/particle counts
+- **CSS-driven auto-rotation** — SkillCube auto-rotation moved from JS `rAF` loop to pure CSS animation (`animation: spin 8s linear infinite`), offloading to the compositor thread
+- **Code-split per section** — Each section component is its own chunk (`lazy(() => import('./SectionsSection'))`), keeping the initial bundle under 140 KB gzipped
+- **Font optimization** — Replaced 259 KB Font Awesome CDN with a local ~3 KB glyph subset; Google Fonts loaded with `display=swap` and preloaded via `<link rel="preload">`
+- **LCP image preload** — Profile image (`profile.jpg`, 62 KB) added as `<link rel="preload" as="image">` in `index.html`
+- **Staggered section mount** — Below-fold sections delay their first render by 1.5–3s via `setTimeout`, shrinking long tasks that blocked TTI
+- **Layout shift reduction** — Loading overlay reserves explicit dimensions; profile picture morph uses fixed positioning with `will-change: transform` to avoid reflow
+- **Mobile slot hidden** — The 460px morph transition slot is `display: none` on screens ≤1024px; each section renders its animated component inline instead
+- **Canvas `will-change`** — Animated canvases use `will-change: transform` to promote to GPU compositing layers, avoiding paint bottlenecks
+
+---
+
 ## Tech Stack
 
 ### Frontend
