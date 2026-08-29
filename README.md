@@ -55,18 +55,6 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 
 ## Performance
 
-Lighthouse scores across browsers and devices (Aug 2026):
-
-| Metric | Edge Mobile | Chrome Mobile | Edge Desktop | Chrome Desktop |
-|---|---|---|---|---|
-| **Performance** | 39 | **79** | 55 | **91** |
-| FCP | 3.6 s | 1.5 s | 2.4 s | 0.5 s |
-| LCP | 8.8 s | 3.5 s | 4.8 s | 1.2 s |
-| TBT | 770 ms | 350 ms | 60 ms | 100 ms |
-| CLS | 0.079 | 0.105 | 0.121 | 0.129 |
-| Speed Index | 12.5 s | 3.0 s | 5.2 s | 1.0 s |
-| TTI | 8.8 s | 4.2 s | 4.8 s | 1.2 s |
-
 ### Performance Practices Applied
 
 - **Lazy-loaded animated components** — `React.lazy()` + `Suspense` for all 7 animated 3D components; only the current section's component mounts in the morph slot, others render on demand
