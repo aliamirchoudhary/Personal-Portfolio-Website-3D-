@@ -1,54 +1,66 @@
 <div align="center">
-  <br/>
+
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
   <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
   <img src="https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white" alt="GSAP"/>
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS"/>
   <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel"/>
+
   <br/><br/>
+
+  <img src="public/profile.jpg" width="120" height="120" style="border-radius: 50%; border: 3px solid #7c3aed;" alt="Profile"/>
+
+  <h1>Muhammad Ali Aamir</h1>
+
+  <p>
+    <strong>Full Stack Developer</strong> · AI Enthusiast · Open Source Contributor
+  </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/status-live-success?style=flat-square" alt="Status"/>
+    <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"/>
+    <img src="https://img.shields.io/badge/build-vite-646CFF?style=flat-square&logo=vite" alt="Build"/>
+    <img src="https://img.shields.io/badge/deploy-vercel-black?style=flat-square&logo=vercel" alt="Deploy"/>
+  </p>
+
+  <p>
+    <a href="#overview">Overview</a> · 
+    <a href="#tech-stack">Tech Stack</a> · 
+    <a href="#performance">Performance</a> · 
+    <a href="#features">Features</a> · 
+    <a href="#getting-started">Getting Started</a> · 
+    <a href="#deployment">Deployment</a>
+  </p>
+
 </div>
-
-# Muhammad Ali Aamir | Portfolio
-
-> An interactive 3D portfolio experience — scroll through eight curated sections as animated 3D components morph and transition in a fixed viewport panel. Built with React 19, GSAP ScrollTrigger, and Tailwind CSS.
-
-<p align="center">
-  <img src="https://img.shields.io/badge/status-live-success?style=flat-square" alt="Status"/>
-  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"/>
-  <img src="https://img.shields.io/badge/build-vite-646CFF?style=flat-square&logo=vite" alt="Build"/>
-  <img src="https://img.shields.io/badge/deploy-vercel-black?style=flat-square&logo=vercel" alt="Deploy"/>
-</p>
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Tech Stack](#tech-stack)
-- [Performance](#performance)
-- [Features](#features)
-  - [Sections & Animated Components](#sections--animated-components)
-  - [Morph Transition Slot](#morph-transition-slot)
-  - [Loading Screen](#loading-screen)
-  - [Responsive Design](#responsive-design)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-  - [Installation](#installation)
-  - [Development](#development)
-  - [Build](#build)
-- [Configuration](#configuration)
-  - [Environment Variables](#environment-variables)
-  - [Portfolio Data](#portfolio-data)
-  - [Theme & Colors](#theme--colors)
-- [Deployment](#deployment)
-- [Linting](#linting)
-- [License](#license)
 
 ---
 
 ## Overview
 
+<div align="center">
+
+> An interactive 3D portfolio experience — scroll through **eight curated sections** as animated 3D components morph and transition in a fixed viewport panel.
+
+</div>
+
 This portfolio reimagines the traditional single-page scrolling experience by pairing **scroll-snapped content sections** with a **fixed 460px animated viewport slot**. As you scroll, the slot cross-fades between eight different 3D animated components — from a floating profile portrait to a neural network globe to a rotating skill cube — while the text content slides alongside in a 60/40 layout.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  ┌──────────────────────┐  ┌─────────────────────────────────┐ │
+│  │                      │  │                                 │ │
+│  │     Text Content     │  │     Animated 3D Component       │ │
+│  │     (60% width)      │  │     (460px fixed slot)          │ │
+│  │                      │  │                                 │ │
+│  │  • Section heading   │  │  ┌─────────────────────────┐   │ │
+│  │  • Description       │  │  │    🎨 NeuralNetwork     │   │ │
+│  │  • Skills/Tags       │  │  │       Globe             │   │ │
+│  │  • CTAs              │  │  │    (Canvas 2D 3D)       │   │ │
+│  │                      │  │  └─────────────────────────┘   │ │
+│  └──────────────────────┘  └─────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 On mobile, the layout collapses to a single-column scroll, with each animated component rendered directly below its section's content.
 
@@ -56,7 +68,18 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 
 ## Tech Stack
 
+<div align="center">
+
 ### Frontend
+
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![GSAP](https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![PostCSS](https://img.shields.io/badge/PostCSS-DD3A0A?style=for-the-badge&logo=postcss&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)
+
+</div>
 
 | Technology | Version | Purpose |
 |---|---|---|
@@ -68,14 +91,25 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 | [Autoprefixer](https://github.com/postcss/autoprefixer) | ^10.5.0 | CSS vendor prefixing |
 | [ESLint](https://eslint.org/) | ^10.3.0 | JavaScript linting with React Hooks & Refresh plugins |
 
+<div align="center">
+
 ### Backend (Serverless)
+
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+
+</div>
 
 | Technology | Purpose |
 |---|---|
 | [Vercel Serverless Functions](https://vercel.com/docs/functions) | Contact form POST endpoint |
 | [Nodemailer](https://nodemailer.com/) | Gmail SMTP email delivery via App Passwords |
 
+<div align="center">
+
 ### Fonts & Icons
+
+</div>
 
 | Resource | Source |
 |---|---|
@@ -90,17 +124,25 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 
 ## Performance
 
+<div align="center">
+
+![Performance](https://img.shields.io/badge/Performance-optimized-00CE68?style=for-the-badge&logo=lighthouse&logoColor=white)
+
+</div>
+
 ### Performance Practices Applied
 
-- **Lazy-loaded animated components** — `React.lazy()` + `Suspense` for the morph transition slot; only the current section's component mounts, others render on demand
-- **Low-power mobile mode** — `requestAnimationFrame` loops gated behind a `lowPower` flag; on mobile, canvas animations (NeuralNetworkGlobe, TechFlowDiagram) throttle to 30fps and reduce node/particle counts
-- **CSS-driven auto-rotation** — SkillCube auto-rotation moved from JS `rAF` loop to pure CSS animation (`animation: spin 8s linear infinite`), offloading to the compositor thread
-- **Font optimization** — Replaced 259 KB Font Awesome CDN with a local ~3 KB glyph subset; Google Fonts loaded with `display=swap` and preloaded via `<link rel="preload">`
-- **LCP image preload** — Profile image (`profile.jpg`, 62 KB) added as `<link rel="preload" as="image">` in `index.html`
-- **Staggered section mount** — Below-fold sections delay their first render by 1.5–3s via `setTimeout`, shrinking long tasks that blocked TTI
-- **Layout shift reduction** — Loading overlay reserves explicit dimensions; profile picture morph uses fixed positioning with `will-change: transform` to avoid reflow
-- **Mobile slot hidden** — The 460px morph transition slot is `display: none` on screens ≤1024px; each section renders its animated component inline instead
-- **Canvas `will-change`** — Animated canvases use `will-change: transform` to promote to GPU compositing layers, avoiding paint bottlenecks
+| Practice | Description |
+|---|---|
+| 🚀 **Lazy-loaded components** | `React.lazy()` + `Suspense` for the morph transition slot; only the current section's component mounts, others render on demand |
+| 🔋 **Low-power mobile mode** | `requestAnimationFrame` loops gated behind a `lowPower` flag; canvas animations throttle to 30fps and reduce node/particle counts |
+| 🎨 **CSS-driven auto-rotation** | SkillCube auto-rotation moved from JS `rAF` loop to pure CSS animation, offloading to the compositor thread |
+| ✂️ **Font optimization** | Replaced 259 KB Font Awesome CDN with a local ~3 KB glyph subset; Google Fonts loaded with `display=swap` |
+| ⚡ **LCP image preload** | Profile image (`profile.jpg`, 62 KB) added as `<link rel="preload" as="image">` in `index.html` |
+| ⏱️ **Staggered section mount** | Below-fold sections delay their first render by 1.5–3s via `setTimeout`, shrinking long tasks |
+| 📐 **Layout shift reduction** | Loading overlay reserves explicit dimensions; profile picture morph uses fixed positioning with `will-change: transform` |
+| 📱 **Mobile slot hidden** | The 460px morph transition slot is `display: none` on screens ≤1024px; each section renders its animated component inline |
+| 🖼️ **Canvas `will-change`** | Animated canvases use `will-change: transform` to promote to GPU compositing layers |
 
 ---
 
@@ -108,35 +150,35 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 
 ### Sections & Animated Components
 
+<div align="center">
+
 Eight full-viewport sections, each with scroll-snap positioning, alternating left/right content alignment, and a dedicated animated 3D component:
 
-<div align="center">
+</div>
 
 | # | Section | Content | Animated Component | Alignment |
 |---|---|---|---|---|
-| 1 | **Home** | Name, typewriter role animation, Download Resume CTA | `HomeProfilePicture` — floating portrait with 6 simultaneous CSS animations (float, glow ring, light-sweep arc, glitch burst, sheen scan, vignette breathe) | Left |
-| 2 | **About** | 3-paragraph bio, highlight keywords, Kryzect agency card with animated hex logo | `NeuralNetworkGlobe` — Canvas 2D 3D globe (110 nodes, Fibonacci sphere), auto-rotates with drag + inertia, cyan signal cascades propagate through the network | Right |
-| 3 | **Kryzect** | Kryzect agency showcase with services and portfolio | `KryzectLogo` — Animated Kryzect brand mark | Left |
-| 4 | **Experience** | ExperienceTimeline — vertical scroll-driven timeline with work experience entries | `PerceptronAnimation` — SVG multi-layer perceptron (4-6-6-4-2), input nodes fire sequentially, signals propagate left-to-right lighting up edges | Right |
-| 5 | **Education** | EducationTimeline — vertical scroll-driven timeline with 5 entries, animated fill line, expandable course lists | `SpinningSkillBox` — CSS 3D box rotating on X-axis every 1.2s through "Data Science", "Full Stack", "Machine Learning", "Cloud"; side label "AI"; drag to spin with snap | Left |
-| 6 | **Skills** | SkillsGrid — tabbed grid (Technical / Professional) with animated progress bars, pop-in cards, shimmer overlay | `SkillCube` — CSS 3D cube (6 faces: Python, SQL, C++, JavaScript, ML/AI, React) with devicon logos, auto-rotates 45°/s, drag in any direction with inertia | Right |
-| 7 | **Projects** | RingCarousel with 8 project cards (travelbuddy, criclytics, etc.), each with a detailed HTML modal | `TechFlowDiagram` — SVG architecture diagram: Client → API Gateway → Modules (Cloud, Repository, Database, AI) with continuous cyan/lavender travelling light pulses | Left |
-| 8 | **Contact** | Contact form (Name, Email, Message with validation), notification toast, 8 social links grid, contact info card | `MorphingCommsIcon` — Single icon cycling ChatBubble → Envelope → Phone → SMS every 1.5s, rotating conic glow ring, orbiting particles, hover pauses morph | Right |
-
-</div>
+| 1 | **🏠 Home** | Name, typewriter role animation, Download Resume CTA | `HomeProfilePicture` — floating portrait with 6 simultaneous CSS animations | Left |
+| 2 | **👤 About** | 3-paragraph bio, highlight keywords, Kryzect agency card | `NeuralNetworkGlobe` — Canvas 2D 3D globe (110 nodes, Fibonacci sphere) | Right |
+| 3 | **💼 Kryzect** | Kryzect agency showcase with services and portfolio | `KryzectLogo` — Animated Kryzect brand mark | Left |
+| 4 | **📈 Experience** | ExperienceTimeline — vertical scroll-driven timeline | `PerceptronAnimation` — SVG multi-layer perceptron (4-6-6-4-2) | Right |
+| 5 | **🎓 Education** | EducationTimeline — 5 entries, animated fill line | `SpinningSkillBox` — CSS 3D box rotating on X-axis every 1.2s | Left |
+| 6 | **🛠️ Skills** | SkillsGrid — tabbed grid with animated progress bars | `SkillCube` — CSS 3D cube with devicon logos, auto-rotates 45°/s | Right |
+| 7 | **🚀 Projects** | RingCarousel with 8 project cards, detailed HTML modals | `TechFlowDiagram` — SVG architecture diagram with travelling light pulses | Left |
+| 8 | **📬 Contact** | Contact form, notification toast, 8 social links grid | `MorphingCommsIcon` — Icon cycling ChatBubble → Envelope → Phone → SMS | Right |
 
 ### Component Interaction Matrix
 
 | Component | Auto-Animation | Drag | Wheel | Click/Tap | Hover |
-|---|---|---|---|---|---|
-| HomeProfilePicture | ✅ Float, glow, glitch | ❌ | ❌ | ❌ | ❌ |
-| NeuralNetworkGlobe | ✅ Rotation, signal cascades | ✅ Rotate with inertia | ❌ | ❌ | ❌ |
-| KryzectLogo | ✅ Brand mark animation | ❌ | ❌ | ❌ | ❌ |
-| PerceptronAnimation | ✅ Signal propagation cycle | ❌ | ❌ | ❌ | ❌ |
-| SpinningSkillBox | ✅ Auto-flip every 1.2s | ✅ Vertical spin, snap | ❌ | ❌ | ❌ |
-| SkillCube | ✅ Rotation 45°/s | ✅ Free spin with inertia | ❌ | ❌ | ❌ |
-| TechFlowDiagram | ✅ Light pulses cycle | ❌ | ❌ | ❌ | ❌ |
-| MorphingCommsIcon | ✅ Morph cycle every 1.5s | ❌ | ❌ | ❌ | ✅ Pauses morph, intensifies glow |
+|---|:---:|:---:|:---:|:---:|:---:|
+| HomeProfilePicture | ✅ | ❌ | ❌ | ❌ | ❌ |
+| NeuralNetworkGlobe | ✅ | ✅ | ❌ | ❌ | ❌ |
+| KryzectLogo | ✅ | ❌ | ❌ | ❌ | ❌ |
+| PerceptronAnimation | ✅ | ❌ | ❌ | ❌ | ❌ |
+| SpinningSkillBox | ✅ | ✅ | ❌ | ❌ | ❌ |
+| SkillCube | ✅ | ✅ | ❌ | ❌ | ❌ |
+| TechFlowDiagram | ✅ | ❌ | ❌ | ❌ | ❌ |
+| MorphingCommsIcon | ✅ | ❌ | ❌ | ❌ | ✅ |
 
 ### Morph Transition Slot
 
@@ -152,15 +194,15 @@ The `MorphTransitionSlot` is a **fixed-position panel** (460px wide, `z-index: 1
 
 A full-viewport overlay (`z-index: 100`) orchestrates two parallel animations:
 
-**1. LoadingNameTrace (`src/components/loading/LoadingNameTrace.jsx`)**
+**1. LoadingNameTrace**
 - Full-viewport SVG overlay with Orbitron font
 - Name appears in dark purple (`#3b1d8f`) with a slow fade-in (first 15% of timeline)
 - A light lavender stroke (`#a78bfa`, `stroke-width: 2.5`) traces every letter simultaneously via `stroke-dasharray`/`stroke-dashoffset` animation over 2.2s
 - Glow filter (`feGaussianBlur`) on the trace stroke
 - Fades out at the end
-- On mobile (≤1024px): additional letter-spacing (`0.14em`) and light outline (`stroke: #a78bfa`, `stroke-width: 1.2`, `paint-order: stroke fill`) for readability
+- On mobile (≤1024px): additional letter-spacing (`0.14em`) and light outline for readability
 
-**2. LoadingProfileFrame (`src/components/loading/LoadingProfileFrame.jsx`)**
+**2. LoadingProfileFrame**
 - Circular profile picture with double-ring frame
 - Six simultaneous CSS animations:
   - Mount fade-in + scale-up
@@ -184,34 +226,15 @@ A full-viewport overlay (`z-index: 100`) orchestrates two parallel animations:
 
 ### Responsive Design
 
-Three breakpoints following the original design system:
+<div align="center">
 
-#### ≤1024px (Tablet Landscape)
-- Scroll-snap disabled (`scroll-snap-type: none`)
-- MorphTransitionSlot hidden (`display: none`)
-- Each section renders its animated component inline (`.mobile-animated-component`)
-- Home section: flex column, centered, profile picture above name
-- Contact form: 1 column
-- Social links: 4-column grid, centered
-- RingCarousel: compact mode (responsive sizing, adjusted card offsets)
-- `html { overflow: visible }` to prevent clipping
-- Font sizes: fluid via `clamp()`
+| Breakpoint | Device | Key Changes |
+|---|---|---|
+| **≤1024px** | Tablet Landscape | Scroll-snap disabled, morph slot hidden, inline animated components |
+| **≤768px** | Tablet Portrait | Navbar 64px, hamburger menu, smaller headings |
+| **≤480px** | Phone | Reduced padding, 2-column social links, compact layout |
 
-#### ≤768px (Tablet Portrait)
-- Navbar height: 64px (down from 96px)
-- Section headings: 2.2rem
-- Home name: 2.8rem
-- Contact form inner grid: 1 column
-- Footer: stacked vertically, centered
-- Hamburger menu replaces desktop nav links
-
-#### ≤480px (Phone)
-- Content padding reduced
-- Home name: 2.2rem
-- Section headings: 1.8rem
-- Social links: 2 columns
-- Social icons: 60×60px
-- Contact page 1 column layout
+</div>
 
 #### Accessibility
 - `prefers-reduced-motion: reduce` respected in all animated components (animations disabled)
@@ -225,28 +248,28 @@ Three breakpoints following the original design system:
 ```
 my-portfolio/
 ├── api/
-│   └── send-contact.js            # Vercel serverless function (Gmail SMTP)
+│   └── send-contact.js              # Vercel serverless function (Gmail SMTP)
 │
 ├── public/
-│   ├── profile.jpg                # Profile picture
-│   ├── Muhammad_Ali_Aamir_Resume.pdf  # Downloadable resume
-│   ├── favicon.svg                # SVG favicon
-│   ├── og-image.png               # Open Graph social preview
-│   ├── icons.svg                  # Icon sprite sheet
-│   ├── robots.txt                 # Search engine crawler rules
-│   ├── sitemap.xml                # XML sitemap for SEO
+│   ├── profile.jpg                  # Profile picture
+│   ├── Muhammad_Ali_Aamir_Resume.pdf # Downloadable resume
+│   ├── favicon.svg                  # SVG favicon
+│   ├── og-image.png                 # Open Graph social preview
+│   ├── icons.svg                    # Icon sprite sheet
+│   ├── robots.txt                   # Search engine crawler rules
+│   ├── sitemap.xml                  # XML sitemap for SEO
 │   ├── css/
-│   │   └── fa-icons.min.css       # Local Font Awesome glyph-subset (~3KB)
+│   │   └── fa-icons.min.css         # Local Font Awesome glyph-subset (~3KB)
 │   └── fonts/
-│       ├── fa-brands-subset.woff2 # Local Font Awesome brand icons
-│       └── fa-solid-subset.woff2  # Local Font Awesome solid icons
+│       ├── fa-brands-subset.woff2   # Local Font Awesome brand icons
+│       └── fa-solid-subset.woff2    # Local Font Awesome solid icons
 │
 ├── src/
 │   ├── assets/
-│   │   └── hero.png               # Hero image asset
+│   │   └── hero.png                 # Hero image asset
 │   │
 │   ├── components/
-│   │   ├── animated/              # Self-contained 3D animated components
+│   │   ├── animated/                # Self-contained 3D animated components
 │   │   │   ├── HomeProfilePicture.jsx
 │   │   │   ├── NeuralNetworkGlobe.jsx
 │   │   │   ├── PerceptronAnimation.jsx
@@ -255,14 +278,14 @@ my-portfolio/
 │   │   │   ├── TechFlowDiagram.jsx
 │   │   │   └── MorphingCommsIcon.jsx
 │   │   │
-│   │   ├── loading/               # Loading screen
+│   │   ├── loading/                 # Loading screen
 │   │   │   ├── LoadingNameTrace.jsx
 │   │   │   └── LoadingProfileFrame.jsx
 │   │   │
 │   │   ├── navbar/
-│   │   │   └── NavJumper.jsx      # Animated navigation link jumper
+│   │   │   └── NavJumper.jsx        # Animated navigation link jumper
 │   │   │
-│   │   ├── sections/              # 8 page sections
+│   │   ├── sections/                # 8 page sections
 │   │   │   ├── HomeSection.jsx
 │   │   │   ├── AboutSection.jsx
 │   │   │   ├── KryzectSection.jsx
@@ -272,37 +295,38 @@ my-portfolio/
 │   │   │   ├── ProjectsSection.jsx
 │   │   │   └── ContactSection.jsx
 │   │   │
-│   │   ├── shared/                # Shared layout components
+│   │   ├── shared/                  # Shared layout components
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── Footer.jsx
 │   │   │   ├── MorphTransitionSlot.jsx
-│   │   │   └── LazyMount.jsx      # IntersectionObserver lazy mount wrapper
+│   │   │   └── LazyMount.jsx        # IntersectionObserver lazy mount wrapper
 │   │   │
-│   │   └── ui/                    # Reusable UI widgets
+│   │   └── ui/                      # Reusable UI widgets
 │   │       ├── RingCarousel.jsx
 │   │       ├── EducationTimeline.jsx
 │   │       ├── ExperienceTimeline.jsx
 │   │       ├── SkillsGrid.jsx
-│   │       ├── KryzectLogo.jsx    # Animated Kryzect brand mark
+│   │       ├── KryzectLogo.jsx      # Animated Kryzect brand mark
 │   │       └── StartupLogoButton.jsx
 │   │
 │   ├── data/
-│   │   └── portfolioData.js       # All portfolio content & personal data
+│   │   └── portfolioData.js         # All portfolio content & personal data
 │   │
-│   ├── App.jsx                    # Root: loading screen + section orchestration + GSAP
-│   ├── index.css                  # Tailwind directives + custom responsive CSS
-│   └── main.jsx                   # Entry point + GSAP plugin registration
+│   ├── App.jsx                      # Root: loading screen + section orchestration + GSAP
+│   ├── index.css                    # Tailwind directives + custom responsive CSS
+│   └── main.jsx                     # Entry point + GSAP plugin registration
 │
-├── .env                           # Environment variables (gitignored)
-├── .env.example                   # Environment variable template
-├── .gitignore                     # Git ignore rules
-├── eslint.config.js               # ESLint flat config v10
-├── index.html                     # HTML entry with CDN links & inline SVG favicon
-├── package.json                   # Dependencies, scripts, metadata
-├── postcss.config.js              # PostCSS with Tailwind & Autoprefixer
-├── tailwind.config.js             # Custom theme (colors, fonts, breakpoints)
-├── vercel.json                    # Vercel deployment & rewrites
-└── vite.config.js                 # Vite build configuration
+├── .env                             # Environment variables (gitignored)
+├── .env.example                     # Environment variable template
+├── .gitignore                       # Git ignore rules
+├── eslint.config.js                 # ESLint flat config v10
+├── index.html                       # HTML entry with CDN links & inline SVG favicon
+├── LICENSE                          # MIT License
+├── package.json                     # Dependencies, scripts, metadata
+├── postcss.config.js                # PostCSS with Tailwind & Autoprefixer
+├── tailwind.config.js               # Custom theme (colors, fonts, breakpoints)
+├── vercel.json                      # Vercel deployment & rewrites
+└── vite.config.js                   # Vite build configuration
 ```
 
 ---
@@ -427,6 +451,12 @@ Fonts: Space Grotesk (headings), Inter (body), JetBrains Mono (monospace).
 
 ## Deployment
 
+<div align="center">
+
+![Vercel](https://img.shields.io/badge/Deploy_on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+
+</div>
+
 ### Vercel (Recommended)
 
 ```bash
@@ -471,12 +501,32 @@ Uses **ESLint 10** with a flat configuration file (`eslint.config.js`):
 
 ## License
 
-MIT — feel free to use, modify, and distribute. Attribution is appreciated but not required.
+<div align="center">
+
+![MIT License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+</div>
 
 ---
 
 <div align="center">
-  <sub>Built with passion, React, and way too many keyframes.</sub>
-  <br/>
-  <sub>© 2026 Muhammad Ali Aamir</sub>
+
+**[⬆ Back to Top](#muhammad-ali-aamir--portfolio)**
+
+<br/>
+
+Built with passion, React, and way too many keyframes.
+
+<br/>
+
+<img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React"/>
+<img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"/>
+<img src="https://img.shields.io/badge/GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=white" alt="GSAP"/>
+
+<br/>
+
+© 2026 Muhammad Ali Aamir
+
 </div>
