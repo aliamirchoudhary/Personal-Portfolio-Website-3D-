@@ -309,6 +309,7 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
           role="dialog"
           aria-modal="true"
           aria-label={active.title}
+          className="ring-modal-overlay"
           onClick={() => setActive(null)}
           style={{
             position: "fixed",
@@ -453,6 +454,15 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
 
       <style>{`
         @keyframes ringFade{from{opacity:0}to{opacity:1}}
+        .ring-modal-overlay {
+          position: fixed !important;
+          inset: 0 !important;
+          z-index: 9999 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          top: 0 !important;
+          left: 0 !important;
+        }
         .ring-modal-content p { margin: 0 0 12px; }
         .ring-modal-content p:last-child { margin-bottom: 0; }
         .ring-modal-content strong,
