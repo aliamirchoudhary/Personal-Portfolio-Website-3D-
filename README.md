@@ -10,7 +10,7 @@
 
 # Muhammad Ali Aamir | Portfolio
 
-> An interactive 3D portfolio experience — scroll through seven curated sections as animated 3D components morph and transition in a fixed viewport panel. Built with React 19, GSAP ScrollTrigger, and Tailwind CSS.
+> An interactive 3D portfolio experience — scroll through eight curated sections as animated 3D components morph and transition in a fixed viewport panel. Built with React 19, GSAP ScrollTrigger, and Tailwind CSS.
 
 <p align="center">
   <img src="https://img.shields.io/badge/status-live-success?style=flat-square" alt="Status"/>
@@ -25,6 +25,7 @@
 
 - [Overview](#overview)
 - [Tech Stack](#tech-stack)
+- [Performance](#performance)
 - [Features](#features)
   - [Sections & Animated Components](#sections--animated-components)
   - [Morph Transition Slot](#morph-transition-slot)
@@ -47,26 +48,9 @@
 
 ## Overview
 
-This portfolio reimagines the traditional single-page scrolling experience by pairing **scroll-snapped content sections** with a **fixed 460px animated viewport slot**. As you scroll, the slot cross-fades between seven different 3D animated components — from a floating profile portrait to a neural network globe to a rotating skill cube — while the text content slides alongside in a 60/40 layout.
+This portfolio reimagines the traditional single-page scrolling experience by pairing **scroll-snapped content sections** with a **fixed 460px animated viewport slot**. As you scroll, the slot cross-fades between eight different 3D animated components — from a floating profile portrait to a neural network globe to a rotating skill cube — while the text content slides alongside in a 60/40 layout.
 
 On mobile, the layout collapses to a single-column scroll, with each animated component rendered directly below its section's content.
-
----
-
-## Performance
-
-### Performance Practices Applied
-
-- **Lazy-loaded animated components** — `React.lazy()` + `Suspense` for all 7 animated 3D components; only the current section's component mounts in the morph slot, others render on demand
-- **Low-power mobile mode** — `requestAnimationFrame` loops gated behind a `lowPower` flag; on mobile, canvas animations (NeuralNetworkGlobe, TechFlowDiagram) throttle to 30fps and reduce node/particle counts
-- **CSS-driven auto-rotation** — SkillCube auto-rotation moved from JS `rAF` loop to pure CSS animation (`animation: spin 8s linear infinite`), offloading to the compositor thread
-- **Code-split per section** — Each section component is its own chunk (`lazy(() => import('./SectionsSection'))`), keeping the initial bundle under 140 KB gzipped
-- **Font optimization** — Replaced 259 KB Font Awesome CDN with a local ~3 KB glyph subset; Google Fonts loaded with `display=swap` and preloaded via `<link rel="preload">`
-- **LCP image preload** — Profile image (`profile.jpg`, 62 KB) added as `<link rel="preload" as="image">` in `index.html`
-- **Staggered section mount** — Below-fold sections delay their first render by 1.5–3s via `setTimeout`, shrinking long tasks that blocked TTI
-- **Layout shift reduction** — Loading overlay reserves explicit dimensions; profile picture morph uses fixed positioning with `will-change: transform` to avoid reflow
-- **Mobile slot hidden** — The 460px morph transition slot is `display: none` on screens ≤1024px; each section renders its animated component inline instead
-- **Canvas `will-change`** — Animated canvases use `will-change: transform` to promote to GPU compositing layers, avoiding paint bottlenecks
 
 ---
 
@@ -81,6 +65,7 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 | [GSAP](https://gsap.com/) | ^3.15.0 | ScrollTrigger-driven scroll animations & cross-fade morph transitions |
 | [Tailwind CSS](https://tailwindcss.com/) | ^3.4.19 | Utility-first CSS framework with custom theme |
 | [PostCSS](https://postcss.org/) | ^8.5.15 | CSS transformation pipeline |
+| [Autoprefixer](https://github.com/postcss/autoprefixer) | ^10.5.0 | CSS vendor prefixing |
 | [ESLint](https://eslint.org/) | ^10.3.0 | JavaScript linting with React Hooks & Refresh plugins |
 
 ### Backend (Serverless)
@@ -89,7 +74,6 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 |---|---|
 | [Vercel Serverless Functions](https://vercel.com/docs/functions) | Contact form POST endpoint |
 | [Nodemailer](https://nodemailer.com/) | Gmail SMTP email delivery via App Passwords |
-| [dotenv](https://github.com/motdotla/dotenv) | Environment variable loading |
 
 ### Fonts & Icons
 
@@ -100,7 +84,23 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 | Inter | Google Fonts — UI text |
 | JetBrains Mono | Google Fonts — Code snippets & monospace labels |
 | Clash Display | Fontshare — Display headings |
-| Font Awesome 6.4.0 | CDN — Social & service icons |
+| Font Awesome 6.4.0 | Local glyph subset (~3 KB) — Social & service icons |
+
+---
+
+## Performance
+
+### Performance Practices Applied
+
+- **Lazy-loaded animated components** — `React.lazy()` + `Suspense` for the morph transition slot; only the current section's component mounts, others render on demand
+- **Low-power mobile mode** — `requestAnimationFrame` loops gated behind a `lowPower` flag; on mobile, canvas animations (NeuralNetworkGlobe, TechFlowDiagram) throttle to 30fps and reduce node/particle counts
+- **CSS-driven auto-rotation** — SkillCube auto-rotation moved from JS `rAF` loop to pure CSS animation (`animation: spin 8s linear infinite`), offloading to the compositor thread
+- **Font optimization** — Replaced 259 KB Font Awesome CDN with a local ~3 KB glyph subset; Google Fonts loaded with `display=swap` and preloaded via `<link rel="preload">`
+- **LCP image preload** — Profile image (`profile.jpg`, 62 KB) added as `<link rel="preload" as="image">` in `index.html`
+- **Staggered section mount** — Below-fold sections delay their first render by 1.5–3s via `setTimeout`, shrinking long tasks that blocked TTI
+- **Layout shift reduction** — Loading overlay reserves explicit dimensions; profile picture morph uses fixed positioning with `will-change: transform` to avoid reflow
+- **Mobile slot hidden** — The 460px morph transition slot is `display: none` on screens ≤1024px; each section renders its animated component inline instead
+- **Canvas `will-change`** — Animated canvases use `will-change: transform` to promote to GPU compositing layers, avoiding paint bottlenecks
 
 ---
 
@@ -108,19 +108,20 @@ On mobile, the layout collapses to a single-column scroll, with each animated co
 
 ### Sections & Animated Components
 
-Seven full-viewport sections, each with scroll-snap positioning, alternating left/right content alignment, and a dedicated animated 3D component:
+Eight full-viewport sections, each with scroll-snap positioning, alternating left/right content alignment, and a dedicated animated 3D component:
 
 <div align="center">
 
 | # | Section | Content | Animated Component | Alignment |
 |---|---|---|---|---|
 | 1 | **Home** | Name, typewriter role animation, Download Resume CTA | `HomeProfilePicture` — floating portrait with 6 simultaneous CSS animations (float, glow ring, light-sweep arc, glitch burst, sheen scan, vignette breathe) | Left |
-| 2 | **About** | 3-paragraph bio, highlight keywords, WebCraft agency card with animated hex logo | `NeuralNetworkGlobe` — Canvas 2D 3D globe (110 nodes, Fibonacci sphere), auto-rotates with drag + inertia, cyan signal cascades propagate through the network | Right |
-| 3 | **Services** | "What I Offer" heading, RingCarousel with 3 service cards (Full Stack, Design-to-Web, Front-End) with rich modals | `PerceptronAnimation` — SVG multi-layer perceptron (4-6-6-4-2), input nodes fire sequentially, signals propagate left-to-right lighting up edges | Left |
-| 4 | **Education** | EducationTimeline — vertical scroll-driven timeline with 5 entries, animated fill line, expandable course lists | `SpinningSkillBox` — CSS 3D box rotating on X-axis every 1.2s through "Data Science", "Full Stack", "Machine Learning", "Cloud"; side label "AI"; drag to spin with snap | Right |
-| 5 | **Skills** | SkillsGrid — tabbed grid (Technical / Professional) with animated progress bars, pop-in cards, shimmer overlay | `SkillCube` — CSS 3D cube (6 faces: Python, SQL, C++, JavaScript, ML/AI, React) with devicon logos, auto-rotates 45°/s, drag in any direction with inertia | Left |
-| 6 | **Projects** | RingCarousel with 8 project cards (travelbuddy, criclytics, etc.), each with a detailed HTML modal | `TechFlowDiagram` — SVG architecture diagram: Client → API Gateway → Modules (Cloud, Repository, Database, AI) with continuous cyan/lavender travelling light pulses | Right |
-| 7 | **Contact** | Contact form (Name, Email, Message with validation), notification toast, 8 social links grid, contact info card | `MorphingCommsIcon` — Single icon cycling ChatBubble → Envelope → Phone → SMS every 1.5s, rotating conic glow ring, orbiting particles, hover pauses morph | Left |
+| 2 | **About** | 3-paragraph bio, highlight keywords, Kryzect agency card with animated hex logo | `NeuralNetworkGlobe` — Canvas 2D 3D globe (110 nodes, Fibonacci sphere), auto-rotates with drag + inertia, cyan signal cascades propagate through the network | Right |
+| 3 | **Kryzect** | Kryzect agency showcase with services and portfolio | `KryzectLogo` — Animated Kryzect brand mark | Left |
+| 4 | **Experience** | ExperienceTimeline — vertical scroll-driven timeline with work experience entries | `PerceptronAnimation` — SVG multi-layer perceptron (4-6-6-4-2), input nodes fire sequentially, signals propagate left-to-right lighting up edges | Right |
+| 5 | **Education** | EducationTimeline — vertical scroll-driven timeline with 5 entries, animated fill line, expandable course lists | `SpinningSkillBox` — CSS 3D box rotating on X-axis every 1.2s through "Data Science", "Full Stack", "Machine Learning", "Cloud"; side label "AI"; drag to spin with snap | Left |
+| 6 | **Skills** | SkillsGrid — tabbed grid (Technical / Professional) with animated progress bars, pop-in cards, shimmer overlay | `SkillCube` — CSS 3D cube (6 faces: Python, SQL, C++, JavaScript, ML/AI, React) with devicon logos, auto-rotates 45°/s, drag in any direction with inertia | Right |
+| 7 | **Projects** | RingCarousel with 8 project cards (travelbuddy, criclytics, etc.), each with a detailed HTML modal | `TechFlowDiagram` — SVG architecture diagram: Client → API Gateway → Modules (Cloud, Repository, Database, AI) with continuous cyan/lavender travelling light pulses | Left |
+| 8 | **Contact** | Contact form (Name, Email, Message with validation), notification toast, 8 social links grid, contact info card | `MorphingCommsIcon` — Single icon cycling ChatBubble → Envelope → Phone → SMS every 1.5s, rotating conic glow ring, orbiting particles, hover pauses morph | Right |
 
 </div>
 
@@ -130,6 +131,7 @@ Seven full-viewport sections, each with scroll-snap positioning, alternating lef
 |---|---|---|---|---|---|
 | HomeProfilePicture | ✅ Float, glow, glitch | ❌ | ❌ | ❌ | ❌ |
 | NeuralNetworkGlobe | ✅ Rotation, signal cascades | ✅ Rotate with inertia | ❌ | ❌ | ❌ |
+| KryzectLogo | ✅ Brand mark animation | ❌ | ❌ | ❌ | ❌ |
 | PerceptronAnimation | ✅ Signal propagation cycle | ❌ | ❌ | ❌ | ❌ |
 | SpinningSkillBox | ✅ Auto-flip every 1.2s | ✅ Vertical spin, snap | ❌ | ❌ | ❌ |
 | SkillCube | ✅ Rotation 45°/s | ✅ Free spin with inertia | ❌ | ❌ | ❌ |
@@ -191,7 +193,7 @@ Three breakpoints following the original design system:
 - Home section: flex column, centered, profile picture above name
 - Contact form: 1 column
 - Social links: 4-column grid, centered
-- RingCarousel: compact mode (stage 280×260px, card offsets reduced)
+- RingCarousel: compact mode (responsive sizing, adjusted card offsets)
 - `html { overflow: visible }` to prevent clipping
 - Font sizes: fluid via `clamp()`
 
@@ -227,10 +229,22 @@ my-portfolio/
 │
 ├── public/
 │   ├── profile.jpg                # Profile picture
-│   ├── Muhammad_Ali_Aamir.pdf     # Downloadable resume
-│   └── vite.svg                   # Favicon
+│   ├── Muhammad_Ali_Aamir_Resume.pdf  # Downloadable resume
+│   ├── favicon.svg                # SVG favicon
+│   ├── og-image.png               # Open Graph social preview
+│   ├── icons.svg                  # Icon sprite sheet
+│   ├── robots.txt                 # Search engine crawler rules
+│   ├── sitemap.xml                # XML sitemap for SEO
+│   ├── css/
+│   │   └── fa-icons.min.css       # Local Font Awesome glyph-subset (~3KB)
+│   └── fonts/
+│       ├── fa-brands-subset.woff2 # Local Font Awesome brand icons
+│       └── fa-solid-subset.woff2  # Local Font Awesome solid icons
 │
 ├── src/
+│   ├── assets/
+│   │   └── hero.png               # Hero image asset
+│   │
 │   ├── components/
 │   │   ├── animated/              # Self-contained 3D animated components
 │   │   │   ├── HomeProfilePicture.jsx
@@ -248,10 +262,11 @@ my-portfolio/
 │   │   ├── navbar/
 │   │   │   └── NavJumper.jsx      # Animated navigation link jumper
 │   │   │
-│   │   ├── sections/              # 7 page sections
+│   │   ├── sections/              # 8 page sections
 │   │   │   ├── HomeSection.jsx
 │   │   │   ├── AboutSection.jsx
-│   │   │   ├── ServicesSection.jsx
+│   │   │   ├── KryzectSection.jsx
+│   │   │   ├── ExperienceSection.jsx
 │   │   │   ├── EducationSection.jsx
 │   │   │   ├── SkillsSection.jsx
 │   │   │   ├── ProjectsSection.jsx
@@ -260,12 +275,15 @@ my-portfolio/
 │   │   ├── shared/                # Shared layout components
 │   │   │   ├── Navbar.jsx
 │   │   │   ├── Footer.jsx
-│   │   │   └── MorphTransitionSlot.jsx
+│   │   │   ├── MorphTransitionSlot.jsx
+│   │   │   └── LazyMount.jsx      # IntersectionObserver lazy mount wrapper
 │   │   │
 │   │   └── ui/                    # Reusable UI widgets
 │   │       ├── RingCarousel.jsx
 │   │       ├── EducationTimeline.jsx
+│   │       ├── ExperienceTimeline.jsx
 │   │       ├── SkillsGrid.jsx
+│   │       ├── KryzectLogo.jsx    # Animated Kryzect brand mark
 │   │       └── StartupLogoButton.jsx
 │   │
 │   ├── data/
@@ -338,8 +356,8 @@ Outputs a production-optimized build:
 
 | Asset | Size (gzipped) |
 |---|---|
-| JavaScript | 398.85 kB (131.87 kB) |
-| CSS | 7.71 kB (2.37 kB) |
+| JavaScript | ~400 KB (~132 KB) |
+| CSS | ~8 KB (~2.4 KB) |
 
 ---
 
@@ -351,14 +369,14 @@ Create a `.env` file in the project root (copy from `.env.example`):
 
 ```env
 # Gmail SMTP credentials (use App Password, not your regular password)
-GMAIL_USER=your.email@gmail.com
-GMAIL_APP_PASSWORD=your-16-character-app-password
+GMAIL_USER=your-email@gmail.com
+GMAIL_APP_PASSWORD=your-16-char-app-password
 
 # Where admin notifications are sent
-ADMIN_EMAIL=admin@example.com
+ADMIN_EMAIL=your-email@gmail.com
 
 # Frontend origin (for CORS and redirects)
-FRONTEND_ORIGIN=https://yourdomain.com
+FRONTEND_ORIGIN=http://localhost:3000
 ```
 
 **Setting up a Gmail App Password:**
@@ -374,17 +392,18 @@ All content lives in `src/data/portfolioData.js`. Edit the following exports:
 
 | Export | Description |
 |---|---|
-| `PERSONAL` | Name, title, email, phone, location, resume URL, profile image |
+| `PERSONAL` | Name, title, email, phone, location, resume URL, profile image, availability, languages |
 | `ABOUT_TEXT` | Array of bio paragraphs (3) |
 | `ABOUT_HIGHLIGHTS` | Keywords/skills displayed as badges |
-| `WEBCRAFT` | Agency branding (name, URL, SVG logo path) |
+| `KRYZECT` | Kryzect agency branding (name, URL, SVG logo path) |
 | `SOCIAL_LINKS` | Array of 8 social platforms (icon, href, label) |
 | `SERVICES` | 3 services with title, description, tech stack, pricing |
+| `EXPERIENCE` | Work experience entries with role, company, duration, description |
 | `EDUCATION` | 5 education entries with degree, institution, courses |
-| `TECHNICAL_SKILLS` | 14 skills with name and percentage (0–100) |
-| `PROFESSIONAL_SKILLS` | 7 soft skills with name and percentage |
+| `TECHNICAL_SKILLS` | 13 skills with name and percentage (0–100) |
+| `PROFESSIONAL_SKILLS` | 6 soft skills with name and percentage |
 | `PROJECTS` | 8 projects with description, tags, links, full modal content |
-| `NAV_LINKS` | 7 navigation items mapping to section IDs |
+| `NAV_LINKS` | 8 navigation items mapping to section IDs |
 
 ### Theme & Colors
 
@@ -425,7 +444,7 @@ vercel --prod
 3. Add the same variables from your `.env` file
 4. Redeploy if needed
 
-The `vercel.json` configures a rewrite rule so `POST /send-contact` routes to the serverless function at `/api/send-contact.js`.
+The `vercel.json` configures a rewrite rule so `POST /send-contact` routes to the serverless function at `/api/send-contact`.
 
 ### Manual Deployment
 
