@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react"
+import { createPortal } from "react-dom"
 
 /* ------------------------------------------------------------------ *
  *  THEME TOKENS (from global style rules)
@@ -303,7 +304,7 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
       </div>
 
       {/* ---- modal ---- */}
-      {active && (
+      {active && createPortal(
         <div
           role="dialog"
           aria-modal="true"
@@ -446,7 +447,8 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <style>{`
