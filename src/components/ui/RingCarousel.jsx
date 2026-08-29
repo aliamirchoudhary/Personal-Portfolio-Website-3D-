@@ -130,8 +130,8 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
     // base values keyed by absolute offset
     const map = compact ? {
       0: { x: 0, z: -30, ry: 0, scale: 0.65, op: 1 },
-      1: { x: 55, z: 10, ry: 10, scale: 0.8, op: 1 },
-      2: { x: 80, z: 20, ry: 16, scale: 0.9, op: 1 },
+      1: { x: 62, z: 10, ry: 10, scale: 0.8, op: 1 },
+      2: { x: 90, z: 20, ry: 16, scale: 0.9, op: 1 },
     } : {
       0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 },
       1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 },
@@ -174,7 +174,7 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
         style={{
           width: compact ? "calc(100% - 16px)" : "100%",
           maxWidth: 900,
-          height: compact ? 290 : 420,
+          height: compact ? 330 : 420,
           margin: "0 auto",
           position: "relative",
           perspective: "1100px",
@@ -208,8 +208,8 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
                 }}
                   style={{
                     position: "absolute",
-                    width: compact ? 120 : 200,
-                    height: compact ? 185 : 260,
+                    width: compact ? 135 : 200,
+                    height: compact ? 220 : 260,
                     borderRadius: 16,
                     padding: compact ? 10 : 20,
                     boxSizing: "border-box",
