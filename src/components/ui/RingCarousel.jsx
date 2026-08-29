@@ -131,7 +131,7 @@ function RingCarousel({ cards = [], accentColor = THEME.primary, initialCenter }
     const map = compact ? {
       0: { x: 0, z: -30, ry: 0, scale: 0.65, op: 1 },
       1: { x: 70, z: 10, ry: 12, scale: 0.8, op: 1 },
-      2: { x: 100, z: 25, ry: 20, scale: 0.9, op: 1 },
+      2: { x: 110, z: 25, ry: 20, scale: 0.9, op: 1 },
     } : {
       0: { x: 0, z: -120, ry: 0, scale: 0.75, op: 1 },
       1: { x: 120, z: 40, ry: 25, scale: 1.0, op: 1 },
