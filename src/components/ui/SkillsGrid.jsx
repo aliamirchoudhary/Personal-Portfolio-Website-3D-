@@ -161,11 +161,13 @@ const STYLES = `
   gap: 1.6rem;
   max-width: 1000px;
   margin: 0 auto;
+  overflow-x: hidden;
 }
 
 .sg-scrollable {
   max-height: calc(100vh - 20rem);
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 6px;
 }
 
@@ -240,7 +242,7 @@ export default function SkillsGrid() {
   const skills = activeTab === "technical" ? TECHNICAL_SKILLS : PROFESSIONAL_SKILLS;
 
   return (
-    <div style={{ width: "100%", fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ width: "100%", fontFamily: "'Inter', sans-serif", overflowX: "hidden" }}>
 
       {/* Tab buttons */}
       <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "2.4rem" }}>
