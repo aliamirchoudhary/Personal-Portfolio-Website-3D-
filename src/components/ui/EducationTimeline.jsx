@@ -28,6 +28,7 @@ export function GlobalStyles() {
         margin: 0;
         padding: 64px 16px 120px;
         line-height: 1.6;
+        overflow-x: hidden;
       }
 
       .et-display {
@@ -44,6 +45,7 @@ export function GlobalStyles() {
         position: relative;
         max-width: 760px;
         margin: 0 auto;
+        overflow-x: hidden;
       }
 
       /* central vertical line (dim base track) */
