@@ -225,7 +225,7 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
   return (
     <div className="flex w-full items-center justify-end">
       <style>{css}</style>
-      <div className={cls('root')} role="img" aria-label="Profile picture">
+      <div className={cls('root')} data-home-portrait role="img" aria-label="Profile picture">
         <div className={cls('ring')} />
         <div className={cls('sweep')} />
 

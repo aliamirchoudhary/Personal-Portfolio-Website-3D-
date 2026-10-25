@@ -62,7 +62,41 @@ export async function verifyPortfolioUi(browser, base) {
     await page.evaluate((key) => sessionStorage.removeItem(key), INTRO_SESSION_KEY)
     await page.reload({ waitUntil: 'domcontentloaded' })
     await intro.waitFor({ state: 'visible' })
+    const departure = await intro.locator('.lpf-root').boundingBox()
+    await page.locator('.brand-intro[data-transferring="true"]').waitFor()
+    const { travelling, destination } = await intro.evaluate((node) => {
+      const portrait = node.querySelector('.lpf-root')
+      const movement = portrait.getAnimations().find((animation) => !('animationName' in animation))
+      // Inspect a precise animation frame; browser/test-clock scheduling can otherwise
+      // advance this short transition beyond its intermediate position.
+      movement.pause()
+      movement.currentTime = 250
+      const travelling = portrait.getBoundingClientRect().toJSON()
+      const destination = document
+        .querySelector('.home-artwork [data-home-portrait]')
+        .getBoundingClientRect()
+        .toJSON()
+      movement.play()
+      return { travelling, destination }
+    })
+    assert.ok(travelling.x > departure.x + 10, 'portrait must travel from center toward Home')
+    assert.ok(
+      travelling.x < destination.x - 10,
+      'portrait must pass through intermediate positions',
+    )
+    assert.equal(await intro.evaluate((el) => getComputedStyle(el).opacity), '1')
+    await page.screenshot({ path: 'test-results/followup-intro-handoff.png' })
     await intro.waitFor({ state: 'hidden', timeout: 5000 })
+    assert.equal(
+      await page.locator('body').evaluate((el) => el.classList.contains('intro-transfer')),
+      false,
+    )
+    assert.equal(
+      await page
+        .locator('.home-artwork [data-home-portrait]')
+        .evaluate((el) => getComputedStyle(el).opacity),
+      '1',
+    )
   } finally {
     await introContext.close()
   }
@@ -117,7 +151,7 @@ export async function verifyPortfolioUi(browser, base) {
       await page.waitForTimeout(220)
       const edgeY = await page.evaluate(() => scrollY)
       await page.mouse.wheel(0, 160)
-      await page.waitForTimeout(180)
+      await page.waitForFunction((before) => scrollY > before + 10, edgeY, { timeout: 2000 })
       assert.ok((await page.evaluate(() => scrollY)) > edgeY + 10, 'wheel can leave the last card')
       await carousel.focus()
       await page.keyboard.press('Home')

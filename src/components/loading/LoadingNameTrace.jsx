@@ -64,8 +64,9 @@ export default function LoadingNameTrace({ name = 'MUHAMMAD ALI AAMIR', duration
         fontSize="32"
         fontWeight="700"
         style={{
-          strokeDasharray: 160,
-          strokeDashoffset: 160,
+          // Cover the longest glyph contour, including the expanded M on mobile.
+          strokeDasharray: 320,
+          strokeDashoffset: 320,
           animation: `name-trace ${duration}ms ease-in-out 200ms both`,
         }}
       >

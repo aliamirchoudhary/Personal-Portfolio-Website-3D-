@@ -29,6 +29,29 @@
 .brand-intro[data-closing='true']::backdrop {
   animation: intro-exit 0.42s ease-in both;
 }
+.brand-intro[data-transferring='true'],
+.brand-intro[data-transferring='true']::backdrop {
+  animation: intro-reveal-home 0.7s ease-in-out both;
+}
+.brand-intro[data-transferring='true'] .brand-intro-art {
+  animation: none;
+}
+.brand-intro[data-transferring='true'] .lpf-scene {
+  background: transparent;
+}
+.brand-intro[data-transferring='true'] .brand-intro-name,
+.brand-intro[data-transferring='true'] > p,
+.brand-intro[data-transferring='true'] > button {
+  animation: intro-exit 0.25s ease-in both;
+}
+body.intro-transfer [data-home-portrait] {
+  animation-play-state: paused !important;
+}
+@keyframes intro-reveal-home {
+  to {
+    background: transparent;
+  }
+}
 @keyframes intro-content-in {
   from {
     opacity: 0;
