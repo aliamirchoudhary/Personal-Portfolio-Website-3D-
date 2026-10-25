@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react"
+import { useAnimationActivity } from '../../context/motion'
+import { useEffect, useRef } from 'react'
 
 const NODE_COUNT = 110
 const EDGE_DISTANCE = 0.46 // threshold on unit sphere to connect nodes
@@ -6,19 +7,21 @@ const MAX_WAVES = 3 // concurrent propagating cascades
 const MAX_HOPS = 6 // how many generations a cascade ripples outward
 
 // Colors from the design system (as "r, g, b" so we can vary alpha)
-const COLOR_NODE = "167, 139, 250" // #a78bfa lavender
-const COLOR_EDGE = "124, 58, 237" // #7c3aed violet
-const COLOR_SIGNAL = "6, 182, 212" // #06b6d4 cyan
+const COLOR_NODE = '167, 139, 250' // #a78bfa lavender
+const COLOR_EDGE = '124, 58, 237' // #7c3aed violet
+const COLOR_SIGNAL = '6, 182, 212' // #06b6d4 cyan
 
 export default function NeuralNetworkGlobe({ size = 320 }) {
+  const { ref: activityRef, animate, lowPower } = useAnimationActivity()
   const canvasRef = useRef(null)
   const rafRef = useRef(0)
   const pausedRef = useRef(false)
 
   useEffect(() => {
+    const nodeCount = lowPower ? 64 : NODE_COUNT
     const canvas = canvasRef.current
     if (!canvas) return
-    const ctx = canvas.getContext("2d")
+    const ctx = canvas.getContext('2d')
     if (!ctx) return
 
     // Handle high-DPI displays
@@ -34,10 +37,10 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
     // a cached sprite is GPU-cheap and looks identical.
     const makeGlow = (r, g, b) => {
       const px = 64
-      const c = document.createElement("canvas")
+      const c = document.createElement('canvas')
       c.width = px
       c.height = px
-      const gc = c.getContext("2d")
+      const gc = c.getContext('2d')
       const grad = gc.createRadialGradient(px / 2, px / 2, 0, px / 2, px / 2, px / 2)
       grad.addColorStop(0, `rgba(${r},${g},${b},1)`)
       grad.addColorStop(0.4, `rgba(${r},${g},${b},0.55)`)
@@ -56,8 +59,8 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
     // --- Generate nodes using a Fibonacci sphere for even distribution ---
     const nodes = []
     const goldenAngle = Math.PI * (3 - Math.sqrt(5))
-    for (let i = 0; i < NODE_COUNT; i++) {
-      const y = 1 - (i / (NODE_COUNT - 1)) * 2
+    for (let i = 0; i < nodeCount; i++) {
+      const y = 1 - (i / (nodeCount - 1)) * 2
       const r = Math.sqrt(1 - y * y)
       const theta = goldenAngle * i
       nodes.push({
@@ -72,8 +75,8 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
     // --- Precompute edges between nearby nodes + adjacency list ---
     const edges = []
     const neighbors = nodes.map(() => []) // neighbors[i] = [{ node, edge }]
-    for (let i = 0; i < NODE_COUNT; i++) {
-      for (let j = i + 1; j < NODE_COUNT; j++) {
+    for (let i = 0; i < nodeCount; i++) {
+      for (let j = i + 1; j < nodeCount; j++) {
         const dx = nodes[i].x - nodes[j].x
         const dy = nodes[i].y - nodes[j].y
         const dz = nodes[i].z - nodes[j].z
@@ -118,7 +121,7 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
 
     // Start a brand-new cascade from a random (or given) origin node.
     const fireWave = (source) => {
-      const src = source != null ? source : Math.floor(Math.random() * NODE_COUNT)
+      const src = source != null ? source : Math.floor(Math.random() * nodeCount)
       const wave = waveSeq++
       const visited = new Set([src])
       waveVisited.set(wave, visited)
@@ -139,7 +142,7 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
     let lastPointerY = 0
     let burstTimer = 0
 
-    const proj = new Array(NODE_COUNT).fill(null).map(() => ({
+    const proj = new Array(nodeCount).fill(null).map(() => ({
       sx: 0,
       sy: 0,
       scale: 1,
@@ -150,9 +153,16 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
     // expands outward without bouncing back and looping forever.
     const waveVisited = new Map() // wave id -> Set of node ids
 
+    let lastFrame = 0
+    const frameInterval = lowPower ? 1000 / 24 : window.innerWidth <= 768 ? 1000 / 30 : 1000 / 60
     const render = (now) => {
-      if (pausedRef.current) {
+      if (animate && now - lastFrame < frameInterval) {
         rafRef.current = requestAnimationFrame(render)
+        return
+      }
+      lastFrame = now
+      if (pausedRef.current) {
+        if (animate) rafRef.current = requestAnimationFrame(render)
         return
       }
       const elapsed = now - startTime
@@ -179,7 +189,7 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
       ctx.clearRect(0, 0, size, size)
 
       // --- Rotate around Y then X, and project ---
-      for (let i = 0; i < NODE_COUNT; i++) {
+      for (let i = 0; i < nodeCount; i++) {
         const n = nodes[i]
         // Y-axis rotation
         let rx = n.x * cosY - n.z * sinY
@@ -264,9 +274,7 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
       }
 
       // --- Draw nodes (sorted far -> near for correct overlap) ---
-      const order = [...Array(NODE_COUNT).keys()].sort(
-        (i, j) => proj[i].depth - proj[j].depth,
-      )
+      const order = [...Array(nodeCount).keys()].sort((i, j) => proj[i].depth - proj[j].depth)
 
       for (const i of order) {
         const n = nodes[i]
@@ -292,7 +300,7 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
         ctx.fill()
       }
 
-      rafRef.current = requestAnimationFrame(render)
+      if (animate) rafRef.current = requestAnimationFrame(render)
     }
 
     // --- Pointer drag handlers ---
@@ -318,7 +326,7 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
     }
     const onPointerUp = (e) => {
       dragging = false
-      canvas.releasePointerCapture?.(e.pointerId)
+      if (canvas.hasPointerCapture?.(e.pointerId)) canvas.releasePointerCapture(e.pointerId)
     }
 
     const onVisibilityChange = () => {
@@ -328,41 +336,42 @@ export default function NeuralNetworkGlobe({ size = 320 }) {
       }
     }
 
-    canvas.addEventListener("pointerdown", onPointerDown)
-    window.addEventListener("pointermove", onPointerMove)
-    window.addEventListener("pointerup", onPointerUp)
-    document.addEventListener("visibilitychange", onVisibilityChange)
+    canvas.addEventListener('pointerdown', onPointerDown)
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointerup', onPointerUp)
+    window.addEventListener('pointercancel', onPointerUp)
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     // seed an initial cascade
     fireWave()
 
-    rafRef.current = requestAnimationFrame(render)
+    render(performance.now())
 
     return () => {
       cancelAnimationFrame(rafRef.current)
-      canvas.removeEventListener("pointerdown", onPointerDown)
-      window.removeEventListener("pointermove", onPointerMove)
-      window.removeEventListener("pointerup", onPointerUp)
-      document.removeEventListener("visibilitychange", onVisibilityChange)
+      canvas.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointercancel', onPointerUp)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
     }
-  }, [size])
+  }, [size, animate, lowPower])
 
   return (
     <div
+      ref={activityRef}
+      data-active={animate}
       style={{
         width: size,
         height: size,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
       }}
       aria-hidden="true"
     >
-      <canvas
-        ref={canvasRef}
-        style={{ display: "block", cursor: "grab", touchAction: "none" }}
-      />
+      <canvas ref={canvasRef} style={{ display: 'block', cursor: 'grab', touchAction: 'none' }} />
     </div>
   )
 }

@@ -8,20 +8,11 @@ const SkillCube = lazy(() =>
 
 export default function SkillsSection() {
   return (
-    <section id="skills" className="portfolio-section" style={{ height: '100vh' }}>
-      <div
-        className="content-scroll"
-        style={{
-          marginLeft: '40vw',
-          width: '60vw',
-          height: '100vh',
-          padding: '1rem 4rem 4rem',
-          display: 'flex',
-          flexDirection: 'column',
-          boxSizing: 'border-box',
-        }}
-      >
+    <section id="skills" className="portfolio-section" aria-labelledby="skills-heading">
+      <div className="section-content content-right">
         <h2
+          id="skills-heading"
+          tabIndex={-1}
           className="gradient-text"
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -34,12 +25,16 @@ export default function SkillsSection() {
           Skills &amp; Expertise
         </h2>
 
-        <div className="skills-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        <div className="skills-scroll-area">
           <SkillsGrid />
         </div>
 
-        <div className="mobile-animated-component" style={{ marginTop: '10vh', marginBottom: '20vh' }}>
-          <LazyMount><Suspense fallback={null}><SkillCube /></Suspense></LazyMount>
+        <div className="mobile-animated-component">
+          <LazyMount>
+            <Suspense fallback={null}>
+              <SkillCube />
+            </Suspense>
+          </LazyMount>
         </div>
       </div>
     </section>

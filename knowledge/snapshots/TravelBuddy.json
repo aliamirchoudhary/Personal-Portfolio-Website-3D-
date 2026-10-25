@@ -1,0 +1,10 @@
+{
+  "repository": "aliamirchoudhary/TravelBuddy",
+  "path": "README.md",
+  "commit": "976dccee7fdfbb9ae4af0fea8bbb3ed76bb0d64f",
+  "blob": "d7a64047e72f741b7a692b1a80cb1868cd00232c",
+  "url": "https://github.com/aliamirchoudhary/TravelBuddy/blob/976dccee7fdfbb9ae4af0fea8bbb3ed76bb0d64f/README.md",
+  "retrievedAt": "2026-10-25T18:35:16.556Z",
+  "hash": "6add596f6c3bad0afdbd7f8c97e6a7eae27956ebc63d52200e3432580a271bbe",
+  "text": "# TravelBuddy\n\nTravelBuddy is a multipurpose travel assistant for discovering places, planning trips, sharing expenses, and coordinating the pieces of a real trip in one place.\n\n## At a Glance\n\n- **Frontend:** React + Vite for the UI, planner, social, and profile experiences\n- **Backend:** Node/Express for APIs, auth, background jobs, and database access\n- **Data:** SQL schema and seed scripts live in `server/sql` and `server/seed.js`\n\n## Quick Start\n\nInstall dependencies in the root project and the backend server:\n\n```bash\nnpm install\ncd server\nnpm install\ncd ..\n```\n\nStart the frontend dev server:\n\n```bash\nnpm run dev\n```\n\nStart the backend server from `server/`:\n\n```bash\nnode app.js\n```\n\n## Environment\n\n- Do not commit secrets. Use `server/.env.example` and `.env.example` as templates.\n- Keep `.env` and `server/.env` ignored by git. That is already covered in `.gitignore`.\n\n## Repository Notes\n\n- This fork contains a single consolidated commit titled `Final project`.\n- `.gitignore` excludes local artifacts such as `server/scratch/`, `server/node_modules/`, `.vscode/`, timestamp files, and logs.\n\n\n## Contributors\n\n- Primary committer: `aliamirchoudhary`\n- Co-authors included in the consolidated commit: `HassanNawaz14`, `zohaib-mzg`, `Aayanahmad06`\n\n## Next Steps\n\n- Review `server/.env.example` and populate secrets in your local `server/.env` without committing them.\n- Open a PR from your fork, `aliamirchoudhary/TravelBuddy:main`, to the upstream repo when ready.\n- If you want a PR draft, send me the upstream target and the title/description you want.\n\n\n\n"
+}

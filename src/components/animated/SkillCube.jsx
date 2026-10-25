@@ -1,78 +1,73 @@
-import React, { useEffect, useRef } from "react";
+import { useAnimationActivity } from '../../context/motion'
+import { useEffect, useRef } from 'react'
 
 const THEME = {
-  bg: "#0a0a0f",
-  surface: "#12121a",
-  primary: "#7c3aed",
-  secondary: "#06b6d4",
-  glow: "#a78bfa",
-  textPrimary: "#f1f5f9",
-  textSecondary: "#94a3b8",
-  danger: "#f43f5e",
-};
+  bg: '#0a0a0f',
+  surface: '#12121a',
+  primary: '#7c3aed',
+  secondary: '#06b6d4',
+  glow: '#a78bfa',
+  textPrimary: '#f1f5f9',
+  textSecondary: '#94a3b8',
+  danger: '#f43f5e',
+}
 
 const FACES = [
   {
-    key: "front",
-    label: "lang",
-    name: "Python",
+    key: 'front',
+    label: 'lang',
+    name: 'Python',
     color: THEME.glow,
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+    logo: '/tech/python.svg',
   },
   {
-    key: "right",
-    label: "data",
-    name: "SQL",
+    key: 'right',
+    label: 'data',
+    name: 'SQL',
     color: THEME.secondary,
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg",
+    logo: '/tech/postgresql.svg',
   },
   {
-    key: "back",
-    label: "lang",
-    name: "C++",
+    key: 'back',
+    label: 'lang',
+    name: 'C++',
     color: THEME.textPrimary,
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
+    logo: '/tech/cplusplus.svg',
   },
   {
-    key: "left",
-    label: "web",
-    name: "JavaScript",
+    key: 'left',
+    label: 'web',
+    name: 'JavaScript',
     color: THEME.glow,
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    logo: '/tech/javascript.svg',
   },
   {
-    key: "top",
-    label: "ai",
-    name: "ML / AI",
+    key: 'top',
+    label: 'ai',
+    name: 'ML / AI',
     color: THEME.secondary,
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg",
+    logo: '/tech/tensorflow.svg',
   },
   {
-    key: "bottom",
-    label: "ui",
-    name: "React",
+    key: 'bottom',
+    label: 'ui',
+    name: 'React',
     color: THEME.textPrimary,
-    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
+    logo: '/tech/react.svg',
   },
-];
+]
 
-const STYLE_ID = "skillcube-global-styles";
+const STYLE_ID = 'skillcube-global-styles'
 
 function useGlobalStyles() {
   useEffect(() => {
-    if (document.getElementById(STYLE_ID)) return;
+    if (document.getElementById(STYLE_ID)) return
 
-    const fontLink = document.createElement("link");
-    fontLink.rel = "stylesheet";
-    fontLink.href =
-      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap";
-    document.head.appendChild(fontLink);
-
-    const style = document.createElement("style");
-    style.id = STYLE_ID;
+    const style = document.createElement('style')
+    style.id = STYLE_ID
     style.textContent = `
-      html, body, #root { height: 100%; }
-      body { margin: 0; background: ${THEME.bg}; }
+
+
       @keyframes sc-glow-pulse {
         0%, 100% { box-shadow: inset 0 0 24px rgba(167,139,250,0.10), 0 0 18px rgba(124,58,237,0.18); }
         50%      { box-shadow: inset 0 0 40px rgba(167,139,250,0.32), 0 0 34px rgba(124,58,237,0.42); }
@@ -87,100 +82,109 @@ function useGlobalStyles() {
       .skillcube-face {
         background: rgba(18, 18, 26, 0.95);
       }
-    `;
-    document.head.appendChild(style);
-  }, []);
+    `
+    document.head.appendChild(style)
+  }, [])
 }
 
-function SkillCube({ size = 200 }) {
-  useGlobalStyles();
+export function SkillCube({ size = 200 }) {
+  const { ref: activityRef, animate, lowPower } = useAnimationActivity()
+  useGlobalStyles()
 
-  const half = size / 2;
-  const boxRef = useRef(null);
-  const rotRef = useRef({ x: -18, y: 24 });
-  const drag = useRef({ active: false, lastX: 0, lastY: 0 });
-  const pausedRef = useRef(false);
-  const rafRef = useRef(0);
+  const half = size / 2
+  const boxRef = useRef(null)
+  const rotRef = useRef({ x: -18, y: 24 })
+  const drag = useRef({ active: false, lastX: 0, lastY: 0 })
+  const pausedRef = useRef(false)
+  const rafRef = useRef(0)
 
   const applyRotation = () => {
-    if (!boxRef.current) return;
-    boxRef.current.style.transform = `rotateX(${rotRef.current.x}deg) rotateY(${rotRef.current.y}deg)`;
-  };
+    if (!boxRef.current) return
+    boxRef.current.style.transform = `rotateX(${rotRef.current.x}deg) rotateY(${rotRef.current.y}deg)`
+  }
 
   useEffect(() => {
-    const isNarrow = typeof window !== 'undefined' && window.innerWidth <= 768;
-    const frameInterval = isNarrow ? 1000 / 30 : 1000 / 60; // 30fps mobile, 60fps desktop
-    const speed = isNarrow ? 22 : 45; // half speed on mobile
-    let prev = performance.now();
-    let lastFrameTime = 0;
+    if (!animate) {
+      applyRotation()
+      return
+    }
+    const isNarrow = lowPower || window.innerWidth <= 768
+    const frameInterval = isNarrow ? 1000 / 30 : 1000 / 60 // 30fps mobile, 60fps desktop
+    const speed = isNarrow ? 22 : 45 // half speed on mobile
+    let prev = performance.now()
+    let lastFrameTime = 0
 
     const loop = (now) => {
       if (pausedRef.current) {
-        prev = now;
-        lastFrameTime = now;
-        rafRef.current = requestAnimationFrame(loop);
-        return;
+        prev = now
+        lastFrameTime = now
+        rafRef.current = requestAnimationFrame(loop)
+        return
       }
       if (now - lastFrameTime < frameInterval) {
-        rafRef.current = requestAnimationFrame(loop);
-        return;
+        rafRef.current = requestAnimationFrame(loop)
+        return
       }
-      lastFrameTime = now;
-      const dt = (now - prev) / 1000;
-      prev = now;
+      lastFrameTime = now
+      const dt = (now - prev) / 1000
+      prev = now
       if (!drag.current.active) {
         rotRef.current = {
           x: rotRef.current.x,
           y: rotRef.current.y + speed * dt,
-        };
-        applyRotation();
+        }
+        applyRotation()
       }
-      rafRef.current = requestAnimationFrame(loop);
-    };
-    rafRef.current = requestAnimationFrame(loop);
+      rafRef.current = requestAnimationFrame(loop)
+    }
+    rafRef.current = requestAnimationFrame(loop)
 
     const onMove = (e) => {
-      if (!drag.current.active) return;
-      const point = e.touches ? e.touches[0] : e;
-      const dx = point.clientX - drag.current.lastX;
-      const dy = point.clientY - drag.current.lastY;
-      drag.current.lastX = point.clientX;
-      drag.current.lastY = point.clientY;
+      if (!drag.current.active) return
+      const point = e.touches ? e.touches[0] : e
+      const dx = point.clientX - drag.current.lastX
+      const dy = point.clientY - drag.current.lastY
+      drag.current.lastX = point.clientX
+      drag.current.lastY = point.clientY
       rotRef.current = {
         x: rotRef.current.x - dy * 0.4,
         y: rotRef.current.y + dx * 0.4,
-      };
-      applyRotation();
-    };
+      }
+      applyRotation()
+    }
     const onUp = () => {
-      drag.current.active = false;
-      document.body.style.userSelect = "";
-    };
+      drag.current.active = false
+      document.body.classList.remove('dragging-artwork')
+    }
     const onVisibilityChange = () => {
       pausedRef.current = document.hidden
       if (!document.hidden) prev = performance.now()
     }
-    document.addEventListener("visibilitychange", onVisibilityChange)
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    window.addEventListener("touchmove", onMove, { passive: false });
-    window.addEventListener("touchend", onUp);
-    applyRotation();
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+    window.addEventListener('touchmove', onMove, { passive: false })
+    window.addEventListener('touchend', onUp)
+    window.addEventListener('touchcancel', onUp)
+    applyRotation()
     return () => {
-      cancelAnimationFrame(rafRef.current);
-      document.removeEventListener("visibilitychange", onVisibilityChange)
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("touchend", onUp);
-    };
-  }, []);
+      cancelAnimationFrame(rafRef.current)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+      window.removeEventListener('touchmove', onMove)
+      window.removeEventListener('touchend', onUp)
+      window.removeEventListener('touchcancel', onUp)
+      document.body.classList.remove('dragging-artwork')
+    }
+  }, [animate, lowPower])
 
   const startDrag = (e) => {
-    const point = e.touches ? e.touches[0] : e;
-    drag.current = { active: true, lastX: point.clientX, lastY: point.clientY };
-    document.body.style.userSelect = "none";
-  };
+    if (!animate) return
+    const point = e.touches ? e.touches[0] : e
+    drag.current = { active: true, lastX: point.clientX, lastY: point.clientY }
+    document.body.classList.add('dragging-artwork')
+  }
 
   const faceTransforms = {
     front: `rotateY(0deg) translateZ(${half}px)`,
@@ -189,21 +193,23 @@ function SkillCube({ size = 200 }) {
     left: `rotateY(-90deg) translateZ(${half}px)`,
     top: `rotateX(90deg) translateZ(${half}px)`,
     bottom: `rotateX(-90deg) translateZ(${half}px)`,
-  };
+  }
 
   return (
     <div
+      ref={activityRef}
+      data-active={animate}
       onMouseDown={startDrag}
       onTouchStart={startDrag}
       style={{
-        perspective: "900px",
+        perspective: '900px',
         width: size,
         height: size,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "grab",
-        touchAction: "none",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'grab',
+        touchAction: 'none',
       }}
     >
       <div
@@ -211,10 +217,10 @@ function SkillCube({ size = 200 }) {
         style={{
           width: size,
           height: size,
-          position: "relative",
-          transformStyle: "preserve-3d",
-          transform: "rotateX(-18deg) rotateY(24deg)",
-          willChange: "transform",
+          position: 'relative',
+          transformStyle: 'preserve-3d',
+          transform: 'rotateX(-18deg) rotateY(24deg)',
+          willChange: 'transform',
         }}
       >
         {FACES.map((face, i) => (
@@ -222,36 +228,36 @@ function SkillCube({ size = 200 }) {
             key={face.key}
             className="skillcube-face"
             style={{
-              position: "absolute",
+              position: 'absolute',
               width: size,
               height: size,
               transform: faceTransforms[face.key],
-              background: "rgba(18, 18, 26, 0.78)",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-              border: "1px solid #7c3aed30",
+              background: 'rgba(18, 18, 26, 0.78)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              border: '1px solid #7c3aed30',
               borderRadius: 16,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
               gap: 12,
-              animation: "sc-glow-pulse 4s ease-in-out infinite",
+              animation: 'sc-glow-pulse 4s ease-in-out infinite',
               animationDelay: `${i * 0.66}s`,
-              overflow: "hidden",
+              overflow: 'hidden',
             }}
           >
             <img
               src={face.logo}
-              alt={face.name + " logo"}
+              alt={face.name + ' logo'}
               crossOrigin="anonymous"
               draggable={false}
               style={{
                 width: 52,
                 height: 52,
-                objectFit: "contain",
+                objectFit: 'contain',
                 filter: `drop-shadow(0 0 12px ${face.color}66)`,
-                pointerEvents: "none",
+                pointerEvents: 'none',
               }}
             />
 
@@ -260,11 +266,11 @@ function SkillCube({ size = 200 }) {
                 fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 700,
                 fontSize: 26,
-                letterSpacing: "-0.02em",
+                letterSpacing: '-0.02em',
                 color: face.color,
                 textShadow: `0 0 18px ${face.color}55`,
-                textAlign: "center",
-                padding: "0 12px",
+                textAlign: 'center',
+                padding: '0 12px',
               }}
             >
               {face.name}
@@ -273,67 +279,5 @@ function SkillCube({ size = 200 }) {
         ))}
       </div>
     </div>
-  );
+  )
 }
-
-export default function App() {
-  useGlobalStyles();
-  return (
-    <main
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: THEME.bg,
-        color: THEME.textPrimary,
-        fontFamily: "'Inter', sans-serif",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 56,
-        overflow: "hidden",
-      }}
-    >
-      <header style={{ textAlign: "center" }}>
-        <p
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            color: THEME.secondary,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            fontSize: 12,
-            margin: 0,
-          }}
-        >
-          {"// skills"}
-        </p>
-        <h1
-          style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontWeight: 700,
-            letterSpacing: "-0.03em",
-            fontSize: 40,
-            margin: "12px 0 0",
-          }}
-        >
-          Things I build with
-        </h1>
-      </header>
-
-      <SkillCube size={200} />
-
-      <p
-        style={{
-          fontFamily: "'Inter', sans-serif",
-          color: THEME.textSecondary,
-          fontSize: 14,
-          margin: 0,
-        }}
-      >
-        Drag the cube to rotate
-      </p>
-    </main>
-  );
-}
-
-export { SkillCube };

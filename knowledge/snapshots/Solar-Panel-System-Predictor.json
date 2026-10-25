@@ -1,0 +1,10 @@
+{
+  "repository": "aliamirchoudhary/Solar-Panel-System-Predictor",
+  "path": "README.md",
+  "commit": "6a1f7096666e613782614e659dd35a72bf46d01b",
+  "blob": "55c9885991e3259ea0bdbaf40e30807ced42ee3c",
+  "url": "https://github.com/aliamirchoudhary/Solar-Panel-System-Predictor/blob/6a1f7096666e613782614e659dd35a72bf46d01b/README.md",
+  "retrievedAt": "2026-10-25T18:35:19.827Z",
+  "hash": "ba154c389646106f9eda2866561bbbc73e7b35d9e1596886bdfc9ccd32ba9854",
+  "text": "# Solar-Panel-System-Predictor\nDeveloped a C++ console-based solar energy system predictor. It estimates optimal solar panel configurations, including panel types, inverters, batteries, and wiring, based on user inputs like house area, and energy consumption. Provides detailed cost estimates, enabling homeowners and solar enthusiasts to explore renewable energy options.\n"
+}

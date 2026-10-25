@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import { useId } from "react"
+import { useId } from 'react'
 
 /**
  * HomeProfilePicture
@@ -13,18 +13,18 @@ import { useId } from "react"
  */
 export default function HomeProfilePicture({ imageSrc, size = 320 }) {
   // Unique id so multiple instances don't collide on injected keyframes.
-  const uid = useId().replace(/[:]/g, "")
+  const uid = useId().replace(/[:]/g, '')
   const cls = (name) => `hpp-${name}-${uid}`
 
   const css = `
     /* 1. FLOAT — gentle vertical bob */
-    @keyframes ${cls("float")} {
+    @keyframes ${cls('float')} {
       0%, 100% { transform: translateY(0); }
       50%      { transform: translateY(-12px); }
     }
 
     /* 2. GLOW PULSE — outer ring box-shadow soft <-> intense */
-    @keyframes ${cls("glow")} {
+    @keyframes ${cls('glow')} {
       0%, 100% {
         box-shadow:
           0 0 18px 2px #7c3aed55,
@@ -40,13 +40,13 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
     }
 
     /* 3. LIGHT SWEEP — rotating glowing arc around border */
-    @keyframes ${cls("sweep")} {
+    @keyframes ${cls('sweep')} {
       from { transform: rotate(0deg); }
       to   { transform: rotate(360deg); }
     }
 
     /* 4. PHOTO FX — periodic RGB-blur / jitter glitch burst (same as LoadingProfileFrame) */
-    @keyframes ${cls("photoFx")} {
+    @keyframes ${cls('photoFx')} {
       0%, 84%, 100% {
         filter: blur(0px) saturate(1);
         transform: translate3d(0, 0, 0);
@@ -70,37 +70,37 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
     }
 
     /* 5. SHEEN SWEEP — diagonal light band glides across the glass periodically */
-    @keyframes ${cls("sheen")} {
+    @keyframes ${cls('sheen')} {
       0%, 70%, 100% { transform: translateX(-160%) rotate(18deg); }
       85%           { transform: translateX(160%) rotate(18deg); }
     }
 
     /* 6. VIGNETTE PULSE — subtle cinematic edge-darkening breathing */
-    @keyframes ${cls("vignette")} {
+    @keyframes ${cls('vignette')} {
       0%, 100% { opacity: 0.45; }
       50%      { opacity: 0.7; }
     }
 
-    .${cls("root")} {
+    .${cls('root')} {
       position: relative;
       width: ${size}px;
       height: ${size}px;
       will-change: transform;
-      animation: ${cls("float")} 3s ease-in-out infinite;
+      animation: ${cls('float')} 3s ease-in-out infinite;
     }
 
     /* Outer glowing ring */
-    .${cls("ring")} {
+    .${cls('ring')} {
       position: absolute;
       inset: 0;
       border-radius: 50%;
       border: 1px solid #ffffff10;
       will-change: box-shadow;
-      animation: ${cls("glow")} 2s ease-in-out infinite;
+      animation: ${cls('glow')} 2s ease-in-out infinite;
     }
 
     /* Rotating light-sweep arc (conic gradient masked to a thin ring) */
-    .${cls("sweep")} {
+    .${cls('sweep')} {
       position: absolute;
       inset: -3px;
       border-radius: 50%;
@@ -115,11 +115,11 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
       -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
               mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
       will-change: transform;
-      animation: ${cls("sweep")} 2.5s linear infinite;
+      animation: ${cls('sweep')} 2.5s linear infinite;
     }
 
     /* Circular image clip */
-    .${cls("photoWrap")} {
+    .${cls('photoWrap')} {
       position: absolute;
       inset: 8px;
       border-radius: 50%;
@@ -128,17 +128,17 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
       box-shadow: inset 0 0 24px 0 #00000088;
     }
 
-    .${cls("photo")} {
+    .${cls('photo')} {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: 0% 15%;
+      object-position: 50% 50%;
       display: block;
       will-change: filter, transform;
-      animation: ${cls("photoFx")} 4s ease-in-out infinite;
+      animation: ${cls('photoFx')} 4s ease-in-out infinite;
     }
 
-    .${cls("placeholder")} {
+    .${cls('placeholder')} {
       width: 100%;
       height: 100%;
       display: flex;
@@ -152,25 +152,25 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
     }
 
     /* Cinematic vignette — darkens edges, breathes subtly */
-    .${cls("vignette")} {
+    .${cls('vignette')} {
       position: absolute;
       inset: 8px;
       border-radius: 50%;
       pointer-events: none;
       background: radial-gradient(circle at 50% 42%, transparent 52%, #00000099 100%);
       will-change: opacity;
-      animation: ${cls("vignette")} 5s ease-in-out infinite;
+      animation: ${cls('vignette')} 5s ease-in-out infinite;
     }
 
     /* Diagonal sheen band sweeping across the glass */
-    .${cls("sheenWrap")} {
+    .${cls('sheenWrap')} {
       position: absolute;
       inset: 8px;
       border-radius: 50%;
       overflow: hidden;
       pointer-events: none;
     }
-    .${cls("sheen")} {
+    .${cls('sheen')} {
       position: absolute;
       top: -50%;
       left: 0;
@@ -185,11 +185,11 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
         transparent 100%
       );
       will-change: transform;
-      animation: ${cls("sheen")} 5s ease-in-out infinite;
+      animation: ${cls('sheen')} 5s ease-in-out infinite;
     }
 
     /* N/S/E/W glowing dot markers */
-    .${cls("dot")} {
+    .${cls('dot')} {
       position: absolute;
       width: 8px;
       height: 8px;
@@ -197,18 +197,26 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
       background: #a78bfa;
       box-shadow: 0 0 8px 2px #a78bfaaa, 0 0 14px 4px #7c3aed66;
     }
-    .${cls("dotN")} { top: -4px;  left: 50%; transform: translateX(-50%); }
-    .${cls("dotS")} { bottom: -4px; left: 50%; transform: translateX(-50%); }
-    .${cls("dotE")} { right: -4px; top: 50%;  transform: translateY(-50%); background: #06b6d4; box-shadow: 0 0 8px 2px #06b6d4aa, 0 0 14px 4px #06b6d466; }
-    .${cls("dotW")} { left: -4px;  top: 50%;  transform: translateY(-50%); background: #06b6d4; box-shadow: 0 0 8px 2px #06b6d4aa, 0 0 14px 4px #06b6d466; }
+    .${cls('dotN')} { top: -4px;  left: 50%; transform: translateX(-50%); }
+    .${cls('dotS')} { bottom: -4px; left: 50%; transform: translateX(-50%); }
+    .${cls('dotE')} { right: -4px; top: 50%;  transform: translateY(-50%); background: #06b6d4; box-shadow: 0 0 8px 2px #06b6d4aa, 0 0 14px 4px #06b6d466; }
+    .${cls('dotW')} { left: -4px;  top: 50%;  transform: translateY(-50%); background: #06b6d4; box-shadow: 0 0 8px 2px #06b6d4aa, 0 0 14px 4px #06b6d466; }
 
+    @media (max-width: 1024px) {
+      /* Keep the transform-based float/sweep; avoid recurring filter/shadow paints. */
+      .${cls('ring')}, .${cls('photo')} {
+        animation: none;
+        will-change: auto;
+      }
+      .${cls('ring')} { box-shadow: 0 0 18px 2px #7c3aed55; }
+    }
     @media (prefers-reduced-motion: reduce) {
-      .${cls("root")},
-      .${cls("ring")},
-      .${cls("sweep")},
-      .${cls("photo")},
-      .${cls("sheen")},
-      .${cls("vignette")} {
+      .${cls('root')},
+      .${cls('ring')},
+      .${cls('sweep')},
+      .${cls('photo')},
+      .${cls('sheen')},
+      .${cls('vignette')} {
         animation: none !important;
       }
     }
@@ -217,28 +225,42 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
   return (
     <div className="flex w-full items-center justify-end">
       <style>{css}</style>
-      <div className={cls("root")} role="img" aria-label="Profile picture">
-        <div className={cls("ring")} />
-        <div className={cls("sweep")} />
+      <div className={cls('root')} data-home-portrait role="img" aria-label="Profile picture">
+        <div className={cls('ring')} />
+        <div className={cls('sweep')} />
 
-        <div className={cls("photoWrap")}>
+        <div className={cls('photoWrap')}>
           {imageSrc ? (
             /*// eslint-disable-next-line @next/next/no-img-element*/
-            <img className={cls("photo")} src={imageSrc} alt="Portrait" crossOrigin="anonymous" fetchPriority="high" />
+            <img
+              className={cls('photo')}
+              src={imageSrc === '/profile.jpg' ? '/profile-640.webp' : imageSrc}
+              srcSet={
+                imageSrc === '/profile.jpg'
+                  ? '/profile-320.webp 320w, /profile-640.webp 640w'
+                  : undefined
+              }
+              sizes="(max-width: 1024px) 180px, 320px"
+              width="640"
+              height="800"
+              alt="Portrait"
+              crossOrigin="anonymous"
+              fetchPriority="high"
+            />
           ) : (
-            <div className={cls("placeholder")}>NO IMAGE</div>
+            <div className={cls('placeholder')}>NO IMAGE</div>
           )}
         </div>
 
-        <div className={cls("vignette")} />
-        <div className={cls("sheenWrap")}>
-          <div className={cls("sheen")} />
+        <div className={cls('vignette')} />
+        <div className={cls('sheenWrap')}>
+          <div className={cls('sheen')} />
         </div>
 
-        <span className={`${cls("dot")} ${cls("dotN")}`} />
-        <span className={`${cls("dot")} ${cls("dotS")}`} />
-        <span className={`${cls("dot")} ${cls("dotE")}`} />
-        <span className={`${cls("dot")} ${cls("dotW")}`} />
+        <span className={`${cls('dot')} ${cls('dotN')}`} />
+        <span className={`${cls('dot')} ${cls('dotS')}`} />
+        <span className={`${cls('dot')} ${cls('dotE')}`} />
+        <span className={`${cls('dot')} ${cls('dotW')}`} />
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 /* =====================================================================
    NavJumper  —  single-file, drop-in React component
@@ -136,7 +136,7 @@ const STYLES = `
      activeId : string             -> changing this triggers the jump
      onSelect : (id) => void        (optional) fired on link click
    ------------------------------------------------------------------- */
-function NavJumper({ links, activeId, onSelect }) {
+export function NavJumper({ links, activeId, onSelect }) {
   const navRef = useRef(null)
   const linkRefs = useRef({})
   const wrapRef = useRef(null)
@@ -163,8 +163,8 @@ function NavJumper({ links, activeId, onSelect }) {
   useLayoutEffect(() => {
     measure()
     const onResize = () => measure()
-    window.addEventListener("resize", onResize)
-    return () => window.removeEventListener("resize", onResize)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeId, links])
 
@@ -184,18 +184,22 @@ function NavJumper({ links, activeId, onSelect }) {
 
     // Arc peak: launch up (-20px), scale up (1.15), tumble (-8deg).
     // Horizontal move to the new X happens via the same elastic transition.
-    wrap.style.transform = "translate(var(--njx-x), -20px) scale(1.15) rotate(-8deg)"
+    wrap.style.transform = 'translate(var(--njx-x), -20px) scale(1.15) rotate(-8deg)'
 
     // Overshoot: drop PAST rest (+6px), straighten.
-    timers.current.push(setTimeout(() => {
-      wrap.style.transform = "translate(var(--njx-x), 6px) scale(1) rotate(0deg)"
-    }, 230))
+    timers.current.push(
+      setTimeout(() => {
+        wrap.style.transform = 'translate(var(--njx-x), 6px) scale(1) rotate(0deg)'
+      }, 230),
+    )
 
     // Land at rest + squash.
-    timers.current.push(setTimeout(() => {
-      wrap.style.transform = "translate(var(--njx-x), 0px) scale(1) rotate(0deg)"
-      setSquashing(true)
-    }, 370))
+    timers.current.push(
+      setTimeout(() => {
+        wrap.style.transform = 'translate(var(--njx-x), 0px) scale(1) rotate(0deg)'
+        setSquashing(true)
+      }, 370),
+    )
 
     timers.current.push(setTimeout(() => setSquashing(false), 450))
     timers.current.push(setTimeout(() => setJumping(false), 450))
@@ -209,103 +213,49 @@ function NavJumper({ links, activeId, onSelect }) {
   return (
     <>
       <style>{STYLES}</style>
-      <nav ref={navRef} className="njx-nav">
+      <div ref={navRef} className="njx-nav">
         {links.map((link) => (
-          <button
+          <a
+            href={`#${link.id}`}
+            aria-current={activeId === link.id ? 'location' : undefined}
             key={link.id}
             ref={(el) => (linkRefs.current[link.id] = el)}
-            onClick={() => onSelect && onSelect(link.id)}
-            className={`njx-link ${activeId === link.id ? "njx-active" : ""}`}
+            onClick={(event) => {
+              if (
+                event.button === 0 &&
+                !event.metaKey &&
+                !event.ctrlKey &&
+                !event.shiftKey &&
+                !event.altKey
+              ) {
+                event.preventDefault()
+                onSelect?.(link.id)
+              }
+            }}
+            className={`njx-link ${activeId === link.id ? 'njx-active' : ''}`}
           >
             {link.label}
-          </button>
+          </a>
         ))}
 
         <div
           ref={wrapRef}
           className="njx-jumper-wrap"
           style={{
-            "--njx-x": `${pos.x}px`,
+            '--njx-x': `${pos.x}px`,
             transform: `translate(${pos.x}px, 0px)`,
             top: 48,
             opacity: pos.ready ? 1 : 0,
           }}
         >
-          <div className={`njx-jumper-bob ${jumping ? "njx-jumping" : ""}`}>
-            <div className={`njx-badge ${squashing ? "njx-squashing" : ""}`}>
+          <div className={`njx-jumper-bob ${jumping ? 'njx-jumping' : ''}`}>
+            <div className={`njx-badge ${squashing ? 'njx-squashing' : ''}`}>
               <span className="njx-fold" />
               <span className="njx-badge-label">.py</span>
             </div>
           </div>
         </div>
-      </nav>
+      </div>
     </>
   )
 }
-
-/* ---------------------------------------------------------------------
-   DEMO — default export so you can render this file directly and test.
-   Click a link to fire the jump.
-   ------------------------------------------------------------------- */
-export default function App() {
-  const links = [
-    { label: "home", id: "home" },
-    { label: "work", id: "work" },
-    { label: "about", id: "about" },
-    { label: "blog", id: "blog" },
-    { label: "contact", id: "contact" },
-  ]
-  const [active, setActive] = useState("home")
-
-  return (
-    <div className="njx-root">
-      <style>{STYLES}</style>
-
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 40,
-          padding: 24,
-        }}
-      >
-        <header style={{ textAlign: "center" }}>
-          <p
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 12,
-              color: "#a78bfa",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              margin: 0,
-            }}
-          >
-            // nav_jumper.demo
-          </p>
-          <h1
-            style={{
-              fontFamily: "'Space Grotesk', sans-serif",
-              fontWeight: 700,
-              fontSize: 34,
-              letterSpacing: "-0.03em",
-              margin: "8px 0 6px",
-              color: "#f1f5f9",
-            }}
-          >
-            Click a link to make it jump
-          </h1>
-          <p style={{ color: "#94a3b8", fontSize: 15, margin: 0 }}>
-            The .py badge launches, tumbles, overshoots, and bounces to rest.
-          </p>
-        </header>
-
-        <NavJumper links={links} activeId={active} onSelect={setActive} />
-      </div>
-    </div>
-  )
-}
-
-export { NavJumper }

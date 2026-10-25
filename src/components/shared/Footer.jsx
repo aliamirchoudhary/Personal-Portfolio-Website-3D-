@@ -1,13 +1,13 @@
 import KryzectLogo from '../ui/KryzectLogo'
-import { SOCIAL_LINKS, NAV_LINKS, KRYZECT } from '../../data/portfolioData'
+import { SOCIAL_LINKS, NAV_LINKS, KRYZECT, PERSONAL } from '../../data/portfolioData'
 
-const WC_FONT = "'Clash Display', 'Clash Grotesk', 'Space Grotesk', sans-serif"
+const WC_FONT = "'Space Grotesk', sans-serif"
 
 export default function Footer({ scrollToSection }) {
   const year = new Date().getFullYear()
 
   const socialFooter = SOCIAL_LINKS.filter((s) =>
-    ['fa-linkedin-in', 'fa-github', 'fa-dollar-sign'].includes(s.icon)
+    ['fa-linkedin-in', 'fa-github', 'fa-dollar-sign'].includes(s.icon),
   )
 
   return (
@@ -31,7 +31,7 @@ export default function Footer({ scrollToSection }) {
         }}
       >
         <div style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
-          &copy; {year} Muhammad Ali Aamir. All rights reserved.
+          &copy; {year} {PERSONAL.name}. All rights reserved.
         </div>
 
         <div
@@ -47,6 +47,7 @@ export default function Footer({ scrollToSection }) {
         </div>
 
         <div
+          className="footer-socials"
           style={{
             display: 'flex',
             justifyContent: 'flex-end',
@@ -75,17 +76,17 @@ export default function Footer({ scrollToSection }) {
                 transition: 'all 0.3s ease',
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = '#6C97F7'
-                e.target.style.color = 'white'
-                e.target.style.transform = 'scale(1.1)'
+                e.currentTarget.style.background = '#6C97F7'
+                e.currentTarget.style.color = 'white'
+                e.currentTarget.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(108, 151, 247, 0.1)'
-                e.target.style.color = '#6C97F7'
-                e.target.style.transform = 'scale(1)'
+                e.currentTarget.style.background = 'rgba(108, 151, 247, 0.1)'
+                e.currentTarget.style.color = '#6C97F7'
+                e.currentTarget.style.transform = 'scale(1)'
               }}
             >
-              <i className={`${s.fa || 'fab'} ${s.icon}`} />
+              <i aria-hidden="true" className={`${s.fa || 'fab'} ${s.icon}`} />
             </a>
           ))}
         </div>
@@ -105,9 +106,15 @@ export default function Footer({ scrollToSection }) {
         }}
       >
         {NAV_LINKS.map((link) => (
-          <button
+          <a
+            href={`#${link.id}`}
             key={link.id}
-            onClick={() => scrollToSection(link.id)}
+            onClick={(event) => {
+              if (!event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+                event.preventDefault()
+                scrollToSection(link.id)
+              }
+            }}
             style={{
               color: '#94a3b8',
               background: 'none',
@@ -118,11 +125,15 @@ export default function Footer({ scrollToSection }) {
               fontFamily: "'Inter', sans-serif",
               transition: 'color 0.3s ease',
             }}
-            onMouseEnter={(e) => { e.target.style.color = '#6C97F7' }}
-            onMouseLeave={(e) => { e.target.style.color = '#94a3b8' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#6C97F7'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#94a3b8'
+            }}
           >
             {link.label}
-          </button>
+          </a>
         ))}
       </div>
 
@@ -164,13 +175,15 @@ export default function Footer({ scrollToSection }) {
             }}
           >
             <KryzectLogo size={18} />
-            <span style={{
-              color: '#8FAEFF',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              fontFamily: WC_FONT,
-              letterSpacing: '0.02em',
-            }}>
+            <span
+              style={{
+                color: '#8FAEFF',
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                fontFamily: WC_FONT,
+                letterSpacing: '0.02em',
+              }}
+            >
               {KRYZECT.name}
             </span>
           </a>

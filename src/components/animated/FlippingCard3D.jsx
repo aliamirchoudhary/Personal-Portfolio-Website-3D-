@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react"
+import { useAnimationActivity } from '../../context/motion'
+import { useEffect, useRef, useState } from 'react'
 
 /**
  * SpinningSkillBox
@@ -21,29 +22,21 @@ import React, { useEffect, useRef, useState } from "react"
  *   sideLabel: string // text shown on the spinning end-caps (default "CS")
  */
 export function SpinningSkillBox({
-  skills = [
-    "Data Science",
-    "ML / AI",
-    "Full Stack",
-    "Cloud / DevOps",
-    "Algorithms",
-    "Systems",
-  ],
-  sideLabel = "CS",
+  skills = ['Data Science', 'ML / AI', 'Full Stack', 'Cloud / DevOps', 'Algorithms', 'Systems'],
+  sideLabel = 'CS',
 }) {
+  const { ref: activityRef, animate } = useAnimationActivity()
   // Box geometry. Cross-section is square (H === D) so all 4 ring faces match.
   const W = 260 // width  (x)
   const H = 150 // height (the visible front face height)
   const D = 150 // depth  (must equal H for a clean square rotation)
 
-  const faceColors = ["#f1f5f9", "#a78bfa", "#06b6d4", "#f43f5e"]
+  const faceColors = ['#f1f5f9', '#a78bfa', '#06b6d4', '#f43f5e']
 
   // 4 physical ring faces (front/top/back/bottom). We keep their labels in
   // state and silently re-label whichever face is hidden at the back, so the
   // skill list can be infinitely long while front->top continuity is preserved.
-  const [labels, setLabels] = useState(() =>
-    [0, 1, 2, 3].map((i) => skills[i % skills.length])
-  )
+  const [labels, setLabels] = useState(() => [0, 1, 2, 3].map((i) => skills[i % skills.length]))
 
   // rotation is in degrees and decreases over time (front face tilts up to top).
   const [rotation, setRotation] = useState(0)
@@ -55,22 +48,26 @@ export function SpinningSkillBox({
   const dragRef = useRef({ startY: 0, startRot: 0 })
   const pausedRef = useRef(false)
 
-  rotationRef.current = rotation
+  useEffect(() => {
+    rotationRef.current = rotation
+  }, [rotation])
 
   // Auto-rotate one quarter-turn at a time while not being dragged.
   useEffect(() => {
-    if (dragging) return
+    if (dragging || !animate) return
     const id = setInterval(() => {
       if (!pausedRef.current) setRotation((r) => r - 90)
     }, 1200)
 
-    const onVisChange = () => { pausedRef.current = document.hidden }
-    document.addEventListener("visibilitychange", onVisChange)
+    const onVisChange = () => {
+      pausedRef.current = document.hidden
+    }
+    document.addEventListener('visibilitychange', onVisChange)
     return () => {
       clearInterval(id)
-      document.removeEventListener("visibilitychange", onVisChange)
+      document.removeEventListener('visibilitychange', onVisChange)
     }
-  }, [dragging])
+  }, [dragging, animate])
 
   // When the rounded step advances, relabel the face that is now hidden at the
   // back so it is ready with the next skill before it rotates into view.
@@ -81,7 +78,7 @@ export function SpinningSkillBox({
       return
     }
     for (let s = lastStepRef.current + 1; s <= step; s++) {
-      const backFace = ((s + 2) % 4 + 4) % 4
+      const backFace = (((s + 2) % 4) + 4) % 4
       const nextSkill = skills[nextPtrRef.current % skills.length]
       nextPtrRef.current += 1
       setLabels((prev) => {
@@ -119,12 +116,12 @@ export function SpinningSkillBox({
   })
 
   return (
-    <div className="ssb-scene">
+    <div ref={activityRef} data-active={animate} className="ssb-scene">
       <style>{CSS}</style>
 
       <div className="ssb-float">
         <div
-          className={`ssb-tilt${dragging ? " ssb-grabbing" : ""}`}
+          className={`ssb-tilt${dragging ? ' ssb-grabbing' : ''}`}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={endDrag}
@@ -138,9 +135,7 @@ export function SpinningSkillBox({
               width: W,
               height: H,
               transform: `rotateX(${rotation}deg)`,
-              transition: dragging
-                ? "none"
-                : "transform 0.7s cubic-bezier(0.65, 0, 0.35, 1)",
+              transition: dragging ? 'none' : 'transform 0.7s cubic-bezier(0.65, 0, 0.35, 1)',
             }}
           >
             {/* 4 ring faces: front / top / back / bottom */}
@@ -174,7 +169,6 @@ export function SpinningSkillBox({
           </div>
         </div>
       </div>
-
     </div>
   )
 }
@@ -287,30 +281,3 @@ const CSS = `
  * this single file and see it immediately. Import { SpinningSkillBox } to use
  * it inside your own layout with custom skills.
  */
-export default function SpinningSkillBoxDemo() {
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#0a0a0f",
-        fontFamily: "Inter, system-ui, sans-serif",
-      }}
-    >
-      <SpinningSkillBox
-        skills={[
-          "Data Science",
-          "ML / AI",
-          "Full Stack",
-          "Cloud / DevOps",
-          "Algorithms",
-          "Distributed Systems",
-        ]}
-        sideLabel="CS"
-      />
-    </div>
-  )
-}

@@ -1,0 +1,111 @@
+.brand-intro {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  inset: 0;
+  margin: 0;
+  border: 0;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1.5rem;
+  background: #0a0a0f;
+  color: #c4b5fd;
+  text-align: center;
+}
+.brand-intro[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.brand-intro::backdrop {
+  background: #0a0a0f;
+}
+.brand-intro-art {
+  width: min(960px, 100%);
+  animation: intro-content-in 0.45s ease-out both;
+}
+.brand-intro[data-closing='true'],
+.brand-intro[data-closing='true']::backdrop {
+  animation: intro-exit 0.42s ease-in both;
+}
+.brand-intro[data-transferring='true'],
+.brand-intro[data-transferring='true']::backdrop {
+  animation: intro-reveal-home 0.7s ease-in-out both;
+}
+.brand-intro[data-transferring='true'] .brand-intro-art {
+  animation: none;
+}
+.brand-intro[data-transferring='true'] .lpf-scene {
+  background: transparent;
+}
+.brand-intro[data-transferring='true'] .brand-intro-name,
+.brand-intro[data-transferring='true'] > p,
+.brand-intro[data-transferring='true'] > button {
+  animation: intro-exit 0.25s ease-in both;
+}
+body.intro-transfer [data-home-portrait] {
+  animation-play-state: paused !important;
+}
+@keyframes intro-reveal-home {
+  to {
+    background: transparent;
+  }
+}
+@keyframes intro-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes intro-exit {
+  to {
+    opacity: 0;
+  }
+}
+.brand-intro .lpf-scene {
+  min-height: 0;
+  height: 300px;
+  padding: 0;
+}
+.brand-intro .lpf-root {
+  width: 260px;
+  height: 260px;
+  margin: 0;
+}
+.brand-intro-name {
+  width: 100%;
+  height: clamp(80px, 12vw, 150px);
+}
+.brand-intro p {
+  font-size: 0.85rem;
+  max-width: 32rem;
+  margin: 0;
+}
+.brand-intro button {
+  margin-top: 0.75rem;
+}
+body.intro-open {
+  overflow: hidden;
+}
+@media (max-width: 600px) {
+  .brand-intro-name {
+    height: 100px;
+  }
+}
+@media (max-height: 600px) {
+  .brand-intro .lpf-scene {
+    height: 190px;
+  }
+  .brand-intro .lpf-root {
+    width: 170px;
+    height: 170px;
+  }
+  .brand-intro[open] {
+    gap: 0.4rem;
+  }
+}

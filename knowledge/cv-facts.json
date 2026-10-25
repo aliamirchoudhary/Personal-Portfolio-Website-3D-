@@ -1,0 +1,24 @@
+{
+  "sha256": "38a84027bace743416d9f3f14bba2b44fbfc9f45395dcefdfa8c76bfae886e88",
+  "reviewedAt": "2026-10-26",
+  "graduation": "June 2028 (expected)",
+  "skillGroups": {
+    "Programming": ["Python", "JavaScript", "TypeScript", "C++", "C", "SQL", "x86 Assembly"],
+    "AI and machine learning": ["Machine Learning", "Deep Learning", "Generative AI", "Agentic AI", "RAG Pipelines", "LLM Fine-Tuning", "Computer Vision", "NLP", "TensorFlow", "Keras", "scikit-learn", "Hugging Face", "LangChain", "OpenCV", "YOLOv8"],
+    "Web and backend": ["React", "Next.js", "Vite", "Node.js", "Express.js", "Flask", "FastAPI", "REST APIs", "Tailwind CSS", "HTML5", "CSS3"],
+    "Cloud and DevOps": ["AWS", "Google Cloud", "Microsoft Azure", "Vercel", "Cloudflare Workers", "D1", "Durable Objects", "AI Gateway", "Docker", "CI/CD", "Git", "GitHub"],
+    "Data and databases": ["Pandas", "NumPy", "Apache Spark", "Power BI", "Feature Engineering", "Predictive Analytics", "Data Visualization", "Streamlit", "Redis", "MongoDB", "PostgreSQL", "Microsoft SQL Server"]
+  },
+  "projectTechnologies": {
+    "criclytics": ["Flask", "scikit-learn", "Redis"],
+    "fashion": ["Keras", "scikit-learn", "OpenCV"],
+    "travelbuddy": ["Express.js"],
+    "flappy": ["NASM", "DOSBox"],
+    "bubble": ["NASM", "DOSBox"]
+  },
+  "experienceDetails": {
+    "Vertekx": "Researched OCR engines, document parsers and model architectures under cost, security, accuracy and inference-time constraints. Compared approaches on sample data, explored and fine-tuned multiple models including LayoutLMv3 for 17 audit classes, and built the final FastAPI inference and validation layer. Led Phase 1 from research through working implementation, keeping the pipeline offline without external LLM/API calls.",
+    "Exaverse": "Builds serverless applications on Cloudflare Workers, Durable Objects, D1 and AI Gateway. Integrates generative AI, agentic workflows and RAG-powered features with deterministic validation and human-in-the-loop review.",
+    "Kryzect": "Delivers full-stack web, iOS/Android and AI product engineering. Architects MERN, Flask and Next.js systems through deployment on AWS, Cloudflare, Vercel and Render. Delivers Figma-to-React builds and manages project scoping through client handoff. The founding date conflicts with the website/profile and remains unresolved."
+  }
+}
