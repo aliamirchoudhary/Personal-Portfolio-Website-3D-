@@ -73,11 +73,9 @@ export function RingCarousel({ cards = [], initialCenter = 0 }) {
         event.target.closest('input,textarea,select,[contenteditable=true],dialog')
       )
         return
-      const focused = document.activeElement,
-        section = root.current.closest('section')
+      const focused = document.activeElement
       const inCarousel = root.current.contains(focused)
-      const onSectionHeading = focused?.matches('h2') && section?.contains(focused)
-      if (!inCarousel && !onSectionHeading) return
+      if (!inCarousel) return
       const bounds = root.current.getBoundingClientRect()
       if (bounds.bottom <= 0 || bounds.top >= innerHeight) return
       if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {

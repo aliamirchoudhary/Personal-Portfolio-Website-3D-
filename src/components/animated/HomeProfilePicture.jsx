@@ -132,7 +132,7 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: 0% 15%;
+      object-position: 50% 50%;
       display: block;
       will-change: filter, transform;
       animation: ${cls('photoFx')} 4s ease-in-out infinite;
@@ -242,7 +242,7 @@ export default function HomeProfilePicture({ imageSrc, size = 320 }) {
               }
               sizes="(max-width: 1024px) 180px, 320px"
               width="640"
-              height="960"
+              height="800"
               alt="Portrait"
               crossOrigin="anonymous"
               fetchPriority="high"

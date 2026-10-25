@@ -22,7 +22,7 @@
   background: #0a0a0f;
 }
 .brand-intro-art {
-  width: min(460px, 100%);
+  width: min(960px, 100%);
   animation: intro-content-in 0.45s ease-out both;
 }
 .brand-intro[data-closing='true'],
@@ -56,7 +56,7 @@
 }
 .brand-intro-name {
   width: 100%;
-  height: 64px;
+  height: clamp(80px, 12vw, 150px);
 }
 .brand-intro p {
   font-size: 0.85rem;
@@ -68,6 +68,11 @@
 }
 body.intro-open {
   overflow: hidden;
+}
+@media (max-width: 600px) {
+  .brand-intro-name {
+    height: 100px;
+  }
 }
 @media (max-height: 600px) {
   .brand-intro .lpf-scene {

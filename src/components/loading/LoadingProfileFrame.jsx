@@ -19,7 +19,7 @@ export default function LoadingProfileFrame({ imageSrc }) {
               }
               sizes="(max-width: 1024px) 180px, 320px"
               width="640"
-              height="960"
+              height="800"
               alt=""
               crossOrigin="anonymous"
             />

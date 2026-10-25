@@ -1,4 +1,44 @@
 export default {
+  incidentiq: [
+    {
+      type: 'paragraph',
+      text: 'IncidentIQ turns incident alerts, logs, and engineer notes into structured postmortem drafts. A central API coordinates specialized agents for timeline reconstruction, root-cause analysis, prevention recommendations, and report assembly.',
+    },
+    { type: 'heading', text: 'Architecture and review' },
+    {
+      type: 'list',
+      items: [
+        'RAG retrieves runbooks and earlier incidents to ground root-cause analysis and recommendations.',
+        'A deterministic validation gate checks timeline quality before further AI analysis.',
+        'An incident-specific Durable Object serializes state transitions, with D1 storing incident and review records.',
+        'Human approval is required before a draft can become a finalized report; rejected stages can be re-analyzed.',
+        'Independent Cloudflare Workers communicate through Service Bindings; a React frontend provides the demo interface.',
+      ],
+    },
+    {
+      type: 'paragraph',
+      text: 'Tech stack: Cloudflare Workers, Durable Objects, D1, Workers AI, AI Gateway, React, and retrieval-augmented generation.',
+    },
+  ],
+  'financial-documents': [
+    {
+      type: 'paragraph',
+      text: 'A text-based financial audit classifier built around fine-tuned DistilBERT and a FastAPI inference service. It predicts 17 document categories without sending document content to external LLM APIs.',
+    },
+    { type: 'heading', text: 'Document pipeline' },
+    {
+      type: 'list',
+      items: [
+        'Extracts text from native and scanned PDFs, DOCX, CSV, Excel files, and images, with OCR fallback for scans.',
+        'Runs CPU-friendly inference and returns the predicted category, confidence, and top alternative classes.',
+        'Provides file-upload and raw-text endpoints, optional bearer-token authentication, and no request-body logging.',
+      ],
+    },
+    {
+      type: 'paragraph',
+      text: 'Tech stack: Python, Hugging Face Transformers, DistilBERT, FastAPI, and OCR.',
+    },
+  ],
   criclytics: [
     {
       type: 'paragraph',

@@ -2,7 +2,7 @@
 
 ## Introduction and content
 
-The first ordinary visit shows a branded introduction for 3.2 seconds followed by a 420 ms fade into Home. Skip and Escape can dismiss it earlier. A small replay control sits beneath the Home actions. Repeat visits in the same tab, direct section links, reduced-motion preferences, and automatic low-power detection bypass automatic playback. The introduction does not represent download progress. Essential content remains prerendered; no-JavaScript visitors receive the static portfolio.
+The first ordinary visit shows a branded introduction for 3.2 seconds followed by a 420 ms fade into Home. Skip and Escape can dismiss it earlier. The enlarged name uses a dark fill with a separate glowing outline that traces the letters. A small replay control sits beneath the Home actions. Repeat visits in the same tab, direct section links, reduced-motion preferences, and automatic low-power detection bypass automatic playback. The introduction does not represent download progress. Essential content remains prerendered; no-JavaScript visitors receive the static portfolio.
 
 A synchronous head bootstrap applies a dark startup curtain before the page can paint an intermediate layout. The introduction releases it only after its dialog is ready. Repeat visits release it when the application is styled and ready, without replaying the introduction. An eight-second fallback and a script-error handler prevent application startup failure from hiding the prerendered content indefinitely. The inline bootstrap has a generated CSP hash, synchronized with `vercel.json`.
 
@@ -12,7 +12,7 @@ The hero emphasizes AI, machine learning, data science, and full-stack developme
 
 Wheel and horizontal trackpad gestures operate over project cards. Deltas are normalized, and one continuous momentum gesture advances one card. A fresh gesture at either end returns control to document scrolling. Scrolling outside cards always remains ordinary page scrolling. Ctrl-wheel preserves browser zoom.
 
-The showcase is keyboard focusable. Arrow keys work from the showcase, its controls, or the visible Projects heading; Home and End select the first and last cards. Focus stays on the showcase when switching cards so an inactive card cannot swallow subsequent key presses. Contact fields and project dialogs retain their own keyboard behavior. Dragging and explicit previous/next buttons remain available.
+The showcase is keyboard focusable. Arrow keys work when focus is inside the showcase or its controls. Focusing the Projects heading does not select the carousel. Home and End select the first and last cards. Focus stays on the showcase when switching cards so an inactive card cannot swallow subsequent key presses. Contact fields and project dialogs retain their own keyboard behavior. Dragging and explicit previous/next buttons remain available.
 
 ## Skills and artwork
 

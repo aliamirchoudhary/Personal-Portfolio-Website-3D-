@@ -273,6 +273,35 @@ const projectRecords = [
     },
   },
   {
+    id: 'incidentiq',
+    name: 'IncidentIQ',
+    description:
+      'AI-powered incident postmortems with RAG-grounded analysis, deterministic validation, and mandatory human review on Cloudflare.',
+    tags: ['Cloudflare Workers', 'RAG', 'Agentic AI', 'React', 'D1', 'Durable Objects'],
+    links: [
+      {
+        label: 'GitHub',
+        icon: 'fab fa-github',
+        url: 'https://github.com/aliamirchoudhary/IncidentIQ',
+      },
+      { label: 'Visit', icon: 'fas fa-globe', url: 'https://incidentiq.pages.dev/' },
+    ],
+  },
+  {
+    id: 'financial-documents',
+    name: 'Financial Document Classifier',
+    description:
+      'Fine-tuned DistilBERT classifies financial documents into 17 audit categories through a CPU-friendly FastAPI service, without external LLM calls.',
+    tags: ['Python', 'DistilBERT', 'Hugging Face', 'FastAPI', 'OCR'],
+    links: [
+      {
+        label: 'GitHub',
+        icon: 'fab fa-github',
+        url: 'https://github.com/aliamirchoudhary/Financial-Document-Classifier',
+      },
+    ],
+  },
+  {
     id: 'fashion',
     name: 'Fashion Image Classifier',
     description:
@@ -302,7 +331,7 @@ const projectRecords = [
       {
         label: 'GitHub',
         icon: 'fab fa-github',
-        url: 'https://github.com/HassanNawaz14/Travel-Buddy-',
+        url: 'https://github.com/aliamirchoudhary/TravelBuddy',
       },
     ],
     modal: {
