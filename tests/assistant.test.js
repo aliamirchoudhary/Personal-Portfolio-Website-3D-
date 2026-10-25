@@ -80,7 +80,7 @@ function fixture(options = {}) {
             message: {
               content: JSON.stringify({
                 answer:
-                  'The project coordinates specialized agents with a deterministic validation gate.',
+                  'The portfolio owner coordinates specialized agents with a deterministic validation gate.',
                 sourceIds: [chunks[0].id],
               }),
             },
@@ -143,6 +143,22 @@ test('API validates boundaries and does not contact providers for local/off-topi
   )
   assert.equal(f.calls.length, 0)
 })
+
+test('known age, interests and unsupported technologies cannot be overridden by a generic AI profile response', async () => {
+  const f = fixture()
+  for (const message of [
+    'How old is he?',
+    'What are his hobbies?',
+    'Does he work in Django?',
+    'When was he born?',
+  ]) {
+    const res = await f.request({ body: { message, enhance: true, adult: true } })
+    assert.equal(res.data.mode, 'local')
+    assert.ok(res.data.focused)
+    assert.ok(!res.data.answer.includes('Data Science student'))
+  }
+  assert.equal(f.calls.length, 0)
+})
 test('remote mode fails closed when configuration, shared quota, or free verification fails', async () => {
   for (const options of [
     { env: {} },
@@ -171,6 +187,7 @@ test('conversational requests carry the filtered question and recent context wit
       },
     })
   assert.equal(res.data.mode, 'generated')
+  assert.match(res.data.answer, /Ali coordinates/)
   const body = f.calls.find((c) => c.url.includes('completions')).options.body
   const payload = JSON.parse(JSON.parse(body).messages[1].content)
   assert.match(payload.question, /How does IncidentIQ work/)

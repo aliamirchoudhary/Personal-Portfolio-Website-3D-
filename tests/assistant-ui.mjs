@@ -13,6 +13,8 @@ export async function verifyAssistant(browser, base) {
     })
     const page = await context.newPage()
     const requests = []
+    const errors = []
+    page.on('pageerror', (error) => errors.push(error.message))
     page.on('request', (request) => requests.push(request.url()))
     await page.goto(base, { waitUntil: 'networkidle' })
     assert.ok(!requests.some((url) => url.includes('/api/assistant')))
@@ -37,6 +39,55 @@ export async function verifyAssistant(browser, base) {
       `${label} assistant accessibility`,
     )
     await page.screenshot({ path: `test-results/assistant-${label}-welcome.png` })
+    for (const [question, expected] of [
+      ['How old is he?', /\b21\b/],
+      ['What are his interests?', /vibe coding.*chess.*movies/],
+      ['Do Ali does deployments in his projects?', /Cloudflare Pages/],
+      ['Has Ali worked in agentic AI?', /specialized agents/],
+      ['Do he work in django?', /couldn't find Django/],
+    ]) {
+      await input.fill(question)
+      await input.press('Enter')
+      assert.match(await panel.locator('.assistant-message').last().innerText(), expected)
+    }
+    await page.screenshot({ path: `test-results/assistant-${label}-focused-answers.png` })
+    await input.fill('What services does Kryzect offer?')
+    await input.press('Enter')
+    assert.match(
+      await panel.locator('.assistant-message').last().innerText(),
+      /SaaS & Digital Products/,
+    )
+    await input.fill('What do they charge?')
+    await input.press('Enter')
+    assert.match(
+      await panel.locator('.assistant-message').last().innerText(),
+      /No fixed public pricing/,
+    )
+    await input.fill('How can I contact Ali?')
+    await input.press('Enter')
+    const contactAnswer = panel.locator('.assistant-message').last()
+    assert.equal(
+      await contactAnswer
+        .getByRole('link', { name: 'Email Ali', exact: true })
+        .getAttribute('href'),
+      'mailto:aliamirchoudhary@gmail.com',
+    )
+    assert.equal(
+      await contactAnswer.getByRole('link', { name: 'Call Ali', exact: true }).getAttribute('href'),
+      'tel:+923283173130',
+    )
+    assert.ok(
+      (
+        await contactAnswer
+          .getByRole('link', { name: 'LinkedIn', exact: true })
+          .getAttribute('href')
+      ).includes('/in/muhammad-ali-aamir2558'),
+    )
+    assert.equal(
+      await contactAnswer.getByRole('link', { name: 'GitHub', exact: true }).getAttribute('href'),
+      'https://github.com/aliamirchoudhary',
+    )
+    await panel.getByRole('button', { name: 'Clear conversation' }).click()
     await input.fill('How does IncidentIQ use RAG?')
     await input.press('Enter')
     await panel
@@ -64,9 +115,45 @@ export async function verifyAssistant(browser, base) {
     await panel.getByRole('button', { name: 'Clear conversation' }).click()
     assert.equal(await panel.locator('.assistant-message').count(), 0)
     await panel.getByRole('checkbox', { name: 'AI conversation · I’m 18+' }).check()
+    let releasePending
+    const pendingGate = new Promise((resolve) => {
+      releasePending = resolve
+    })
+    const pendingHandler = async (route) => {
+      await pendingGate
+      await route.abort().catch(() => {})
+    }
+    await page.route('**/api/assistant', pendingHandler)
+    await input.fill('Explain IncidentIQ architecture.')
+    await input.press('Enter')
+    const stop = panel.getByRole('button', { name: 'Stop generating', exact: true })
+    await stop.waitFor({ state: 'visible' })
+    assert.ok(
+      await stop.evaluate((el) => {
+        const range = document.createRange()
+        range.selectNodeContents(el)
+        return (
+          el.scrollWidth <= el.clientWidth && range.getBoundingClientRect().width <= el.clientWidth
+        )
+      }),
+      `${label}: Stop text fits`,
+    )
+    await page.screenshot({ path: `test-results/assistant-${label}-stop-button.png` })
+    await stop.click()
+    await stop.waitFor({ state: 'hidden' })
+    releasePending()
+    await page.unroute('**/api/assistant', pendingHandler)
+    await panel.getByRole('button', { name: 'Clear conversation' }).click()
+    let failure = false
     await page.route('**/api/assistant', async (route) => {
       const body = route.request().postDataJSON()
       assert.equal(body.enhance, true)
+      if (failure) {
+        assert.equal(body.message, 'Can you simplify that?')
+        assert.equal(body.projectId, 'incidentiq')
+        assert.equal(body.history.length, 1)
+        return route.fulfill({ status: 503, contentType: 'application/json', body: '{}' })
+      }
       assert.equal(body.message, 'Could any of his work help make incident reviews less painful?')
       assert.equal(body.adult, true)
       await route.fulfill({
@@ -75,6 +162,7 @@ export async function verifyAssistant(browser, base) {
           answer:
             'IncidentIQ uses documented specialized agents and a deterministic validation gate.',
           status: 'answered',
+          projectId: 'incidentiq',
           sourceIds: ['incidentiq'],
           actions: [],
           mode: 'generated',
@@ -85,6 +173,16 @@ export async function verifyAssistant(browser, base) {
     await input.press('Enter')
     await panel.getByText('Assistant · AI-assisted', { exact: true }).waitFor()
     await page.screenshot({ path: `test-results/assistant-${label}-ai-conversation.png` })
+    failure = true
+    await input.fill('Can you simplify that?')
+    await input.press('Enter')
+    await panel.getByText('AI unavailable · Source answers', { exact: true }).waitFor()
+    assert.match(await panel.locator('.assistant-message').last().innerText(), /IncidentIQ/)
+    assert.ok(
+      !requests.some(
+        (url) => url.includes('generativelanguage.googleapis.com') || url.includes('openrouter.ai'),
+      ),
+    )
     await panel.getByRole('button', { name: 'Close assistant' }).focus()
     await page.keyboard.press('Shift+Tab')
     assert.equal(await panel.evaluate((el) => el.contains(document.activeElement)), true)
@@ -104,6 +202,7 @@ export async function verifyAssistant(browser, base) {
     assert.equal(new URL(page.url()).hash, '#education')
     assert.ok(await page.evaluate(() => document.activeElement.matches('#education h2')))
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1))
+    assert.deepEqual(errors, [], `${label}: assistant runtime errors`)
     await context.close()
     console.log(
       `Passed ${label}: lazy assistant, local knowledge, sources, scope, AI opt-in, focus, actions and accessibility`,

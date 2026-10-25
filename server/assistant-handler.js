@@ -66,6 +66,7 @@ export function createAssistantHandler({
       (body.projectId != null && !knowledge.projects.some((p) => p.id === body.projectId)) ||
       (body.enhance !== undefined && typeof body.enhance !== 'boolean') ||
       (body.adult !== undefined && typeof body.adult !== 'boolean') ||
+      (body.subject != null && body.subject !== 'kryzect') ||
       (body.history !== undefined &&
         (!Array.isArray(body.history) ||
           body.history.length > 4 ||
@@ -74,9 +75,10 @@ export function createAssistantHandler({
           )))
     )
       return send(400, { error: 'Please enter a short question about Ali.' })
-    const local = answerLocal(body.message, knowledge, body.projectId)
+    const local = answerLocal(body.message, knowledge, body.projectId, body.subject)
     const done = (reason) => send(200, { ...local, ...(reason ? { notice: reason } : {}) })
-    if (!body.enhance) return done()
+    if (!body.enhance || local.skipAI || (local.focused && local.status === 'unknown'))
+      return done()
     // Obvious abuse and unrelated requests stay local. Unrecognized wording still reaches AI.
     if (
       /ignore.*instruct|system prompt|developer message|jailbreak|override|forget.*rules|\b(weather|president|politics|recipe|joke|horoscope|bitcoin|latest news|teach me)\b/i.test(
@@ -183,6 +185,7 @@ export function createAssistantHandler({
         return done(
           'Free AI assistance is busy or unavailable. Showing the documented answer instead.',
         )
+      if (generated.topic && local.focused) return send(200, { ...local, understanding: 'ai' })
       if (generated.topic)
         return send(200, {
           ...answerLocal(PROFILE_TOPICS[generated.topic], knowledge),
@@ -213,7 +216,7 @@ export function createAssistantHandler({
       return send(200, {
         ...local,
         status: generated.status || 'answered',
-        answer: generated.answer,
+        answer: generated.answer.replace(/\b(?:the )?portfolio owner\b/gi, 'Ali'),
         mode: 'generated',
         understanding: 'ai',
         projectId: sourceIds.length === 1 ? sourceIds[0] : null,

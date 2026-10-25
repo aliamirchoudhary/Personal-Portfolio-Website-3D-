@@ -157,7 +157,10 @@ export function validateGeneratedAnswer(text, context) {
     /<|https?:|@|ignore.*instruct|system prompt/i.test(result.answer)
   )
     throw Error('assistant_provider_output')
-  const evidence = context.chunks.map((s) => s.text).join(' ')
+  const evidence = context.chunks
+    .filter((s) => result.sourceIds.includes(s.id))
+    .map((s) => s.text)
+    .join(' ')
   for (const number of result.answer.match(/\b\d+(?:\.\d+)?%?/g) || [])
     if (!evidence.includes(number)) throw Error('assistant_unsupported_number')
   return { answer: result.answer, sectionIds: result.sourceIds }

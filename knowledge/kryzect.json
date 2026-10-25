@@ -1,0 +1,268 @@
+{
+  "reviewedAt": "2026-10-26",
+  "repository": "Kryzect/Kryzect-Official-Website",
+  "commit": "5a53e345620a79ae1f3b3924fd99d714eb256d93",
+  "sourceHashes": {
+    "services.js": "82e41d3e87f83278d4857b437f6dd8ea5b558b632dd64ee91e4162f526a43b5a",
+    "services-catalog.js": "2eb9d7cb59073cf8a88b467bf972d3d6b36d3a191d448422f4271a83fdfcd553",
+    "site.js": "c6e8a1348434b7cfc025d3d35f827dcd6b86e5187588148379ca59f1382d1536",
+    "faq.js": "002cafba12986b303bb0b1a53312471bee5f4ccad9fa8249136952c695bea430",
+    "process.js": "45ea09adabcf286045a4ba0e5a6ae936e34b8d3b6d509af1871f5f119b6f030c",
+    "products.js": "2474150a48bbec772e7e13be632ed78b9cfc85507ffbefeaa017d4bbec6669eb",
+    "contact.js": "8085c228179c4f20eda21aeb651b1a72f5a10ff2c7d3b60fe6c91ad0bcdec8a8",
+    "team.js": "91875a1a375d38b1cbe3392425d7cff49119ac965a3d9766929e463a721add64"
+  },
+  "name": "Kryzect",
+  "tagline": "Think First. Build Better.",
+  "website": "https://kryzect.vercel.app/",
+  "email": "ali.kryzect@gmail.com",
+  "github": "https://github.com/Kryzect",
+  "summary": "A founder-led technology company focused on software engineering, AI, and automation built around business objectives. Its published services span web and mobile apps, SaaS, APIs, cloud, data, e-commerce, integrations, and custom software.",
+  "services": [
+    {
+      "slug": "web-software",
+      "title": "Web & Software",
+      "description": "Websites, web applications, and software built around your users and objectives.",
+      "capabilities": [
+        "business websites",
+        "landing pages",
+        "web applications",
+        "frontend systems",
+        "backend systems",
+        "portals",
+        "admin systems",
+        "custom software"
+      ]
+    },
+    {
+      "slug": "mobile-apps",
+      "title": "Mobile Apps",
+      "description": "iOS, Android, and cross-platform mobile products built around how real users actually work.",
+      "capabilities": [
+        "iOS",
+        "Android",
+        "cross-platform",
+        "authentication",
+        "APIs",
+        "notifications",
+        "payments",
+        "location",
+        "dashboards",
+        "backend integration"
+      ]
+    },
+    {
+      "slug": "ai-solutions",
+      "title": "AI Solutions",
+      "description": "AI applications, assistants, agents, and integrations chosen because they solve a real problem — not because they are fashionable.",
+      "capabilities": [
+        "AI applications",
+        "AI assistants",
+        "AI agents",
+        "AI integrations",
+        "document intelligence",
+        "classification",
+        "extraction",
+        "RAG where appropriate",
+        "workflow intelligence",
+        "custom AI systems"
+      ]
+    },
+    {
+      "slug": "automation",
+      "title": "Automation",
+      "description": "Workflow, API, and process automation that turns repetitive work into systems that run on their own.",
+      "capabilities": [
+        "workflow automation",
+        "API automation",
+        "business process automation",
+        "AI-powered workflows",
+        "notifications",
+        "data movement",
+        "reporting automation",
+        "integrations"
+      ]
+    },
+    {
+      "slug": "saas",
+      "title": "SaaS & Digital Products",
+      "description": "SaaS products and digital products taken from idea to something people can actually use.",
+      "capabilities": [
+        "SaaS MVPs",
+        "subscription systems",
+        "user management",
+        "dashboards",
+        "multi-tenant systems",
+        "API products",
+        "product architecture",
+        "MVP development"
+      ]
+    },
+    {
+      "slug": "api-backend",
+      "title": "API & Backend",
+      "description": "APIs and backend systems built to be reliable, secure, and understandable — explained in plain language.",
+      "capabilities": [
+        "REST APIs",
+        "backend systems",
+        "authentication",
+        "authorization",
+        "databases",
+        "integrations",
+        "business logic",
+        "third-party APIs",
+        "service architecture"
+      ]
+    },
+    {
+      "slug": "cloud",
+      "title": "Cloud Solutions",
+      "description": "Deployment, hosting, and cloud infrastructure that keep your software running — without unnecessary complexity.",
+      "capabilities": [
+        "deployment",
+        "cloud infrastructure",
+        "application hosting",
+        "serverless systems",
+        "backend infrastructure",
+        "monitoring",
+        "scaling",
+        "integrations"
+      ]
+    },
+    {
+      "slug": "data-analytics",
+      "title": "Data & Analytics",
+      "description": "Data processing, analytics, reporting, and pipelines that turn raw data into decisions you can act on.",
+      "capabilities": [
+        "data processing",
+        "analytics",
+        "reporting",
+        "dashboards",
+        "data pipelines",
+        "business intelligence",
+        "custom analysis",
+        "ML systems where relevant"
+      ]
+    },
+    {
+      "slug": "dashboards",
+      "title": "Custom Dashboards",
+      "description": "Admin, analytics, and operational dashboards that put the right information where your team needs it.",
+      "capabilities": [
+        "admin dashboards",
+        "analytics dashboards",
+        "operational dashboards",
+        "reporting portals",
+        "role-based access",
+        "charts",
+        "filters",
+        "exports",
+        "API/database connections"
+      ]
+    },
+    {
+      "slug": "ecommerce",
+      "title": "E-commerce",
+      "description": "Online stores, custom storefronts, checkout, payments, orders, and inventory — built to sell and to run smoothly.",
+      "capabilities": [
+        "online stores",
+        "custom storefronts",
+        "product catalogs",
+        "checkout",
+        "payment integration",
+        "order management",
+        "inventory",
+        "admin dashboard",
+        "customer accounts",
+        "integrations"
+      ]
+    },
+    {
+      "slug": "custom-software",
+      "title": "Custom Software",
+      "description": "Internal systems, business tools, and custom platforms built around the way your organization actually works.",
+      "capabilities": [
+        "internal systems",
+        "business tools",
+        "portals",
+        "workflow systems",
+        "management systems",
+        "custom platforms"
+      ]
+    },
+    {
+      "slug": "integrations",
+      "title": "Integrations",
+      "description": "Integrations that connect your existing systems — without replacing the tools you already use.",
+      "capabilities": [
+        "third-party APIs",
+        "payment providers",
+        "CRM",
+        "databases",
+        "SaaS integrations",
+        "automation tools",
+        "internal systems",
+        "webhooks"
+      ]
+    }
+  ],
+  "process": [
+    "Discover",
+    "Define",
+    "Plan",
+    "Design",
+    "Develop",
+    "Test",
+    "Deploy",
+    "Improve"
+  ],
+  "pricing": "No fixed public pricing. Projects vary based on scope and objectives; a quote requires a discussion.",
+  "audience": "Works with small businesses, startups, and individuals where the project is a good fit, including international clients. A technical specification is not required to begin a discovery conversation.",
+  "existingSystems": "Can work with existing systems depending on the technology and situation; integrations connect existing tools rather than requiring their replacement.",
+  "team": "Currently founder-led by Muhammad Ali Aamir, with a network of collaborators and plans to grow the engineering team. No verified headcount or client count is published.",
+  "product": {
+    "name": "IncidentIQ",
+    "status": "In Development",
+    "summary": "AI-powered incident postmortem drafting from raw incident data, with specialized agents, grounded analysis, and mandatory recorded human approval before finalization.",
+    "demo": "https://incidentiq.pages.dev/",
+    "roadmap": "Usage-based API monetization, SaaS multi-tenancy, enterprise features, and Slack/PagerDuty/GitHub/Jira integrations are roadmap items, not claims of shipped capabilities."
+  },
+  "sources": [
+    {
+      "id": "kryzect",
+      "label": "Kryzect service catalog",
+      "url": "https://github.com/Kryzect/Kryzect-Official-Website/blob/5a53e345620a79ae1f3b3924fd99d714eb256d93/src/data/services-catalog.js",
+      "date": "2026-10-26"
+    },
+    {
+      "id": "kryzect-faq",
+      "label": "Kryzect FAQ",
+      "url": "https://github.com/Kryzect/Kryzect-Official-Website/blob/5a53e345620a79ae1f3b3924fd99d714eb256d93/src/data/faq.js",
+      "date": "2026-10-26"
+    },
+    {
+      "id": "kryzect-process",
+      "label": "Kryzect process",
+      "url": "https://github.com/Kryzect/Kryzect-Official-Website/blob/5a53e345620a79ae1f3b3924fd99d714eb256d93/src/data/process.js",
+      "date": "2026-10-26"
+    },
+    {
+      "id": "kryzect-products",
+      "label": "Kryzect product status",
+      "url": "https://github.com/Kryzect/Kryzect-Official-Website/blob/5a53e345620a79ae1f3b3924fd99d714eb256d93/src/data/products.js",
+      "date": "2026-10-26"
+    },
+    {
+      "id": "kryzect-team",
+      "label": "Kryzect team",
+      "url": "https://github.com/Kryzect/Kryzect-Official-Website/blob/5a53e345620a79ae1f3b3924fd99d714eb256d93/src/data/team.js",
+      "date": "2026-10-26"
+    },
+    {
+      "id": "kryzect-site",
+      "label": "Kryzect website",
+      "url": "https://kryzect.vercel.app/",
+      "date": "2026-10-26"
+    }
+  ]
+}

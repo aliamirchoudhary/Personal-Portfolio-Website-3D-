@@ -1,3 +1,5 @@
+import { focusedAnswer, expandQuestion } from './assistant-understanding.js'
+import { companyAnswer, personalContactAnswer } from './assistant-company.js'
 export const ASSISTANT_LIMITS = { message: 1000, body: 16384, output: 4000 }
 export const SUGGESTIONS = [
   'Which AI projects has Ali built?',
@@ -56,7 +58,7 @@ export function selectProject(message, knowledge, previous) {
   )
   if (matches.length === 1) return matches[0]
   if (matches.length > 1) return null
-  return /\b(it|its|that|this|more|architecture|backend|frontend|security|limitations|challenges|stack|dataset|accuracy|model|rag|how|why)\b/.test(
+  return /\b(it|its|that|this|more|simpler|simplify|shorter|proof|architecture|backend|frontend|security|limitations|challenges|stack|dataset|accuracy|model|rag|how|why)\b/.test(
     text,
   )
     ? knowledge.projects.find((p) => p.id === previous)
@@ -73,7 +75,7 @@ export function inferTask(message) {
   return 'summary'
 }
 export function retrieve(message, project, knowledge, limit = 3) {
-  const query = words(message + ' ' + inferTask(message))
+  const query = words(expandQuestion(message) + ' ' + inferTask(message))
   const pool = knowledge.sections.filter((s) => s.projectId === project.id)
   return pool
     .map((s, index) => ({
@@ -104,7 +106,33 @@ function cleanExcerpt(text) {
     .join('\n')
     .slice(0, 1100)
 }
-export function answerLocal(message, knowledge, previous) {
+export function answerLocal(message, knowledge, previous, subject) {
+  const questions = String(message)
+    .split(/\?\s+|\s+and\s+(?=(?:does|is|has|what|where|how|can|do)\b)/i)
+    .map((value) => value.trim())
+    .filter(Boolean)
+  if (questions.length > 1 && questions.length <= 3) {
+    const answers = questions.map((question) => answerLocal(question, knowledge, previous, subject))
+    return {
+      answer: answers.map((item) => item.answer).join('\n\n'),
+      status: answers.some((item) => item.status === 'answered')
+        ? 'answered'
+        : answers.every((item) => item.status === 'off_topic')
+          ? 'off_topic'
+          : 'unknown',
+      sourceIds: [...new Set(answers.flatMap((item) => item.sourceIds))],
+      projectId: answers.at(-1).projectId,
+      actions: [
+        ...new Map(
+          answers.flatMap((item) => item.actions || []).map((action) => [action.id, action]),
+        ).values(),
+      ].slice(0, 4),
+      focused: answers.every((item) => item.focused),
+      skipAI: answers.every((item) => item.skipAI || (item.focused && item.status === 'unknown')),
+      mode: 'local',
+      version: knowledge.version,
+    }
+  }
   const text = normalize(message),
     profile = knowledge.profile
   const result = (answer, status = 'answered', sourceIds = [], projectId = null, actions = []) => ({
@@ -139,6 +167,19 @@ export function answerLocal(message, knowledge, previous) {
     return result(
       "Hi! I'm Ali's portfolio assistant. Ask me about his projects, experience, skills, or background.",
     )
+  if (!offTopic.test(text)) {
+    const scoped =
+      companyAnswer(message, knowledge, subject) || personalContactAnswer(message, knowledge)
+    if (scoped) return scoped
+  }
+  const focused = offTopic.test(text) ? null : focusedAnswer(message, knowledge, previous)
+  if (focused)
+    return {
+      ...focused,
+      sourceIds: focused.sourceIds.includes('profile')
+        ? ['portfolio', ...focused.sourceIds]
+        : focused.sourceIds,
+    }
   if (
     /salary|married|religion|home address|password|secret|api key|private|birth|\bage\b|family|girlfriend|net worth|client names/.test(
       text,
@@ -166,7 +207,9 @@ export function answerLocal(message, knowledge, previous) {
       null,
       [{ id: 'resume', label: 'Download CV' }],
     )
-  if (/languages|speak|urdu|punjabi|english/.test(text))
+  if (/programming languages|coding languages/.test(text))
+    return result(`His CV lists ${profile.skillGroups.Programming.join(', ')}.`, 'answered', ['cv'])
+  if (/spoken languages|languages.*speak|speak|urdu|punjabi|english/.test(text))
     return result(profile.languages, 'answered', ['profile'])
   if (/mathemat|maths|calculus|algebra|coursework|courses|subjects/.test(text))
     return result(
@@ -270,7 +313,9 @@ export function answerLocal(message, knowledge, previous) {
     )
   }
   if (
-    /who|about|background|introduc|location|live|based|lahore|pakistan/.test(text) &&
+    /who (?:is|s)|tell me about|background|introduc|location|live|based|lahore|pakistan/.test(
+      text,
+    ) &&
     /ali|aamir|he|his|you|background|introduc/.test(text)
   )
     return result(
@@ -303,6 +348,26 @@ export function answerLocal(message, knowledge, previous) {
   )
 }
 export function resolveAction(id, knowledge) {
+  const contact = {
+    'contact:email': `mailto:${knowledge.profile.email}`,
+    'contact:phone': `tel:${knowledge.profile.phone}`,
+    'contact:linkedin': knowledge.profile.contactLinks?.linkedin,
+    'contact:github': knowledge.profile.contactLinks?.github,
+  }
+  if (Object.hasOwn(contact, id)) return contact[id]
+  const company = knowledge.company
+  const companyLinks = company
+    ? {
+        'company:services': new URL('services', company.website).href,
+        'company:contact': new URL('contact', company.website).href,
+        'company:booking': new URL('book-a-call', company.website).href,
+        'company:process': new URL('process', company.website).href,
+        'company:product': new URL('products/ai-postmortem', company.website).href,
+        'company:email': `mailto:${company.email}`,
+        'company:github': company.github,
+      }
+    : {}
+  if (Object.hasOwn(companyLinks, id)) return companyLinks[id]
   if (id === 'resume') return knowledge.profile.resume
   if (
     [
@@ -322,5 +387,11 @@ export function resolveAction(id, knowledge) {
   if (!project) return null
   if (type === 'project') return '#projects'
   if (type === 'repo') return knowledge.sources.find((s) => s.id === projectId)?.url || null
+  if (type === 'demo')
+    return (
+      project.links.find(
+        (link) => /^(visit|demo|live)$/i.test(link.label) && /^https:\/\//.test(link.url),
+      )?.url || null
+    )
   return null
 }

@@ -15,7 +15,8 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
     controller = useRef(null),
     nearBottom = useRef(true),
     sequence = useRef({ value: 0 }),
-    selectedProject = useRef(null)
+    selectedProject = useRef(null),
+    selectedSubject = useRef(null)
   const [messages, setMessages] = useState([]),
     [draft, setDraft] = useState(''),
     [pending, setPending] = useState(false),
@@ -57,6 +58,7 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
     setMessages([])
     setDraft('')
     selectedProject.current = null
+    selectedSubject.current = null
     setAnnouncement('Conversation cleared.')
     input.current?.focus()
   }
@@ -65,12 +67,13 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
     if (!message || message.length > ASSISTANT_LIMITS.message || pending) return
     setDraft('')
     nearBottom.current = true
-    const local = answerLocal(message, knowledge, selectedProject.current)
+    const local = answerLocal(message, knowledge, selectedProject.current, selectedSubject.current)
     const previous = selectedProject.current
+    const subject = selectedSubject.current
     const turn = ++sequence.current.value
     setMessages((items) => [...items.slice(-38), { role: 'user', answer: message }])
     let response = local
-    if (allowAI) {
+    if (allowAI && !local.skipAI) {
       setPending(true)
       controller.current = new AbortController()
       const timeout = setTimeout(() => controller.current?.abort(), 18000)
@@ -81,6 +84,7 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
           body: JSON.stringify({
             message,
             projectId: previous,
+            subject,
             enhance: true,
             adult: true,
             history: messages
@@ -99,6 +103,7 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
             Array.isArray(data.sourceIds)
           )
             response = data
+          else throw Error('Invalid assistant response')
         } else
           response = {
             ...local,
@@ -115,6 +120,7 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
     }
     if (sequence.current.value !== turn) return
     selectedProject.current = response.projectId || null
+    selectedSubject.current = response.topic || null
     setPending(false)
     controller.current = null
     setMessages((items) => [...items, { ...response, role: 'assistant' }])
@@ -172,7 +178,11 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
           <h2 id="assistant-title">Ask about Ali</h2>
           <p id="assistant-subtitle">
             <span className="assistant-dot" />{' '}
-            {allowAI ? 'AI conversation' : 'Source mode · AI optional'}
+            {allowAI
+              ? messages.findLast((item) => item.role === 'assistant')?.notice
+                ? 'AI unavailable · Source answers'
+                : 'AI conversation'
+              : 'Source mode · AI optional'}
           </p>
         </div>
         <div className="assistant-header-actions">
@@ -262,6 +272,12 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
               <div className="assistant-sources" aria-label="Answer sources">
                 {[...new Set(message.sourceIds)].map((id) => {
                   const source = knowledge.sources.find((s) => s.id === id)
+                  if (source && !source.url)
+                    return (
+                      <span className="assistant-source-note" key={id}>
+                        {source.label}
+                      </span>
+                    )
                   return source ? (
                     <a
                       key={id}
@@ -334,7 +350,12 @@ export default function AssistantPanel({ open, onClose, onNavigate }) {
             }}
           />
           {pending ? (
-            <button type="button" onClick={stop}>
+            <button
+              className="assistant-stop"
+              type="button"
+              onClick={stop}
+              aria-label="Stop generating"
+            >
               Stop
             </button>
           ) : (

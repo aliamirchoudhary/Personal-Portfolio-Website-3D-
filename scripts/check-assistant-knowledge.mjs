@@ -12,6 +12,17 @@ for (const project of PROJECTS) {
 }
 for (const source of data.sources) {
   if (source.id === 'portfolio' && source.url === '#about') continue
+  if (source.id === 'owner' && source.url === null && /^\d{4}-\d{2}-\d{2}$/.test(source.date))
+    continue
+  if (source.id === 'cv' && source.url === '/Muhammad_Ali_Aamir_Resume.pdf') continue
+  if (source.id === 'kryzect-site' && source.url === 'https://kryzect.vercel.app/') continue
+  if (
+    source.id.startsWith('kryzect') &&
+    /^https:\/\/github\.com\/Kryzect\/Kryzect-Official-Website\/blob\/[a-f0-9]{40}\/src\/data\/(services-catalog|faq|process|products|team)\.js$/.test(
+      source.url,
+    )
+  )
+    continue
   if (!/^https:\/\/github\.com\/aliamirchoudhary\/[^/]+\/blob\/[a-f0-9]{40}\//.test(source.url))
     throw Error('Untrusted knowledge source')
 }

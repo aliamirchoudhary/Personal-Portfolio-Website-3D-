@@ -179,7 +179,8 @@ body.assistant-open {
   margin-top: 13px;
   padding-top: 10px;
 }
-.assistant-sources a {
+.assistant-sources a,
+.assistant-source-note {
   color: #c4b5fd;
   font-size: 0.67rem;
   line-height: 1.6;
@@ -264,6 +265,14 @@ body.assistant-open {
 .assistant-input-row button:disabled {
   opacity: 0.45;
   cursor: default;
+}
+.assistant-input-row .assistant-stop {
+  width: 44px;
+  min-width: 0;
+  padding: 4px;
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
 }
 .assistant-options-row {
   display: flex;
