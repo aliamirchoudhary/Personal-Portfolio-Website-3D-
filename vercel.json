@@ -1,5 +1,58 @@
 {
   "rewrites": [
-    { "source": "/send-contact", "destination": "/api/send-contact" }
+    {
+      "source": "/send-contact",
+      "destination": "/api/send-contact"
+    }
+  ],
+  "functions": {
+    "api/send-contact.js": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; script-src 'self' 'sha256-fPElWroUh3sETcPYHJssGD4xLmnW7ewoykoXTsNAtpE=' 'sha256-pJRmZ9mxLO6Hv293DUIb+2k+Nj2PKq3BmVEi9oPpFaQ=' 'sha256-wZJ0ERnOdFOM9RTZZNfXYjhs0pTk6S1pIKW13P0ezTk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/fonts/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
+    }
   ]
 }

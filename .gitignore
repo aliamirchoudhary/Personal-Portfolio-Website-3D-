@@ -32,7 +32,10 @@ lighthouse-*.json
 
 # Environment variables
 .env
+.env.*
+!.env.example
+.ssr-temp/
+test-results/
 
 # Credentials / migration docs
 gmail-smtp-to-formspree-migration-guide.md
-

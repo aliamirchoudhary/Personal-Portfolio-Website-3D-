@@ -1,234 +1,127 @@
-import { useState, useEffect, useCallback, useRef, useLayoutEffect, lazy, Suspense } from 'react'
-import { PERSONAL } from './data/portfolioData'
+import { lazy, memo, Suspense, useCallback, useEffect, useState } from 'react'
 import Navbar from './components/shared/Navbar'
 import Footer from './components/shared/Footer'
-import HomeSection from './components/sections/HomeSection'
-import AboutSection from './components/sections/AboutSection'
-import KryzectSection from './components/sections/KryzectSection'
-import ExperienceSection from './components/sections/ExperienceSection'
-import EducationSection from './components/sections/EducationSection'
-import SkillsSection from './components/sections/SkillsSection'
-import ProjectsSection from './components/sections/ProjectsSection'
-import ContactSection from './components/sections/ContactSection'
-import LoadingNameTrace from './components/loading/LoadingNameTrace'
-import LoadingProfileFrame from './components/loading/LoadingProfileFrame'
+import HomeSectionView from './components/sections/HomeSection'
+import AboutSectionView from './components/sections/AboutSection'
+import KryzectSectionView from './components/sections/KryzectSection'
+import ExperienceSectionView from './components/sections/ExperienceSection'
+import EducationSectionView from './components/sections/EducationSection'
+import SkillsSectionView from './components/sections/SkillsSection'
+import ProjectsSectionView from './components/sections/ProjectsSection'
+import ContactSectionView from './components/sections/ContactSection'
+import DecorationBoundary from './components/shared/DecorationBoundary'
+import { MotionProvider } from './context/MotionContext'
+import { useMotion } from './context/motion'
+import { NAV_LINKS } from './data/portfolioData'
 
-// Loaded only on desktop (>=1024px) and only when the intro animation starts,
-// so mobile never parses/executes the heavy slot + all its animated modules.
 const MorphTransitionSlot = lazy(() => import('./components/shared/MorphTransitionSlot'))
+// Active navigation and visibility updates must not rerender every content section.
+// Context consumers inside each section still receive motion/responsive changes.
+const HomeSection = memo(HomeSectionView)
+const AboutSection = memo(AboutSectionView)
+const KryzectSection = memo(KryzectSectionView)
+const ExperienceSection = memo(ExperienceSectionView)
+const EducationSection = memo(EducationSectionView)
+const SkillsSection = memo(SkillsSectionView)
+const ProjectsSection = memo(ProjectsSectionView)
+const ContactSection = memo(ContactSectionView)
 
-// Mirror the slot constants (SLOT_W = 460, SLOT_GUTTER = 24) locally so the
-// desktop intro layout math doesn't pull in the whole slot module eagerly.
-const SLOT_W = 460
-const SLOT_GUTTER = 24
-
-const LOADING_DURATION = 4500
-const DURATIONS = {
-  normal: { slotMove: 0.7, fade: 0.3, showMain: 0.5 },
-  low:    { slotMove: 0.42, fade: 0.2, showMain: 0.3 },
-}
-
-function detectLowPowerDevice() {
-  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false
-
-  const memory = navigator.deviceMemory ?? 8
-  const cores = navigator.hardwareConcurrency ?? 8
-  const saveData = navigator.connection?.saveData ?? false
-  const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches ?? false
-  const narrowScreen = window.innerWidth <= 768
-
-  return Boolean(saveData || memory <= 4 || cores <= 4 || (coarsePointer && narrowScreen))
-}
-
-// GSAP is only needed for the desktop intro/slot animations. Load it lazily so
-// mobile never downloads, parses, or runs it (keeps the initial bundle lean).
-const loadGSAP = () =>
-  Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([gs, st]) => {
-    gs.gsap.registerPlugin(st.ScrollTrigger)
-    return { gsap: gs.gsap, ScrollTrigger: st.ScrollTrigger }
-  })
-
-export default function App() {
-  const [phase, setPhase] = useState('loading')
+function Portfolio() {
   const [activeSection, setActiveSection] = useState('home')
-  const [lowPower] = useState(() => detectLowPowerDevice())
-  const [isNarrow] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 1024)
-  const [isDesktop] = useState(() => typeof window !== 'undefined' && window.innerWidth > 1024)
-  const loadingRef = useRef(null)
-  const tlRef = useRef(null)
-  const slotRef = useRef(null)
-  // Short, snappy loading on any narrow/low-power screen so real content paints
-  // fast (the fancy 4.5s sequence is kept for desktop where it's not a core-vital blocker).
-  const loadingDuration = (lowPower || isNarrow) ? 900 : LOADING_DURATION
-  const dur = (lowPower || isNarrow) ? DURATIONS.low : DURATIONS.normal
-
-  /* ── loading → intro ── */
+  const { animate, isDesktop, paused, setPaused, reduced } = useMotion()
+  const navigate = useCallback(
+    (id, { history = true, focus = true } = {}) => {
+      const element = document.getElementById(id)
+      if (!element) return
+      if (history && location.hash !== `#${id}`) window.history.pushState(null, '', `#${id}`)
+      if (focus) element.querySelector('h1,h2')?.focus({ preventScroll: true })
+      element.scrollIntoView({ behavior: animate ? 'smooth' : 'instant', block: 'start' })
+    },
+    [animate],
+  )
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase('intro'), loadingDuration)
-    return () => clearTimeout(t1)
-  }, [loadingDuration])
-
-  /* ── compact loading layout (no !important CSS) ── */
-  useLayoutEffect(() => {
-    if (phase !== 'loading') return
-    if (!isDesktop || window.innerWidth <= 1024) return
-    let cancelled = false
-    loadGSAP().then(({ gsap }) => {
-      if (cancelled) return
-      gsap.set('.lpf-scene', { minHeight: '45vh', paddingTop: '2vh' })
-      gsap.set('.lpf-root', { width: 240, height: 240, marginTop: '5vh' })
-    })
-    return () => { cancelled = true }
-  }, [phase, isDesktop])
-
-  /* ── intro: loading profile flows to right slot position, matching HomeProfilePicture ── */
-  useEffect(() => {
-    if (phase !== 'intro') return
-    if (!isDesktop || window.innerWidth <= 1024) {
-      requestAnimationFrame(() => setPhase('ready'))
-      return
+    const onHistory = () => {
+      const id = location.hash.slice(1)
+      if (NAV_LINKS.some((link) => link.id === id)) navigate(id, { history: false, focus: false })
     }
-    const el = loadingRef.current
-    if (!el) return
-
-    // HomeProfilePicture sits 58px right of center inside the slot
-    // due to its justify-end Tailwind class. Compensate so the
-    // centered .lpf-root aligns with the right-aligned .hpp-root.
-    let cancelled = false
-    const raf = requestAnimationFrame(() => {
-      loadGSAP().then(({ gsap, ScrollTrigger }) => {
-        if (cancelled) return
-        const slot = document.querySelector('.animated-slot')
-        const slotLeft = slot ? slot.getBoundingClientRect().left : window.innerWidth - SLOT_W - SLOT_GUTTER
-        const targetLeft = slotLeft + 58
-
-        const tl = gsap.timeline({
-          onComplete: () => {
-            setPhase('ready')
-            ScrollTrigger.refresh()
-          },
-        })
-        tlRef.current = tl
-
-        tl.to('.lpf-scene', {
-          minHeight: '100vh',
-          paddingTop: 0,
-          duration: dur.slotMove,
-          ease: 'power2.inOut',
-        }, 0)
-
-        tl.to('.lpf-root', {
-          width: 320,
-          height: 320,
-          marginTop: 0,
-          duration: dur.slotMove,
-          ease: 'power2.inOut',
-        }, 0)
-
-        tl.to(el, {
-          left: targetLeft,
-          top: 0,
-          y: -5,
-          width: SLOT_W,
-          height: '100vh',
-          duration: dur.slotMove,
-          ease: 'power2.inOut',
-        }, 0)
-
-        tl.to(el, {
-          opacity: 0,
-          duration: dur.fade,
-          ease: 'power2.in',
-        }, 0.7)
-
-        tl.to('.loading-name-trace', {
-          opacity: 0,
-          duration: dur.fade,
-        }, 0)
-
-        tl.to('.main-wrap', {
-          opacity: 1,
-          duration: dur.showMain,
-        }, lowPower ? 0 : 0.15)
-      })
-    })
-
+    const initial = requestAnimationFrame(onHistory)
+    window.addEventListener('popstate', onHistory)
+    window.addEventListener('hashchange', onHistory)
     return () => {
-      cancelled = true
-      cancelAnimationFrame(raf)
-      if (tlRef.current) {
-        tlRef.current.kill()
-        tlRef.current = null
-      }
+      cancelAnimationFrame(initial)
+      window.removeEventListener('popstate', onHistory)
+      window.removeEventListener('hashchange', onHistory)
     }
-  }, [phase])
-
-  const scrollToSection = useCallback((id) => {
-    const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    if (slotRef.current) slotRef.current.jumpTo(id)
-  }, [])
-
-  /* ── IntersectionObserver for navbar highlight ── */
+  }, [navigate])
   useEffect(() => {
-    if (phase === 'loading') return
-    const sectionEls = document.querySelectorAll('.portfolio-section')
-    const obs = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id)
-        }
-      }
-    }, { rootMargin: '-40% 0px -40% 0px' })
-    sectionEls.forEach((el) => obs.observe(el))
-    return () => obs.disconnect()
-  }, [phase])
-
+    let frame
+    const update = () => {
+      frame = null
+      const line = window.innerHeight * 0.35
+      let id = 'home'
+      for (const link of NAV_LINKS)
+        if (document.getElementById(link.id)?.getBoundingClientRect().top <= line) id = link.id
+      setActiveSection(id)
+    }
+    const scroll = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', scroll, { passive: true })
+    window.addEventListener('resize', scroll)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', scroll)
+      window.removeEventListener('resize', scroll)
+    }
+  }, [])
   return (
-    <div style={{ background: '#0a0a0f', minHeight: '100vh' }}>
-      {(phase === 'loading' || phase === 'intro') && (
-        <div
-          ref={loadingRef}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            background: '#0a0a0f',
-            overflow: 'hidden',
-            zIndex: 100,
-          }}
+    <>
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <Navbar activeSection={activeSection} scrollToSection={navigate} />
+      {isDesktop && (
+        <DecorationBoundary
+          fallback={
+            <div className="static-artwork" aria-hidden="true">
+              ✦
+            </div>
+          }
         >
-          <LoadingProfileFrame imageSrc={PERSONAL.profileImage} name={PERSONAL.name} />
-          <style>{`@media (max-width: 1024px) { .lpf-root { margin-bottom: 80px !important; } }`}</style>
-          <div className="loading-name-trace" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-            <LoadingNameTrace name={PERSONAL.name.toUpperCase()} duration={loadingDuration} />
-          </div>
-        </div>
+          <Suspense fallback={null}>
+            <MorphTransitionSlot />
+          </Suspense>
+        </DecorationBoundary>
       )}
-
-      {phase !== 'loading' && (
-        <>
-          <Navbar activeSection={activeSection} scrollToSection={scrollToSection} />
-          {isDesktop && (
-            <Suspense fallback={null}>
-              <MorphTransitionSlot ref={slotRef} lowPower={lowPower} />
-            </Suspense>
-          )}
-          <main className="main-wrap" style={{ paddingTop: 96, opacity: phase === 'intro' ? 0 : 1 }}>
-            <HomeSection />
-            <AboutSection />
-            <KryzectSection />
-            <ExperienceSection />
-            <EducationSection />
-            <SkillsSection />
-            <ProjectsSection />
-            <ContactSection />
-          </main>
-          <Footer scrollToSection={scrollToSection} />
-        </>
-      )}
-    </div>
+      <main id="main" className="main-wrap" tabIndex={-1}>
+        <HomeSection />
+        <AboutSection />
+        <KryzectSection />
+        <ExperienceSection />
+        <EducationSection />
+        <SkillsSection />
+        <ProjectsSection />
+        <ContactSection />
+      </main>
+      <div className="motion-controls">
+        <button
+          type="button"
+          onClick={() => setPaused((value) => !value)}
+          aria-pressed={paused}
+          disabled={reduced}
+        >
+          {reduced ? 'Reduced motion enabled' : paused ? 'Resume animations' : 'Pause animations'}
+        </button>
+      </div>
+      <Footer scrollToSection={navigate} />
+    </>
+  )
+}
+export default function App() {
+  return (
+    <MotionProvider>
+      <Portfolio />
+    </MotionProvider>
   )
 }

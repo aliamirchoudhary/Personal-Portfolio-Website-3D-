@@ -1,4 +1,5 @@
-import React from 'react'
+import { useId } from 'react'
+import { useAnimationActivity } from '../../context/motion'
 
 /**
  * KryzectLogo
@@ -10,13 +11,14 @@ import React from 'react'
  *   size   -> pixel size of the square logo (default 200).
  *   replay -> show a small replay button (handy while testing locally).
  */
-export default function KryzectLogo({ size = 200, replay = true }) {
+export default function KryzectLogo({ size = 200 }) {
+  const { ref, animate } = useAnimationActivity()
+  const instance = useId().replace(/[^a-zA-Z0-9_-]/g, '')
   const strokeWidth = 4
   const outerSpeed = 40 // seconds per full rotation
 
   const colorBackground = '#0A1120'
   const colorSurface = '#111A2E'
-  const colorText = '#F5F7FF'
   const colorSecondary = '#8892AC'
   const colorAccent = '#8FAEFF'
   const colorAccentActive = '#6C97F7'
@@ -26,7 +28,7 @@ export default function KryzectLogo({ size = 200, replay = true }) {
   const oGap = (outerCircumference * 60) / 360
   const outerDashArray = `${oArc.toFixed(2)} ${oGap.toFixed(2)}`
 
-  const uniqueId = `kryzect-logo-static`
+  const uniqueId = `kryzect-logo-${instance}`
 
   const outerDecay = 1.5
 
@@ -53,6 +55,8 @@ export default function KryzectLogo({ size = 200, replay = true }) {
 
   return (
     <svg
+      ref={ref}
+      data-active={animate}
       viewBox="0 0 200 200"
       xmlns="http://www.w3.org/2000/svg"
       style={{ width: size, height: size, display: 'block', overflow: 'visible' }}
@@ -109,32 +113,180 @@ export default function KryzectLogo({ size = 200, replay = true }) {
 
       <g className={`track-outer-base-${uniqueId}`}>
         <g className={`track-outer-decay-${uniqueId}`}>
-          <circle cx="100" cy="100" r="75" fill="none" stroke={colorAccent} strokeWidth={strokeWidth * 1.5} strokeDasharray={outerDashArray} strokeLinecap="round" />
+          <circle
+            cx="100"
+            cy="100"
+            r="75"
+            fill="none"
+            stroke={colorAccent}
+            strokeWidth={strokeWidth * 1.5}
+            strokeDasharray={outerDashArray}
+            strokeLinecap="round"
+          />
         </g>
       </g>
 
-      <circle cx="100" cy="100" r="55" fill="none" stroke={colorSecondary} strokeWidth={strokeWidth * 1.5} />
+      <circle
+        cx="100"
+        cy="100"
+        r="55"
+        fill="none"
+        stroke={colorSecondary}
+        strokeWidth={strokeWidth * 1.5}
+      />
 
       <g style={{ filter: `drop-shadow(0 0.5px 1.4px ${colorBackground}CC)` }}>
-        <polygon className={`trace-diamond-${uniqueId}`} points="85,92 93,100 85,108 77,100" fill="none" stroke={colorBackground} strokeWidth={centerStrokeWidth} strokeLinejoin="round" strokeLinecap="round" transform="translate(1.3, 1.6)" />
-        <line className={`trace-line-${uniqueId}`} x1="77" y1="70" x2="77" y2="130" stroke={colorBackground} strokeWidth={centerStrokeWidth} strokeLinecap="round" transform="translate(1.3, 1.6)" />
-        <path className={`trace-arc-up-${uniqueId}`} d="M 89 96 A 55 55 0 0 1 132 75" fill="none" stroke={colorBackground} strokeWidth={centerStrokeWidth} strokeLinecap="round" transform="translate(1.3, 1.6)" />
-        <path className={`trace-arc-down-${uniqueId}`} d="M 89 104 A 55 55 0 0 0 132 129" fill="none" stroke={colorBackground} strokeWidth={centerStrokeWidth} strokeLinecap="round" transform="translate(1.3, 1.6)" />
+        <polygon
+          className={`trace-diamond-${uniqueId}`}
+          points="85,92 93,100 85,108 77,100"
+          fill="none"
+          stroke={colorBackground}
+          strokeWidth={centerStrokeWidth}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          transform="translate(1.3, 1.6)"
+        />
+        <line
+          className={`trace-line-${uniqueId}`}
+          x1="77"
+          y1="70"
+          x2="77"
+          y2="130"
+          stroke={colorBackground}
+          strokeWidth={centerStrokeWidth}
+          strokeLinecap="round"
+          transform="translate(1.3, 1.6)"
+        />
+        <path
+          className={`trace-arc-up-${uniqueId}`}
+          d="M 89 96 A 55 55 0 0 1 132 75"
+          fill="none"
+          stroke={colorBackground}
+          strokeWidth={centerStrokeWidth}
+          strokeLinecap="round"
+          transform="translate(1.3, 1.6)"
+        />
+        <path
+          className={`trace-arc-down-${uniqueId}`}
+          d="M 89 104 A 55 55 0 0 0 132 129"
+          fill="none"
+          stroke={colorBackground}
+          strokeWidth={centerStrokeWidth}
+          strokeLinecap="round"
+          transform="translate(1.3, 1.6)"
+        />
 
-        <polygon className={`trace-diamond-${uniqueId}`} points="85,92 93,100 85,108 77,100" fill="none" stroke={colorAccentActive} strokeWidth={centerStrokeWidth} strokeLinejoin="round" strokeLinecap="round" />
-        <line className={`trace-line-${uniqueId}`} x1="77" y1="70" x2="77" y2="130" stroke={colorAccentActive} strokeWidth={centerStrokeWidth} strokeLinecap="round" />
-        <path className={`trace-arc-up-${uniqueId}`} d="M 89 96 A 55 55 0 0 1 132 75" fill="none" stroke={colorAccentActive} strokeWidth={centerStrokeWidth} strokeLinecap="round" />
-        <path className={`trace-arc-down-${uniqueId}`} d="M 89 104 A 55 55 0 0 0 132 129" fill="none" stroke={colorAccentActive} strokeWidth={centerStrokeWidth} strokeLinecap="round" />
+        <polygon
+          className={`trace-diamond-${uniqueId}`}
+          points="85,92 93,100 85,108 77,100"
+          fill="none"
+          stroke={colorAccentActive}
+          strokeWidth={centerStrokeWidth}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        <line
+          className={`trace-line-${uniqueId}`}
+          x1="77"
+          y1="70"
+          x2="77"
+          y2="130"
+          stroke={colorAccentActive}
+          strokeWidth={centerStrokeWidth}
+          strokeLinecap="round"
+        />
+        <path
+          className={`trace-arc-up-${uniqueId}`}
+          d="M 89 96 A 55 55 0 0 1 132 75"
+          fill="none"
+          stroke={colorAccentActive}
+          strokeWidth={centerStrokeWidth}
+          strokeLinecap="round"
+        />
+        <path
+          className={`trace-arc-down-${uniqueId}`}
+          d="M 89 104 A 55 55 0 0 0 132 129"
+          fill="none"
+          stroke={colorAccentActive}
+          strokeWidth={centerStrokeWidth}
+          strokeLinecap="round"
+        />
 
-        <polygon className={`trace-diamond-${uniqueId}`} points="85,92 93,100 85,108 77,100" fill="none" stroke={colorAccent} strokeWidth={centerStrokeWidth * 0.4} strokeLinejoin="round" strokeLinecap="round" transform="translate(-0.6, -0.8)" />
-        <line className={`trace-line-${uniqueId}`} x1="77" y1="70" x2="77" y2="130" stroke={colorAccent} strokeWidth={centerStrokeWidth * 0.4} strokeLinecap="round" transform="translate(-0.6, -0.8)" />
-        <path className={`trace-arc-up-${uniqueId}`} d="M 89 96 A 55 55 0 0 1 132 75" fill="none" stroke={colorAccent} strokeWidth={centerStrokeWidth * 0.4} strokeLinecap="round" transform="translate(-0.6, -0.8)" />
-        <path className={`trace-arc-down-${uniqueId}`} d="M 89 104 A 55 55 0 0 0 132 129" fill="none" stroke={colorAccent} strokeWidth={centerStrokeWidth * 0.4} strokeLinecap="round" transform="translate(-0.6, -0.8)" />
+        <polygon
+          className={`trace-diamond-${uniqueId}`}
+          points="85,92 93,100 85,108 77,100"
+          fill="none"
+          stroke={colorAccent}
+          strokeWidth={centerStrokeWidth * 0.4}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+          transform="translate(-0.6, -0.8)"
+        />
+        <line
+          className={`trace-line-${uniqueId}`}
+          x1="77"
+          y1="70"
+          x2="77"
+          y2="130"
+          stroke={colorAccent}
+          strokeWidth={centerStrokeWidth * 0.4}
+          strokeLinecap="round"
+          transform="translate(-0.6, -0.8)"
+        />
+        <path
+          className={`trace-arc-up-${uniqueId}`}
+          d="M 89 96 A 55 55 0 0 1 132 75"
+          fill="none"
+          stroke={colorAccent}
+          strokeWidth={centerStrokeWidth * 0.4}
+          strokeLinecap="round"
+          transform="translate(-0.6, -0.8)"
+        />
+        <path
+          className={`trace-arc-down-${uniqueId}`}
+          d="M 89 104 A 55 55 0 0 0 132 129"
+          fill="none"
+          stroke={colorAccent}
+          strokeWidth={centerStrokeWidth * 0.4}
+          strokeLinecap="round"
+          transform="translate(-0.6, -0.8)"
+        />
 
-        <polygon className={`glow-diamond-${uniqueId}`} points="85,92 93,100 85,108 77,100" fill="none" stroke="#F5F7FF" strokeWidth={centerGlowStrokeWidth} strokeLinejoin="round" strokeLinecap="round" />
-        <line className={`glow-line-${uniqueId}`} x1="77" y1="70" x2="77" y2="130" stroke="#F5F7FF" strokeWidth={centerGlowStrokeWidth} strokeLinecap="round" />
-        <path className={`glow-arc-up-${uniqueId}`} d="M 89 96 A 55 55 0 0 1 132 75" fill="none" stroke="#F5F7FF" strokeWidth={centerGlowStrokeWidth} strokeLinecap="round" />
-        <path className={`glow-arc-down-${uniqueId}`} d="M 89 104 A 55 55 0 0 0 132 129" fill="none" stroke="#F5F7FF" strokeWidth={centerGlowStrokeWidth} strokeLinecap="round" />
+        <polygon
+          className={`glow-diamond-${uniqueId}`}
+          points="85,92 93,100 85,108 77,100"
+          fill="none"
+          stroke="#F5F7FF"
+          strokeWidth={centerGlowStrokeWidth}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        <line
+          className={`glow-line-${uniqueId}`}
+          x1="77"
+          y1="70"
+          x2="77"
+          y2="130"
+          stroke="#F5F7FF"
+          strokeWidth={centerGlowStrokeWidth}
+          strokeLinecap="round"
+        />
+        <path
+          className={`glow-arc-up-${uniqueId}`}
+          d="M 89 96 A 55 55 0 0 1 132 75"
+          fill="none"
+          stroke="#F5F7FF"
+          strokeWidth={centerGlowStrokeWidth}
+          strokeLinecap="round"
+        />
+        <path
+          className={`glow-arc-down-${uniqueId}`}
+          d="M 89 104 A 55 55 0 0 0 132 129"
+          fill="none"
+          stroke="#F5F7FF"
+          strokeWidth={centerGlowStrokeWidth}
+          strokeLinecap="round"
+        />
       </g>
     </svg>
   )

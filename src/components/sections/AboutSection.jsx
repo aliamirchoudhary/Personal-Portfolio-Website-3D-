@@ -1,24 +1,32 @@
-import { useState, useEffect, useRef, lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { ABOUT_TEXT, PERSONAL, KRYZECT } from '../../data/portfolioData'
 import KryzectLogo from '../ui/KryzectLogo'
 import LazyMount from '../shared/LazyMount'
 
 const NeuralNetworkGlobe = lazy(() => import('../animated/NeuralNetworkGlobe'))
 
-const WC_FONT = "'Clash Display', 'Clash Grotesk', 'Space Grotesk', sans-serif"
+const WC_FONT = "'Space Grotesk', sans-serif"
 
 function formatText(text) {
   const parts = []
   let remaining = text
   while (remaining.length > 0) {
     const idx = remaining.indexOf('Kryzect')
-    if (idx === -1) { parts.push(remaining); break }
+    if (idx === -1) {
+      parts.push(remaining)
+      break
+    }
     if (idx > 0) parts.push(remaining.slice(0, idx))
     parts.push(
-      <a key={`wc-${idx}`} href={KRYZECT.url} target="_blank" rel="noopener noreferrer"
-        style={{ color: '#8FAEFF', fontWeight: 700, textDecoration: 'none', fontFamily: WC_FONT }}>
+      <a
+        key={`wc-${idx}`}
+        href={KRYZECT.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ color: '#8FAEFF', fontWeight: 700, textDecoration: 'none', fontFamily: WC_FONT }}
+      >
         Kryzect
-      </a>
+      </a>,
     )
     remaining = remaining.slice(idx + 7)
   }
@@ -26,34 +34,11 @@ function formatText(text) {
 }
 
 export default function AboutSection() {
-  const sectionRef = useRef(null)
-  const [animKey, setAnimKey] = useState(0)
-
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setAnimKey((k) => k + 1)
-    }, { threshold: 0.3 })
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [])
-
   return (
-    <section ref={sectionRef} id="about" className="portfolio-section" style={{ height: '100vh' }}>
-      <div
-        className="content-scroll"
-        style={{
-          marginLeft: '40vw',
-          width: '60vw',
-          height: '100vh',
-          padding: '1rem 4rem 0',
-          display: 'flex',
-          flexDirection: 'column',
-          boxSizing: 'border-box',
-        }}
-      >
+    <section id="about" className="portfolio-section">
+      <div className="section-content content-right">
         <h2
+          tabIndex={-1}
           className="gradient-text"
           style={{
             fontFamily: "'Space Grotesk', sans-serif",
@@ -66,7 +51,7 @@ export default function AboutSection() {
           About Me
         </h2>
 
-        <div className="about-scroll-area" style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+        <div className="about-scroll-area">
           {ABOUT_TEXT.map((para, i) => (
             <p
               key={i}
@@ -95,16 +80,36 @@ export default function AboutSection() {
           <p style={{ color: '#f1f5f9', fontWeight: 600, marginBottom: '1rem' }}>
             Feel free to reach out for collaboration!
           </p>
-          <p style={{ color: '#94a3b8', marginBottom: '0.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.4rem 0.8rem', alignItems: 'center' }}>
-            <span style={{ whiteSpace: 'nowrap' }}>
-              <i className="fas fa-envelope" style={{ color: '#7c3aed', marginRight: 6 }} />
-              <a href={`mailto:${PERSONAL.email}`} style={{ color: '#a78bfa', textDecoration: 'none' }}>
+          <p
+            style={{
+              color: '#94a3b8',
+              marginBottom: '0.5rem',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '0.4rem 0.8rem',
+              alignItems: 'center',
+            }}
+          >
+            <span className="about-contact-link">
+              <i
+                aria-hidden="true"
+                className="fas fa-envelope"
+                style={{ color: '#7c3aed', marginRight: 6 }}
+              />
+              <a
+                href={`mailto:${PERSONAL.email}`}
+                style={{ color: '#a78bfa', textDecoration: 'none' }}
+              >
                 {PERSONAL.email}
               </a>
             </span>
             <span style={{ color: '#94a3b8' }}>|</span>
-            <span style={{ whiteSpace: 'nowrap' }}>
-              <i className="fab fa-linkedin-in" style={{ color: '#7c3aed', marginRight: 6 }} />
+            <span className="about-contact-link">
+              <i
+                aria-hidden="true"
+                className="fab fa-linkedin-in"
+                style={{ color: '#7c3aed', marginRight: 6 }}
+              />
               <a
                 href="https://www.linkedin.com/in/muhammad-ali-aamir2558"
                 target="_blank"
@@ -139,13 +144,15 @@ export default function AboutSection() {
               }}
             >
               <KryzectLogo size={28} />
-              <span style={{
-                color: '#8FAEFF',
-                fontWeight: 700,
-                fontSize: '1.15rem',
-                fontFamily: WC_FONT,
-                letterSpacing: '0.02em',
-              }}>
+              <span
+                style={{
+                  color: '#8FAEFF',
+                  fontWeight: 700,
+                  fontSize: '1.15rem',
+                  fontFamily: WC_FONT,
+                  letterSpacing: '0.02em',
+                }}
+              >
                 {KRYZECT.name}
               </span>
             </a>

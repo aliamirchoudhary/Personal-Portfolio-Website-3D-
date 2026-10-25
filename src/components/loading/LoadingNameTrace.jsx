@@ -1,163 +1,40 @@
-import { useState, useEffect, useRef } from "react"
-
-/**
- * LoadingNameTrace
- * --------------------------------------------------------------------------
- * A portfolio loading screen.
- *
- * Sequence (total 4.5s):
- *   1. Screen is blank.
- *   2. The name fades in fast (0 -> full) in a DARK palette color.
- *   3. A light-colored stroke slowly traces every letter simultaneously;
- *      as each part is traced it takes on the light neon color.
- *   4. The whole thing fades out fast, leaving a blank screen.
- *
- * The name is centered horizontally (equal space both sides) and its
- * vertical center sits at 60% of the screen height.
- *
- * The SVG fills the whole viewport and uses its own pixel coordinate space,
- * so x="50%"/y="60%" with text-anchor:middle guarantees true centering and
- * the font-size auto-shrinks (textLength) so the name never clips.
- *
- * Self-contained — drop into any Vite / CRA / Next project and render
- * <LoadingNameTrace />. No external animation libraries.
- */
-export default function LoadingNameTrace({ name = "MUHAMMAD ALI AAMIR", duration = 4500 }) {
-  const measureRef = useRef(null)
-  const [pathLength, setPathLength] = useState(0)
-  const [textLength, setTextLength] = useState(0)
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    const el = measureRef.current
-    if (!el) return
-    let len = 0
-    try {
-      len = el.getComputedTextLength()
-    } catch {
-      len = 600
-    }
-    const maxW = window.innerWidth * 0.85
-    const constrained = Math.min(len, maxW)
-    setTextLength(constrained)
-    setPathLength(constrained * 1.6)
-    requestAnimationFrame(() => requestAnimationFrame(() => setReady(true)))
-  }, [name])
-
-  const total = duration / 1000
-
-  // Cap the text to 80% of viewport width so there is always equal breathing
-  // room on both sides and it never clips.
-  const maxTextWidth = "80vw"
-
-  const fontStyle = {
-    fontFamily: "'Orbitron', sans-serif",
-    fontWeight: 700,
-    fontSize: "clamp(24px, 5.5vw, 80px)",
-    letterSpacing: "0.04em",
-  }
-
+import { useId } from 'react'
+export default function LoadingNameTrace({ name = 'MUHAMMAD ALI AAMIR', duration = 1500 }) {
+  const id = useId().replace(/[^a-zA-Z0-9_-]/g, '')
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        overflow: "hidden",
-      }}
+    <svg
+      viewBox="0 0 460 65"
+      width="100%"
+      height="100%"
+      aria-hidden="true"
+      className="loading-name-trace"
     >
-      <style>{`
-        /* Master opacity: blank -> fast fade in -> long hold -> fast fade out */
-        @keyframes lnt-stage {
-          0%   { opacity: 0; }
-          6%   { opacity: 1; }
-          94%  { opacity: 1; }
-          100% { opacity: 0; }
-        }
-        /* The light tracing the letters (slow, fills most of the timeline) */
-        @keyframes lnt-trace {
-          to { stroke-dashoffset: 0; }
-        }
-
-        @media (max-width: 1024px) {
-          svg text {
-            letter-spacing: 0.14em !important;
-            stroke: #a78bfa;
-            stroke-width: 1.2px;
-            paint-order: stroke fill;
-          }
-        }
-      `}</style>
-
-      <svg
-        width="100%"
-        height="100%"
-        aria-label={name}
-        role="img"
+      <defs>
+        <filter id={`name-glow-${id}`}>
+          <feGaussianBlur stdDeviation="1" />
+        </filter>
+      </defs>
+      <text
+        x="230"
+        y="34"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        textLength="420"
+        lengthAdjust="spacingAndGlyphs"
+        fill="#392455"
+        stroke="#c4b5fd"
+        strokeWidth=".8"
+        fontFamily="Space Grotesk,sans-serif"
+        fontSize="22"
+        fontWeight="700"
         style={{
-          position: "absolute",
-          inset: 0,
-          opacity: ready ? undefined : 0,
-          animation: ready ? `lnt-stage ${total}s ease-in-out forwards` : "none",
+          strokeDasharray: 700,
+          strokeDashoffset: 700,
+          animation: `name-trace ${duration}ms ease forwards`,
         }}
       >
-        <defs>
-          <filter id="lnt-glow" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="2.5" result="b" />
-            <feMerge>
-              <feMergeNode in="b" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        {/* Hidden text used purely to measure glyph length */}
-        <text
-          ref={measureRef}
-          x="-9999"
-          y="-9999"
-          style={{ ...fontStyle, visibility: "hidden" }}
-        >
-          {name}
-        </text>
-
-        <text
-          x="50%"
-          y="60%"
-          dominantBaseline="central"
-          textAnchor="middle"
-          lengthAdjust="spacingAndGlyphs"
-          textLength={textLength || undefined}
-          fill="#3b1d8f"
-          style={fontStyle}
-        >
-          {name}
-        </text>
-
-        <text
-          x="50%"
-          y="60%"
-          dominantBaseline="central"
-          textAnchor="middle"
-          lengthAdjust="spacingAndGlyphs"
-          textLength={textLength || undefined}
-          fill="none"
-          stroke="#a78bfa"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          filter="url(#lnt-glow)"
-          style={{
-            ...fontStyle,
-            strokeDasharray: pathLength,
-            strokeDashoffset: pathLength,
-            animation: ready
-              ? `lnt-trace ${total * 0.95}s ease-in-out ${total * 0.07}s forwards`
-              : "none",
-          }}
-        >
-          {name}
-        </text>
-      </svg>
-    </div>
+        {name}
+      </text>
+    </svg>
   )
 }

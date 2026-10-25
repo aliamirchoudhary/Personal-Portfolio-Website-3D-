@@ -1,117 +1,84 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { PERSONAL } from '../../data/portfolioData'
+import { useMotion } from '../../context/motion'
 import LazyMount from '../shared/LazyMount'
-
-const HomeProfilePicture = lazy(() => import('../animated/HomeProfilePicture'))
-
-const TYPING_SPEED = 50
+const Portrait = lazy(() => import('../animated/HomeProfilePicture'))
 
 export default function HomeSection() {
-  const fullTitle = PERSONAL.title
-  const [displayed, setDisplayed] = useState('')
-  const [idx, setIdx] = useState(0)
-
+  const { animate, isDesktop, lowPower } = useMotion()
+  const typeTitle = animate && isDesktop && !lowPower
+  const [count, setCount] = useState(0)
   useEffect(() => {
-    if (idx >= fullTitle.length) return
-    const t = setTimeout(() => {
-      setDisplayed(fullTitle.slice(0, idx + 1))
-      setIdx(idx + 1)
-    }, TYPING_SPEED)
-    return () => clearTimeout(t)
-  }, [idx, fullTitle])
-
+    if (!typeTitle || count >= PERSONAL.title.length) return
+    const timer = setTimeout(() => setCount((value) => value + 1), 35)
+    return () => clearTimeout(timer)
+  }, [typeTitle, count])
+  const portraitFallback = (
+    <img
+      className="artwork-fallback"
+      src="/profile-320.webp"
+      srcSet="/profile-320.webp 320w, /profile-640.webp 640w"
+      sizes="(max-width: 1024px) 180px, 320px"
+      width="180"
+      height="180"
+      style={{ width: 180, height: 180 }}
+      alt=""
+    />
+  )
   return (
-    <section id="home" className="portfolio-section" style={{ height: '100vh' }}>
-      <div
-        style={{
-          marginLeft: 0,
-          width: '60vw',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '0 4rem',
-        }}
-      >
+    <section id="home" className="portfolio-section" aria-labelledby="home-heading">
+      <div className="section-content content-left">
         <h1
+          id="home-heading"
+          tabIndex={-1}
           className="gradient-text"
           style={{
-            fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-            fontWeight: 800,
+            fontFamily: "'Space Grotesk',sans-serif",
+            fontSize: 'clamp(2.5rem,5vw,4rem)',
+            fontWeight: 700,
             lineHeight: 1.1,
             margin: '0 0 1rem',
           }}
         >
           {PERSONAL.name}
         </h1>
-
-        <p
-          style={{
-            fontFamily: "'Inter', sans-serif",
-            fontSize: 'clamp(1rem, 2vw, 1.25rem)',
-            color: '#94a3b8',
-            margin: '0 0 2rem',
-            minHeight: '1.6em',
-            position: 'relative',
-          }}
-        >
-          {/* Hidden full title locks the height so typing never reflows/CLSes */}
-          <span aria-hidden="true" style={{ visibility: 'hidden' }}>{fullTitle}</span>
-          <span style={{ position: 'absolute', left: 0, top: 0 }}>
-            {displayed}
-            <span style={{ animation: 'blink 1s infinite', color: '#a78bfa' }}>|</span>
+        <p className="hero-title">
+          <span className="sr-only">{PERSONAL.title}</span>
+          <span aria-hidden="true" className="hero-title-reserve">
+            {PERSONAL.title}
+          </span>
+          <span aria-hidden="true" className="hero-title-typed">
+            {typeTitle ? PERSONAL.title.slice(0, count) : PERSONAL.title}
+            <span className="typing-cursor">|</span>
           </span>
         </p>
-
-        <a
-          href={PERSONAL.resumeUrl}
-          download="Muhammad_Ali_Aamir_Resume.pdf"
-          className="hover-glow-lift"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            background: 'linear-gradient(135deg, #7c3aed, #06b6d4)',
-            color: '#fff',
-            padding: '1rem 2.5rem',
-            borderRadius: 50,
-            fontSize: '1.1rem',
-            fontWeight: 600,
-            textDecoration: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            alignSelf: 'flex-start',
-            boxShadow: '0 8px 25px rgba(124, 58, 237, 0.3)',
-          }}
-        >
-          <i className="fas fa-download" />
-          Download Resume
-        </a>
+        <p className="hero-summary">
+          I build web applications and data-driven tools, from cricket analytics to machine-learning
+          classifiers.
+        </p>
+        <div className="hero-actions">
+          <a href="#projects" className="primary-button">
+            View projects
+          </a>
+          <a href="#contact" className="secondary-button">
+            Get in touch
+          </a>
+          <a
+            href={PERSONAL.resumeUrl}
+            download="Muhammad_Ali_Aamir_Resume.pdf"
+            className="secondary-button"
+          >
+            Download resume
+          </a>
+        </div>
       </div>
-
       <div className="home-mobile-profile">
-        <LazyMount margin="250px" placeholder={<div style={{ height: 180 }} />}>
-          <Suspense fallback={null}>
-            <HomeProfilePicture imageSrc={PERSONAL.profileImage} size={180} />
+        <LazyMount placeholder={portraitFallback}>
+          <Suspense fallback={portraitFallback}>
+            <Portrait imageSrc={PERSONAL.profileImage} size={180} />
           </Suspense>
         </LazyMount>
       </div>
-
-      <style>{`
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
-        }
-        .home-mobile-profile { display: none; }
-        @media (max-width: 1024px) {
-          .home-mobile-profile {
-            display: flex !important;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-          }
-        }
-      `}</style>
     </section>
   )
 }

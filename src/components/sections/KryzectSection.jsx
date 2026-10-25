@@ -1,8 +1,7 @@
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
 import { PERSONAL } from '../../data/portfolioData'
 import LazyMount from '../shared/LazyMount'
-
-const KryzectLogo = lazy(() => import('../ui/KryzectLogo'))
+import KryzectLogo from '../ui/KryzectLogo'
 
 const ACCENT = '#8FAEFF'
 const CTA_BG = '#7c3aed'
@@ -10,27 +9,32 @@ const KRYZECT_TITLE = '#F5F7FF'
 const WT_SOFT = '#a78bfa'
 
 const LINKS = [
-  { label: "Visit Kryzect", url: "https://kryzect.vercel.app/", icon: "fas fa-globe", primary: true },
-  { label: "Explore Services", url: "https://kryzect.vercel.app/services", icon: "fas fa-layer-group", primary: false },
-  { label: "Contact Kryzect", url: "https://kryzect.vercel.app/contact", icon: "fas fa-envelope", primary: false },
+  {
+    label: 'Visit Kryzect',
+    url: 'https://kryzect.vercel.app/',
+    icon: 'fas fa-globe',
+    primary: true,
+  },
+  {
+    label: 'Explore Services',
+    url: 'https://kryzect.vercel.app/services',
+    icon: 'fas fa-layer-group',
+    primary: false,
+  },
+  {
+    label: 'Contact Kryzect',
+    url: 'https://kryzect.vercel.app/contact',
+    icon: 'fas fa-envelope',
+    primary: false,
+  },
 ]
 
 export default function KryzectSection() {
   return (
-    <section id="kryzect" className="portfolio-section" style={{ height: '100vh' }}>
-      <div
-        className="content-scroll"
-        style={{
-          marginLeft: 0,
-          width: '60vw',
-          height: '100vh',
-          padding: '1rem 4rem 4rem',
-          display: 'flex',
-          flexDirection: 'column',
-          boxSizing: 'border-box',
-        }}
-      >
+    <section id="kryzect" className="portfolio-section">
+      <div className="section-content content-left">
         <h2
+          tabIndex={-1}
           style={{
             color: KRYZECT_TITLE,
             fontFamily: "'Space Grotesk', sans-serif",
@@ -46,7 +50,7 @@ export default function KryzectSection() {
         <p
           style={{
             color: ACCENT,
-            fontFamily: "'Clash Display', 'Space Grotesk', sans-serif",
+            fontFamily: "'Space Grotesk', sans-serif",
             fontWeight: 700,
             fontSize: '1.6rem',
             letterSpacing: '0.03em',
@@ -69,8 +73,8 @@ export default function KryzectSection() {
         >
           Kryzect is my software engineering and AI company — built on the belief that software
           fails more often because the wrong problem is solved than because of poor programming.
-          Every engagement starts by understanding your goals and vision before a single
-          technical recommendation is made: clarity before code.
+          Every engagement starts by understanding your goals and vision before a single technical
+          recommendation is made: clarity before code.
         </p>
 
         <p
@@ -78,13 +82,13 @@ export default function KryzectSection() {
             display: 'flex',
             alignItems: 'center',
             gap: '0.5rem',
-            color: '#64748b',
+            color: '#a5b2c6',
             fontSize: '0.92rem',
             margin: '0 0 1.5rem',
             flexShrink: 0,
           }}
         >
-          <i className="fas fa-feather-alt" style={{ color: ACCENT }} />
+          <i aria-hidden="true" className="fas fa-feather-alt" style={{ color: ACCENT }} />
           Founded &amp; built by {PERSONAL.name} (me), using the ideas that power this portfolio.
         </p>
 
@@ -120,7 +124,7 @@ export default function KryzectSection() {
                 transition: 'background 0.3s ease, color 0.3s ease, border-color 0.3s ease',
               }}
             >
-              <i className={l.icon} />
+              <i aria-hidden="true" className={l.icon} />
               {l.label}
             </a>
           ))}
@@ -135,15 +139,19 @@ export default function KryzectSection() {
             flexShrink: 0,
           }}
         >
-          From websites and custom software to AI solutions and workflow automation, Kryzect
-          helps businesses design, build, and scale digital products.
+          From websites and custom software to AI solutions and workflow automation, Kryzect helps
+          businesses design, build, and scale digital products.
           <span style={{ color: '#e2e8f0' }}>
             {''} Take a look at what we build and reach out to start your project.
           </span>
         </p>
 
-        <div className="mobile-animated-component" style={{ marginTop: 'auto' }}>
-          <LazyMount><Suspense fallback={null}><KryzectLogo size={260} /></Suspense></LazyMount>
+        <div className="mobile-animated-component">
+          <LazyMount>
+            <Suspense fallback={null}>
+              <KryzectLogo size={260} />
+            </Suspense>
+          </LazyMount>
         </div>
       </div>
     </section>

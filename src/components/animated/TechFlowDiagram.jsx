@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useMemo } from "react"
+import { useAnimationActivity } from '../../context/motion'
+import { useRef, useEffect, useMemo } from 'react'
 
 /**
  * TechFlowDiagram
@@ -7,15 +8,15 @@ import React, { useRef, useEffect, useMemo } from "react"
 
 // ---- palette -------------------------------------------------------------
 const COLORS = {
-  bg: "#0a0a0f",
-  surface: "#12121a",
-  primary: "#7c3aed",
-  secondary: "#06b6d4",
-  glow: "#a78bfa",
-  textPrimary: "#f1f5f9",
-  textSecondary: "#94a3b8",
-  danger: "#f43f5e",
-  line: "#7c3aed",
+  bg: '#0a0a0f',
+  surface: '#12121a',
+  primary: '#7c3aed',
+  secondary: '#06b6d4',
+  glow: '#a78bfa',
+  textPrimary: '#f1f5f9',
+  textSecondary: '#94a3b8',
+  danger: '#f43f5e',
+  line: '#7c3aed',
 }
 
 // ---- viewBox layout ------------------------------------------------------
@@ -25,7 +26,7 @@ const VB_H = 580
 const NODE_W = 132
 const NODE_H = 62
 
-const API = { x: VB_W / 2, y: VB_H / 2, w: 168, h: 132, label: "API", sub: "GATEWAY" }
+const API = { x: VB_W / 2, y: VB_H / 2, w: 168, h: 132, label: 'API', sub: 'GATEWAY' }
 
 // Spread the four modules evenly across the width so their proportional boxes
 // never overlap, no matter how narrow the container gets.
@@ -34,61 +35,61 @@ const MODULE_RIGHT = VB_W - NODE_W / 2 - 24
 const MODULE_STEP = (MODULE_RIGHT - MODULE_LEFT) / 3
 
 const MODULES = [
-  { id: "cloud",  x: MODULE_LEFT + 0 * MODULE_STEP,     y: 90, label: "CLOUD",      icon: "cloud"  },
-  { id: "repo",   x: MODULE_LEFT + 1 * MODULE_STEP,     y: 90, label: "REPOSITORY", icon: "repo"   },
-  { id: "db",     x: MODULE_LEFT + 2 * MODULE_STEP,     y: 90, label: "DATABASE",   icon: "db"     },
-  { id: "ai",     x: MODULE_LEFT + 3 * MODULE_STEP,     y: 90, label: "AI MODULE",  icon: "ai"     },
+  { id: 'cloud', x: MODULE_LEFT + 0 * MODULE_STEP, y: 90, label: 'CLOUD', icon: 'cloud' },
+  { id: 'repo', x: MODULE_LEFT + 1 * MODULE_STEP, y: 90, label: 'REPOSITORY', icon: 'repo' },
+  { id: 'db', x: MODULE_LEFT + 2 * MODULE_STEP, y: 90, label: 'DATABASE', icon: 'db' },
+  { id: 'ai', x: MODULE_LEFT + 3 * MODULE_STEP, y: 90, label: 'AI MODULE', icon: 'ai' },
 ]
 
-const CLIENT = { id: "client", x: VB_W / 2, y: VB_H - 80, label: "CLIENT", icon: "client" }
+const CLIENT = { id: 'client', x: VB_W / 2, y: VB_H - 80, label: 'CLIENT', icon: 'client' }
 
 // ---- inline SVG icons ----------------------------------------------------
 function Icon({ name, size = 22, color }) {
   const common = {
     width: size,
     height: size,
-    viewBox: "0 0 24 24",
-    fill: "none",
+    viewBox: '0 0 24 24',
+    fill: 'none',
     stroke: color,
     strokeWidth: 1.6,
-    strokeLinecap: "round",
-    strokeLinejoin: "round",
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
   }
   switch (name) {
-    case "client":
+    case 'client':
       return (
         <svg {...common}>
           <rect x="2" y="3" width="20" height="14" rx="2" />
           <path d="M8 21h8M12 17v4" />
         </svg>
       )
-    case "cloud":
+    case 'cloud':
       return (
         <svg {...common}>
           <path d="M17.5 19a4.5 4.5 0 0 0 .5-8.97A6 6 0 0 0 6.34 9.5 4 4 0 0 0 7 19h10.5Z" />
         </svg>
       )
-    case "repo":
+    case 'repo':
       return (
         <svg {...common}>
           <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />
         </svg>
       )
-    case "db":
+    case 'db':
       return (
         <svg {...common}>
           <ellipse cx="12" cy="5" rx="8" ry="3" />
           <path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6" />
         </svg>
       )
-    case "ai":
+    case 'ai':
       return (
         <svg {...common}>
           <rect x="6" y="6" width="12" height="12" rx="2" />
           <path d="M9 9h6v6H9zM9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2" />
         </svg>
       )
-    case "api":
+    case 'api':
       return (
         <svg {...common}>
           <rect x="3" y="4" width="18" height="7" rx="1.5" />
@@ -102,6 +103,7 @@ function Icon({ name, size = 22, color }) {
 }
 
 export default function TechFlowDiagram() {
+  const { ref: activityRef, animate } = useAnimationActivity()
   const lineRefs = useRef([])
   const nodeRefs = useRef({})
   const rafRef = useRef(0)
@@ -120,10 +122,10 @@ export default function TechFlowDiagram() {
         len,
         fwd: {
           a: { x: from.x + px * off, y: from.y + py * off },
-          b: { x: to.x   + px * off, y: to.y   + py * off },
+          b: { x: to.x + px * off, y: to.y + py * off },
         },
         bwd: {
-          a: { x: to.x   - px * off, y: to.y   - py * off },
+          a: { x: to.x - px * off, y: to.y - py * off },
           b: { x: from.x - px * off, y: from.y - py * off },
         },
       }
@@ -138,7 +140,7 @@ export default function TechFlowDiagram() {
     })
     list.push(
       make(
-        "client",
+        'client',
         { x: CLIENT.x, y: API.y + API.h / 2 },
         { x: CLIENT.x, y: CLIENT.y - NODE_H / 2 },
       ),
@@ -147,6 +149,7 @@ export default function TechFlowDiagram() {
   }, [])
 
   useEffect(() => {
+    if (!animate) return
     const PERIOD = 1500
     const SEG = 30
     const start = performance.now()
@@ -167,62 +170,69 @@ export default function TechFlowDiagram() {
         const bwdPhase = (base + i * 0.16 + 0.5) % 1
 
         if (refs.fwd) {
-          refs.fwd.setAttribute("stroke-dasharray", `${SEG} ${e.len}`)
-          refs.fwd.setAttribute("stroke-dashoffset", (SEG - fwdPhase * total).toFixed(2))
+          refs.fwd.setAttribute('stroke-dasharray', `${SEG} ${e.len}`)
+          refs.fwd.setAttribute('stroke-dashoffset', (SEG - fwdPhase * total).toFixed(2))
         }
         if (refs.bwd) {
-          refs.bwd.setAttribute("stroke-dasharray", `${SEG} ${e.len}`)
-          refs.bwd.setAttribute("stroke-dashoffset", (SEG - bwdPhase * total).toFixed(2))
+          refs.bwd.setAttribute('stroke-dasharray', `${SEG} ${e.len}`)
+          refs.bwd.setAttribute('stroke-dashoffset', (SEG - bwdPhase * total).toFixed(2))
         }
       })
 
       rafRef.current = requestAnimationFrame(tick)
     }
 
-    const onVisibilityChange = () => { pausedRef.current = document.hidden }
-    document.addEventListener("visibilitychange", onVisibilityChange)
+    const onVisibilityChange = () => {
+      pausedRef.current = document.hidden
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     rafRef.current = requestAnimationFrame(tick)
-    return () => { cancelAnimationFrame(rafRef.current); document.removeEventListener("visibilitychange", onVisibilityChange) }
-  }, [edges])
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
+  }, [edges, animate])
 
   const pct = (v, total) => `${(v / total) * 100}%`
 
   const renderNode = (node, accent) => (
     <div
       key={node.id}
-      ref={(el) => { nodeRefs.current[node.id] = el }}
+      ref={(el) => {
+        nodeRefs.current[node.id] = el
+      }}
       className="tfd-node"
       style={{
-        position: "absolute",
+        position: 'absolute',
         left: pct(node.x, VB_W),
         top: pct(node.y, VB_H),
-        transform: "translate(-50%, -50%)",
+        transform: 'translate(-50%, -50%)',
         width: pct(NODE_W, VB_W),
         height: pct(NODE_H, VB_H),
         minWidth: 90,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         gap: 8,
         borderRadius: 16,
         border: `1px solid #ffffff14`,
-        background: "rgba(18, 18, 26, 0.55)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
+        background: 'rgba(18, 18, 26, 0.55)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
         boxShadow: `0 0 0 1px ${accent}22, 0 8px 30px rgba(0,0,0,0.45), 0 0 22px ${accent}26`,
       }}
     >
-      <span style={{ color: accent, display: "flex", flexShrink: 0 }}>
+      <span style={{ color: accent, display: 'flex', flexShrink: 0 }}>
         <Icon name={node.icon} color={accent} size={18} />
       </span>
       <span
         style={{
           fontFamily: '"JetBrains Mono", ui-monospace, monospace',
           fontSize: 9,
-          letterSpacing: "0.05em",
+          letterSpacing: '0.05em',
           color: COLORS.textSecondary,
-          whiteSpace: "nowrap",
+          whiteSpace: 'nowrap',
         }}
       >
         {node.label}
@@ -232,14 +242,16 @@ export default function TechFlowDiagram() {
 
   return (
     <div
+      ref={activityRef}
+      data-active={animate}
       className="tfd-wrap"
       style={{
-        position: "relative",
-        width: "100%",
+        position: 'relative',
+        width: '100%',
         background: COLORS.bg,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         padding: 4,
       }}
     >
@@ -253,8 +265,8 @@ export default function TechFlowDiagram() {
 
       <div
         style={{
-          position: "relative",
-          width: "100%",
+          position: 'relative',
+          width: '100%',
           maxWidth: 760,
           aspectRatio: `${VB_W} / ${VB_H}`,
         }}
@@ -264,7 +276,7 @@ export default function TechFlowDiagram() {
           viewBox={`0 0 ${VB_W} ${VB_H}`}
           width="100%"
           height="100%"
-          style={{ position: "absolute", inset: 0, display: "block", overflow: "hidden" }}
+          style={{ position: 'absolute', inset: 0, display: 'block', overflow: 'hidden' }}
         >
           <defs>
             <marker
@@ -284,8 +296,10 @@ export default function TechFlowDiagram() {
             <g key={e.id}>
               {/* forward base line */}
               <line
-                x1={e.fwd.a.x} y1={e.fwd.a.y}
-                x2={e.fwd.b.x} y2={e.fwd.b.y}
+                x1={e.fwd.a.x}
+                y1={e.fwd.a.y}
+                x2={e.fwd.b.x}
+                y2={e.fwd.b.y}
                 stroke={COLORS.line}
                 strokeOpacity="0.18"
                 strokeWidth="1.4"
@@ -298,8 +312,10 @@ export default function TechFlowDiagram() {
                   if (!lineRefs.current[i]) lineRefs.current[i] = {}
                   lineRefs.current[i].fwd = el
                 }}
-                x1={e.fwd.a.x} y1={e.fwd.a.y}
-                x2={e.fwd.b.x} y2={e.fwd.b.y}
+                x1={e.fwd.a.x}
+                y1={e.fwd.a.y}
+                x2={e.fwd.b.x}
+                y2={e.fwd.b.y}
                 stroke={COLORS.secondary}
                 strokeWidth="2.6"
                 strokeLinecap="round"
@@ -309,8 +325,10 @@ export default function TechFlowDiagram() {
 
               {/* return base line */}
               <line
-                x1={e.bwd.a.x} y1={e.bwd.a.y}
-                x2={e.bwd.b.x} y2={e.bwd.b.y}
+                x1={e.bwd.a.x}
+                y1={e.bwd.a.y}
+                x2={e.bwd.b.x}
+                y2={e.bwd.b.y}
                 stroke={COLORS.line}
                 strokeOpacity="0.18"
                 strokeWidth="1.4"
@@ -323,8 +341,10 @@ export default function TechFlowDiagram() {
                   if (!lineRefs.current[i]) lineRefs.current[i] = {}
                   lineRefs.current[i].bwd = el
                 }}
-                x1={e.bwd.a.x} y1={e.bwd.a.y}
-                x2={e.bwd.b.x} y2={e.bwd.b.y}
+                x1={e.bwd.a.x}
+                y1={e.bwd.a.y}
+                x2={e.bwd.b.x}
+                y2={e.bwd.b.y}
                 stroke={COLORS.glow}
                 strokeWidth="2.6"
                 strokeLinecap="round"
@@ -337,38 +357,40 @@ export default function TechFlowDiagram() {
 
         {/* center API box */}
         <div
-          ref={(el) => { nodeRefs.current.api = el }}
+          ref={(el) => {
+            nodeRefs.current.api = el
+          }}
           style={{
-            position: "absolute",
+            position: 'absolute',
             left: pct(API.x, VB_W),
             top: pct(API.y, VB_H),
-            transform: "translate(-50%, -50%)",
+            transform: 'translate(-50%, -50%)',
             width: pct(API.w, VB_W),
             height: pct(API.h, VB_H),
             minWidth: 170,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
             gap: 6,
             borderRadius: 16,
             border: `1px solid #ffffff1f`,
-            background: "rgba(18, 18, 26, 0.6)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
+            background: 'rgba(18, 18, 26, 0.6)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
             boxShadow: `0 0 0 1px ${COLORS.primary}33, 0 10px 40px rgba(0,0,0,0.55), 0 0 38px ${COLORS.primary}40`,
           }}
         >
-          <span style={{ color: COLORS.glow, display: "flex" }}>
+          <span style={{ color: COLORS.glow, display: 'flex' }}>
             <Icon name="api" size={26} color={COLORS.glow} />
           </span>
-          <div style={{ textAlign: "center", lineHeight: 1.1 }}>
+          <div style={{ textAlign: 'center', lineHeight: 1.1 }}>
             <div
               style={{
                 fontFamily: '"Space Grotesk", sans-serif',
                 fontWeight: 700,
                 fontSize: 18,
-                letterSpacing: "-0.02em",
+                letterSpacing: '-0.02em',
                 color: COLORS.textPrimary,
               }}
             >
@@ -378,7 +400,7 @@ export default function TechFlowDiagram() {
               style={{
                 fontFamily: '"JetBrains Mono", monospace',
                 fontSize: 9,
-                letterSpacing: "0.14em",
+                letterSpacing: '0.14em',
                 color: COLORS.textSecondary,
               }}
             >
