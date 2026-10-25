@@ -3,12 +3,12 @@ import knowledge from '../.assistant-temp/knowledge.json' with { type: 'json' }
 import { answerLocal, ASSISTANT_LIMITS } from '../shared/assistant.js'
 import { createAssistantStore } from './assistant-store.js'
 import {
-  technicalContext,
   verifyFreeModel,
   generateProjectAnswer,
   generateGeminiAnswer,
   geminiEligible,
 } from './assistant-providers.js'
+import { conversationContext, PROFILE_TOPICS } from './assistant-conversation.js'
 
 export function createAssistantHandler({
   env = process.env,
@@ -65,12 +65,26 @@ export function createAssistantHandler({
       body.message.length > ASSISTANT_LIMITS.message ||
       (body.projectId != null && !knowledge.projects.some((p) => p.id === body.projectId)) ||
       (body.enhance !== undefined && typeof body.enhance !== 'boolean') ||
-      (body.adult !== undefined && typeof body.adult !== 'boolean')
+      (body.adult !== undefined && typeof body.adult !== 'boolean') ||
+      (body.history !== undefined &&
+        (!Array.isArray(body.history) ||
+          body.history.length > 4 ||
+          body.history.some(
+            (item) => typeof item !== 'string' || item.length > ASSISTANT_LIMITS.message,
+          )))
     )
       return send(400, { error: 'Please enter a short question about Ali.' })
     const local = answerLocal(body.message, knowledge, body.projectId)
     const done = (reason) => send(200, { ...local, ...(reason ? { notice: reason } : {}) })
-    if (!body.enhance || local.status !== 'answered' || !local.projectId) return done()
+    if (!body.enhance) return done()
+    // Obvious abuse and unrelated requests stay local. Unrecognized wording still reaches AI.
+    if (
+      /ignore.*instruct|system prompt|developer message|jailbreak|override|forget.*rules|\b(weather|president|politics|recipe|joke|horoscope|bitcoin|latest news|teach me)\b/i.test(
+        body.message,
+      )
+    )
+      return done()
+    if (/^(?:hi|hey|hello|salam|thanks|thank you)[.! ]*$/i.test(body.message.trim())) return done()
     if (
       env.ASSISTANT_REMOTE_ENABLED !== 'true' ||
       !(env.OPENROUTER_API_KEY || env.GEMINI_API_KEY) ||
@@ -79,11 +93,10 @@ export function createAssistantHandler({
       return done(
         'AI assistance is not configured. This answer comes from the published portfolio and project documentation.',
       )
-    const project = knowledge.projects.find((p) => p.id === local.projectId)
-    const context = technicalContext(body.message, project, knowledge)
+    const context = conversationContext(body.message, body.history, body.projectId, knowledge)
     if (!context)
       return done(
-        'This source has not been approved for AI processing. Showing the documented answer.',
+        'This question stays local because it may contain private information. Please ask about the public portfolio without personal details.',
       )
     let lease, store
     const controller = new AbortController(),
@@ -170,17 +183,45 @@ export function createAssistantHandler({
         return done(
           'Free AI assistance is busy or unavailable. Showing the documented answer instead.',
         )
+      if (generated.topic)
+        return send(200, {
+          ...answerLocal(PROFILE_TOPICS[generated.topic], knowledge),
+          understanding: 'ai',
+        })
+      if (generated.status === 'off_topic')
+        return send(200, {
+          ...answerLocal('What is the weather?', knowledge),
+          understanding: 'ai',
+        })
+      if (generated.status === 'unknown')
+        return send(200, {
+          ...local,
+          answer:
+            "I don't have enough published information to answer that. You can ask Ali directly.",
+          status: 'unknown',
+          sourceIds: [],
+          actions: [{ id: 'contact', label: 'Contact Ali' }],
+          understanding: 'ai',
+        })
+      const sourceIds = [
+        ...new Set(
+          (generated.sectionIds || [])
+            .map((id) => context.chunks.find((s) => s.id === id)?.sourceId)
+            .filter(Boolean),
+        ),
+      ]
       return send(200, {
         ...local,
+        status: generated.status || 'answered',
         answer: generated.answer,
         mode: 'generated',
-        sourceIds: [
-          ...new Set(
-            generated.sectionIds
-              .map((id) => knowledge.sections.find((s) => s.id === id)?.sourceId)
-              .filter(Boolean),
-          ),
-        ],
+        understanding: 'ai',
+        projectId: sourceIds.length === 1 ? sourceIds[0] : null,
+        actions: sourceIds.slice(0, 3).map((id) => ({
+          id: `repo:${id}`,
+          label: knowledge.projects.find((p) => p.id === id)?.name || 'Project README',
+        })),
+        sourceIds,
       })
     } catch {
       return done(

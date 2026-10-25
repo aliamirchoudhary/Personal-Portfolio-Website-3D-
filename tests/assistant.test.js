@@ -12,6 +12,7 @@ import {
 } from '../server/assistant-providers.js'
 import { createAssistantStore } from '../server/assistant-store.js'
 import { PROJECTS } from '../src/data/portfolioData.js'
+import { conversationContext, filterQuestion } from '../server/assistant-conversation.js'
 
 test('all projects and the profile have immutable, source-linked coverage', () => {
   assert.equal(knowledge.projects.length, PROJECTS.length)
@@ -137,7 +138,7 @@ test('API validates boundaries and does not contact providers for local/off-topi
     'off_topic',
   )
   assert.equal(
-    (await f.request({ body: { message: 'Where is Ali based?', enhance: true } })).data.mode,
+    (await f.request({ body: { message: 'Where is Ali based?', enhance: false } })).data.mode,
     'local',
   )
   assert.equal(f.calls.length, 0)
@@ -157,21 +158,90 @@ test('remote mode fails closed when configuration, shared quota, or free verific
   }
   assert.equal(createAssistantStore({}), null)
 })
-test('generated project answers use reviewed excerpts, with no visitor message or profile sent upstream', async () => {
+test('conversational requests carry the filtered question and recent context without profile records', async () => {
   const f = fixture(),
     res = await f.request({
       body: {
-        message: 'How does IncidentIQ work? Visitor marker test-visitor-872.',
+        message: 'How does IncidentIQ work? Ask Ali; reply to test@example.com.',
+        history: [
+          'Which of his tools would help an operations team?',
+          'My email is hidden@example.com',
+        ],
         enhance: true,
       },
     })
   assert.equal(res.data.mode, 'generated')
   const body = f.calls.find((c) => c.url.includes('completions')).options.body
-  assert.ok(!body.includes('test-visitor-872'))
+  const payload = JSON.parse(JSON.parse(body).messages[1].content)
+  assert.match(payload.question, /How does IncidentIQ work/)
+  assert.ok(!body.includes('test@example.com'))
+  assert.deepEqual(payload.recentQuestions, ['Which of his tools would help an operations team?'])
   assert.ok(!body.includes(knowledge.profile.email))
   assert.ok(!body.includes(knowledge.profile.name))
   assert.ok(!body.includes('GEMINI_API_KEY'))
   assert.equal(JSON.parse(body).provider.allow_fallbacks, false)
+})
+
+test('unrecognized wording and multi-project questions reach AI instead of keyword rejection', async () => {
+  for (const message of [
+    'Anything here that could take the pain out of writing incident reviews?',
+    'What sets IncidentIQ apart from Criclytics?',
+    'Could you put that in everyday terms?',
+  ]) {
+    const f = fixture()
+    const res = await f.request({
+      body: { message, enhance: true, projectId: 'incidentiq', history: ['Explain IncidentIQ.'] },
+    })
+    assert.equal(res.data.mode, 'generated')
+    const payload = JSON.parse(JSON.parse(f.calls.at(-1).options.body).messages[1].content)
+    assert.equal(payload.question, message)
+    assert.equal(payload.previousProject, 'incidentiq')
+    assert.ok(payload.excerpts.some((s) => s.id.startsWith('catalog:criclytics')))
+    assert.ok(payload.excerpts.some((s) => s.id.startsWith('incidentiq:')))
+  }
+})
+
+test('semantic profile routing resolves verified local facts; missing and unrelated answers remain bounded', async () => {
+  for (const [modelResult, expected] of [
+    [{ kind: 'profile', topic: 'education' }, /FAST/],
+    [{ kind: 'off_topic' }, /questions about Ali/],
+    [{ kind: 'unknown' }, /enough published information/],
+  ]) {
+    const f = fixture({
+      fetcher: async (url) =>
+        url.endsWith('/models')
+          ? new Response(
+              JSON.stringify({
+                data: [{ id: 'test/model:free', pricing: { prompt: 0, completion: 0 } }],
+              }),
+            )
+          : new Response(
+              JSON.stringify({
+                choices: [
+                  { finish_reason: 'stop', message: { content: JSON.stringify(modelResult) } },
+                ],
+              }),
+            ),
+    })
+    const res = await f.request({
+      body: { message: 'Where is he getting his academic grounding?', enhance: true },
+    })
+    assert.match(res.data.answer, expected)
+    assert.equal(res.data.understanding, 'ai')
+  }
+  const f = fixture()
+  assert.equal(
+    (
+      await f.request({
+        body: { message: 'Question', enhance: true, history: Array(5).fill('hello') },
+      })
+    ).code,
+    400,
+  )
+  assert.equal(filterQuestion('My name is Test and my password is fake'), null)
+  const context = conversationContext('Explain the portfolio owner’s tools', [], null, knowledge)
+  assert.ok(!JSON.stringify(context).includes(knowledge.profile.email))
+  assert.ok(!JSON.stringify(context).includes(knowledge.profile.education[0].institution))
 })
 test('paid IDs, nonzero/absent prices, unsupported citations, and changed source approval are rejected', async () => {
   assert.equal(eligibleModel('openrouter/auto'), false)

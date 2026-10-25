@@ -1,6 +1,6 @@
 # Portfolio assistant implementation plan
 
-Status: v1 implemented on `feat/portfolio-assistant`; see [assistant operations](ASSISTANT_OPERATIONS.md) for actual configuration and limitations. This document remains the design record.
+Status: implemented on `feat/portfolio-assistant`, with a subsequent conversational revision replacing fixed-task AI routing. AI now receives bounded, filtered questions and recent question context; personal profile records stay local. The remaining sections record the original design, not the current API contract. See [assistant operations](ASSISTANT_OPERATIONS.md) for actual configuration and limitations.
 Prepared: 25 October 2026.
 Owner: Muhammad Ali Aamir (`aliamirchoudhary`).
 

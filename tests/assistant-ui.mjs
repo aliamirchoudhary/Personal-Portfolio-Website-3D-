@@ -22,6 +22,14 @@ export async function verifyAssistant(browser, base) {
     const panel = page.getByRole('dialog', { name: 'Ask about Ali', exact: true })
     await panel.waitFor({ state: 'visible' })
     const input = panel.getByRole('textbox', { name: 'Your question about Ali' })
+    const dimensions = await panel.evaluate((el) => ({
+      panel: el.clientHeight,
+      messages: el.querySelector('.assistant-messages').clientHeight,
+    }))
+    assert.ok(
+      dimensions.messages / dimensions.panel > 0.6,
+      `${label}: conversation gets most of the panel`,
+    )
     assert.equal(await input.evaluate((el) => document.activeElement === el), true)
     assert.deepEqual(
       (await new AxeBuilder({ page }).analyze()).violations.map((v) => v.id),
@@ -55,13 +63,12 @@ export async function verifyAssistant(browser, base) {
     await page.screenshot({ path: `test-results/assistant-${label}-conversation.png` })
     await panel.getByRole('button', { name: 'Clear conversation' }).click()
     assert.equal(await panel.locator('.assistant-message').count(), 0)
-    await panel
-      .getByRole('checkbox', { name: 'I’m 18 or older; allow AI-assisted explanations' })
-      .check()
+    await panel.getByRole('checkbox', { name: 'AI conversation · I’m 18+' }).check()
     await page.route('**/api/assistant', async (route) => {
       const body = route.request().postDataJSON()
       assert.equal(body.enhance, true)
-      assert.equal(body.message, 'How does IncidentIQ work?')
+      assert.equal(body.message, 'Could any of his work help make incident reviews less painful?')
+      assert.equal(body.adult, true)
       await route.fulfill({
         contentType: 'application/json',
         body: JSON.stringify({
@@ -74,9 +81,10 @@ export async function verifyAssistant(browser, base) {
         }),
       })
     })
-    await input.fill('How does IncidentIQ work?')
+    await input.fill('Could any of his work help make incident reviews less painful?')
     await input.press('Enter')
     await panel.getByText('Assistant · AI-assisted', { exact: true }).waitFor()
+    await page.screenshot({ path: `test-results/assistant-${label}-ai-conversation.png` })
     await panel.getByRole('button', { name: 'Close assistant' }).focus()
     await page.keyboard.press('Shift+Tab')
     assert.equal(await panel.evaluate((el) => el.contains(document.activeElement)), true)
@@ -87,6 +95,7 @@ export async function verifyAssistant(browser, base) {
     await panel.waitFor({ state: 'visible' })
     assert.ok((await panel.locator('.assistant-message').count()) > 0, 'history survives closing')
     await panel.getByRole('button', { name: 'Clear conversation' }).click()
+    await panel.getByRole('checkbox', { name: 'AI conversation · I’m 18+' }).uncheck()
     await input.fill('Where did Ali study?')
     await input.press('Enter')
     const education = panel.getByRole('link', { name: 'Education', exact: true })
