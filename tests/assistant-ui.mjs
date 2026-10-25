@@ -199,6 +199,9 @@ export async function verifyAssistant(browser, base) {
     const education = panel.getByRole('link', { name: 'Education', exact: true })
     await education.click()
     await panel.waitFor({ state: 'hidden' })
+    // Closing the dialog is synchronous; navigation is scheduled for the next frame.
+    await page.waitForURL((url) => url.hash === '#education')
+    await page.waitForFunction(() => document.activeElement.matches('#education h2'))
     assert.equal(new URL(page.url()).hash, '#education')
     assert.ok(await page.evaluate(() => document.activeElement.matches('#education h2')))
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1))
