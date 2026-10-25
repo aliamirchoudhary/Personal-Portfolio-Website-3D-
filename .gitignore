@@ -36,6 +36,7 @@ lighthouse-*.json
 !.env.example
 .ssr-temp/
 test-results/
+.assistant-temp/
 
 # Credentials / migration docs
 gmail-smtp-to-formspree-migration-guide.md

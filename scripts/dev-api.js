@@ -3,6 +3,17 @@ export function developmentApi() {
   return {
     name: 'portfolio-development-api',
     configureServer(server) {
+      server.middlewares.use('/api/assistant', async (req, res) => {
+        res.status = (code) => {
+          res.statusCode = code
+          return res
+        }
+        res.json = (body) => {
+          res.end(JSON.stringify(body))
+        }
+        const { default: handler } = await import('../server/assistant-handler.js')
+        await handler(req, res)
+      })
       server.middlewares.use('/send-contact', async (req, res) => {
         res.setHeader('Content-Type', 'application/json; charset=utf-8')
         res.status = (code) => {

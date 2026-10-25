@@ -1,0 +1,10 @@
+{
+  "repository": "aliamirchoudhary/ReLive-Social-Media-App",
+  "path": "README.md",
+  "commit": "d162f214730aab877fdb86719be6197e6a9d2577",
+  "blob": "51cec1b22f1e57c1c413781e39d70a2e61b3b24e",
+  "url": "https://github.com/aliamirchoudhary/ReLive-Social-Media-App/blob/d162f214730aab877fdb86719be6197e6a9d2577/README.md",
+  "retrievedAt": "2026-10-25T18:35:20.959Z",
+  "hash": "9c3e973780494d40c0456d588cbca3fd7f41b8d3071aa32d8488df2c4d2cf2da",
+  "text": "# ReLive-Social-Media-App\nThe ReLive App is a simple console-based social network simulation built entirely in C++ without using built-in functions or STL containers. This project reflects the core concepts of OOP including inheritance, encapsulation, and polymorphism, manual data handling, and structured logic design efficiently managing user data and connections.\n"
+}

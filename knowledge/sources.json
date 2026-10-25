@@ -1,0 +1,54 @@
+{
+  "profile": "aliamirchoudhary/aliamirchoudhary",
+  "aliases": {
+    "criclytics": [
+      "cricklytics",
+      "cricket",
+      "cricket analytics"
+    ],
+    "incidentiq": [
+      "incident iq",
+      "postmortem",
+      "incident automation"
+    ],
+    "financial-documents": [
+      "financial classifier",
+      "financial documents",
+      "audit classifier",
+      "distilbert"
+    ],
+    "fashion": [
+      "fashion",
+      "clothing",
+      "fashion classifier"
+    ],
+    "travelbuddy": [
+      "travel buddy",
+      "travelbuddy",
+      "travel platform"
+    ],
+    "flappy": [
+      "flappy bird",
+      "flappy"
+    ],
+    "bubble": [
+      "bubble shooter",
+      "bubble"
+    ],
+    "solar": [
+      "solar",
+      "solar panels"
+    ],
+    "relive": [
+      "relive",
+      "re live",
+      "social media app"
+    ]
+  },
+  "reviewedHashes": {
+    "criclytics": "7389c04f3dad98c3c6026abe5df7fbc96abbbc8406cfd8064e8da5adbb36cbca",
+    "incidentiq": "b136409bd4e74404fafcb18185ae0d34c0ef6940808932b402f88c97e90802d0",
+    "financial-documents": "71b8e2a88b2d925a5fdc7926c4fd7dd6d7be6c061e4193e7cee7d74961a583d0",
+    "fashion": "5f7c4fb35c8b2b84c92972e4760fd1a58556cda588989b5571172f8213f50048"
+  }
+}

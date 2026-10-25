@@ -16,7 +16,10 @@ export const securityHeaders = {
 }
 export const vercelConfig = {
   rewrites: [{ source: '/send-contact', destination: '/api/send-contact' }],
-  functions: { 'api/send-contact.js': { maxDuration: 30 } },
+  functions: {
+    'api/send-contact.js': { maxDuration: 30 },
+    'api/assistant.js': { maxDuration: 20, includeFiles: '.assistant-temp/knowledge.json' },
+  },
   headers: [
     {
       source: '/(.*)',

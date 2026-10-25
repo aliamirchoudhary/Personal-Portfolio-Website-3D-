@@ -8,6 +8,10 @@
   "functions": {
     "api/send-contact.js": {
       "maxDuration": 30
+    },
+    "api/assistant.js": {
+      "maxDuration": 20,
+      "includeFiles": ".assistant-temp/knowledge.json"
     }
   },
   "headers": [

@@ -14,6 +14,7 @@ import { MotionProvider } from './context/MotionContext'
 import { useMotion } from './context/motion'
 import { NAV_LINKS } from './data/portfolioData'
 import BrandIntro from './components/loading/BrandIntro'
+import AssistantLauncher from './components/assistant/AssistantLauncher'
 
 const MorphTransitionSlot = lazy(() => import('./components/shared/MorphTransitionSlot'))
 // Active navigation and visibility updates must not rerender every content section.
@@ -141,6 +142,7 @@ function Portfolio() {
         </button>
       </div>
       <Footer scrollToSection={navigate} />
+      <AssistantLauncher onNavigate={navigate} />
     </>
   )
 }

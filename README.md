@@ -49,6 +49,8 @@ See the [audit and remediation records](docs/audits/README.md) for baseline find
 
 See [interaction design](docs/INTERACTION_DESIGN.md) for introduction behavior, carousel controls, skill disclosure, and artwork transitions.
 
+The bottom-right portfolio assistant answers from public project README snapshots and shared portfolio records. It works without an API key and lazy-loads on open. Optional free-only AI explanations require server-side configuration; see [assistant operations](docs/ASSISTANT_OPERATIONS.md) for setup, privacy, limits, and knowledge updates.
+
 ## License
 
 Application code is covered by [LICENSE](LICENSE). Third-party fonts and icons retain their respective included licenses. Portfolio text, portrait, and personal identity assets belong to their owner.

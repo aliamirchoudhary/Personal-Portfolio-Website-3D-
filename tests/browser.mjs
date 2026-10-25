@@ -6,6 +6,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import { setTimeout as delay } from 'node:timers/promises'
 import { verifyPortfolioUi } from './portfolio-ui.mjs'
+import { verifyAssistant } from './assistant-ui.mjs'
 
 const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:4250'
 const server = process.env.TEST_BASE_URL
@@ -148,6 +149,7 @@ try {
     console.log(`Passed ${label}: layout, menu, dialog focus, contact failure, axe`)
   }
   await verifyPortfolioUi(browser, base)
+  await verifyAssistant(browser, base)
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
   await page.goto(base, { waitUntil: 'networkidle' })
   await page.waitForTimeout(2200)

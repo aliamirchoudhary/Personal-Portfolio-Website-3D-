@@ -1,0 +1,196 @@
+import 'dotenv/config'
+import knowledge from '../.assistant-temp/knowledge.json' with { type: 'json' }
+import { answerLocal, ASSISTANT_LIMITS } from '../shared/assistant.js'
+import { createAssistantStore } from './assistant-store.js'
+import {
+  technicalContext,
+  verifyFreeModel,
+  generateProjectAnswer,
+  generateGeminiAnswer,
+  geminiEligible,
+} from './assistant-providers.js'
+
+export function createAssistantHandler({
+  env = process.env,
+  fetcher = fetch,
+  getStore = () => createAssistantStore(env, fetcher),
+} = {}) {
+  return async (req, res) => {
+    res.setHeader('Cache-Control', 'no-store')
+    res.setHeader('Content-Type', 'application/json; charset=utf-8')
+    const send = (code, body) => res.status(code).json(body)
+    if (req.method !== 'POST') {
+      res.setHeader('Allow', 'POST')
+      return send(405, { error: 'Use POST.' })
+    }
+    const origins = new Set(
+      [
+        env.FRONTEND_ORIGIN,
+        'https://ali-aamir-portfolio.vercel.app',
+        env.VERCEL_URL ? `https://${env.VERCEL_URL}` : null,
+      ].filter(Boolean),
+    )
+    if (!env.VERCEL && env.NODE_ENV !== 'production') {
+      origins.add('http://127.0.0.1:5174')
+      origins.add('http://localhost:5173')
+      origins.add('http://127.0.0.1:5173')
+    }
+    if (!origins.has(req.headers.origin))
+      return send(403, { error: 'This request is not allowed.' })
+    if (!/^application\/json(?:;|$)/i.test(req.headers['content-type'] || ''))
+      return send(415, { error: 'Use JSON.' })
+    let body = req.body
+    try {
+      if (Number(req.headers['content-length']) > ASSISTANT_LIMITS.body)
+        return send(413, { error: 'Message too large.' })
+      if (body === undefined) {
+        const chunks = []
+        let size = 0
+        for await (const chunk of req) {
+          size += chunk.length
+          if (size > ASSISTANT_LIMITS.body) return send(413, { error: 'Message too large.' })
+          chunks.push(chunk)
+        }
+        body = JSON.parse(Buffer.concat(chunks).toString('utf8'))
+      } else if (typeof body === 'string') body = JSON.parse(body)
+      if (Buffer.byteLength(JSON.stringify(body)) > ASSISTANT_LIMITS.body)
+        return send(413, { error: 'Message too large.' })
+    } catch {
+      return send(400, { error: 'Invalid JSON.' })
+    }
+    if (
+      !body ||
+      typeof body.message !== 'string' ||
+      !body.message.trim() ||
+      body.message.length > ASSISTANT_LIMITS.message ||
+      (body.projectId != null && !knowledge.projects.some((p) => p.id === body.projectId)) ||
+      (body.enhance !== undefined && typeof body.enhance !== 'boolean') ||
+      (body.adult !== undefined && typeof body.adult !== 'boolean')
+    )
+      return send(400, { error: 'Please enter a short question about Ali.' })
+    const local = answerLocal(body.message, knowledge, body.projectId)
+    const done = (reason) => send(200, { ...local, ...(reason ? { notice: reason } : {}) })
+    if (!body.enhance || local.status !== 'answered' || !local.projectId) return done()
+    if (
+      env.ASSISTANT_REMOTE_ENABLED !== 'true' ||
+      !(env.OPENROUTER_API_KEY || env.GEMINI_API_KEY) ||
+      env.ASSISTANT_PROVIDER_REVIEWED !== 'true'
+    )
+      return done(
+        'AI assistance is not configured. This answer comes from the published portfolio and project documentation.',
+      )
+    const project = knowledge.projects.find((p) => p.id === local.projectId)
+    const context = technicalContext(body.message, project, knowledge)
+    if (!context)
+      return done(
+        'This source has not been approved for AI processing. Showing the documented answer.',
+      )
+    let lease, store
+    const controller = new AbortController(),
+      timer = setTimeout(() => controller.abort(), 16000)
+    const cancel = () => controller.abort()
+    res.on?.('close', cancel)
+    try {
+      store = getStore()
+      if (!store)
+        return done('AI assistance is temporarily unavailable. Showing the documented answer.')
+      const ip = env.VERCEL
+        ? String(req.headers['x-vercel-forwarded-for'] || '')
+            .split(',')[0]
+            .trim()
+        : req.socket?.remoteAddress
+      if (!ip)
+        return done('AI assistance is temporarily unavailable. Showing the documented answer.')
+      lease = await store.reserve(ip)
+      if (!lease)
+        return done(
+          'The free AI allowance is busy or used up. You can still explore the documented answers.',
+        )
+      let generated
+      const candidates = []
+      if (geminiEligible(req, body, env))
+        candidates.push({
+          provider: 'gemini',
+          model: env.GEMINI_MODEL,
+          key: env.GEMINI_API_KEY,
+          generate: generateGeminiAnswer,
+        })
+      if (env.OPENROUTER_API_KEY) {
+        const pool = [
+          ...new Set(
+            (env.OPENROUTER_FREE_MODELS || env.OPENROUTER_FREE_MODEL || '')
+              .split(',')
+              .map((value) => value.trim())
+              .filter(Boolean),
+          ),
+        ].slice(0, 2)
+        for (const model of pool)
+          candidates.push({
+            provider: 'openrouter',
+            model,
+            key: env.OPENROUTER_API_KEY,
+            generate: generateProjectAnswer,
+          })
+      }
+      let openRouterAttempted = false
+      for (const candidate of candidates) {
+        if (controller.signal.aborted) break
+        if (candidate.provider === 'openrouter' && openRouterAttempted) continue
+        if (!(await store.providerReady(candidate.provider, candidate.model))) continue
+        if (
+          candidate.provider === 'openrouter' &&
+          !(await verifyFreeModel(candidate.model, fetcher))
+        )
+          continue
+        if (!(await store.reserveProvider(candidate.provider))) continue
+        if (candidate.provider === 'openrouter') openRouterAttempted = true
+        try {
+          generated = await candidate.generate({
+            model: candidate.model,
+            key: candidate.key,
+            context,
+            signal: AbortSignal.any([controller.signal, AbortSignal.timeout(6500)]),
+            fetcher,
+          })
+          break
+        } catch (error) {
+          if (error.refused || controller.signal.aborted) break
+          const temporary =
+            [401, 402, 403, 404, 408, 429, 500, 502, 503, 504].includes(error.status) ||
+            error.name === 'TimeoutError'
+          if (!temporary) break // Invalid/refused content does not trigger quota-wasting repair calls.
+          await store.coolDown(
+            candidate.provider,
+            [401, 402, 403].includes(error.status) ? 'all' : candidate.model,
+            error.retryAfter || 120,
+          )
+        }
+      }
+      if (!generated)
+        return done(
+          'Free AI assistance is busy or unavailable. Showing the documented answer instead.',
+        )
+      return send(200, {
+        ...local,
+        answer: generated.answer,
+        mode: 'generated',
+        sourceIds: [
+          ...new Set(
+            generated.sectionIds
+              .map((id) => knowledge.sections.find((s) => s.id === id)?.sourceId)
+              .filter(Boolean),
+          ),
+        ],
+      })
+    } catch {
+      return done(
+        'AI assistance could not complete this time. Showing the documented answer instead.',
+      )
+    } finally {
+      clearTimeout(timer)
+      res.off?.('close', cancel)
+      await lease?.release().catch(() => {})
+    }
+  }
+}
+export default createAssistantHandler()
