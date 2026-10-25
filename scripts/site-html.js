@@ -1,3 +1,4 @@
+import { startupScript } from './startup.js'
 import {
   PERSONAL,
   ABOUT_TEXT,
@@ -54,6 +55,7 @@ export function staticPortfolio() {
 }
 export function renderPage(template) {
   return template
+    .replace('<!-- PORTFOLIO_STARTUP -->', `<script>${startupScript}</script>`)
     .replace('<!-- PORTFOLIO_METADATA -->', metadata())
     .replace(
       '<!-- PORTFOLIO_CONTENT -->',

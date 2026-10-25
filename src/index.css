@@ -23,6 +23,7 @@
 }
 html {
   background: var(--bg);
+  scrollbar-gutter: stable;
   scroll-padding-top: var(--nav-height);
 }
 body {
@@ -177,48 +178,6 @@ h2:focus {
   display: grid;
   place-items: center;
 }
-.inline-intro {
-  width: 100%;
-  height: 360px;
-  position: relative;
-  animation: intro-arrive 1.8s ease both;
-}
-.inline-intro .lpf-scene {
-  min-height: 0;
-  height: 320px;
-  padding: 0;
-}
-.inline-intro .lpf-root {
-  width: 280px;
-  height: 280px;
-  margin: 0;
-}
-.intro-name {
-  position: absolute;
-  top: 300px;
-  width: 100%;
-  height: 60px;
-}
-.intro-name > div {
-  position: absolute !important;
-}
-.intro-name svg text {
-  font-size: 22px !important;
-}
-@keyframes intro-arrive {
-  from {
-    opacity: 0;
-    transform: translateX(-40px) scale(0.9);
-  }
-  20%,
-  85% {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-    transform: translateX(0) scale(1);
-  }
-}
 .mobile-animated-component,
 .home-mobile-profile {
   display: none;
@@ -350,6 +309,56 @@ h2:focus {
   margin: 0;
   color: #a5b2c6;
   overflow-wrap: anywhere;
+}
+.contact-form-footer {
+  border-top: 1px solid #a78bfa33;
+  padding-top: 1rem;
+  text-align: left;
+  display: grid;
+  gap: 0.65rem;
+  justify-items: start;
+}
+.contact-privacy {
+  width: 100%;
+  font-size: 0.8rem;
+  color: #a5b2c6;
+}
+.contact-privacy summary {
+  cursor: pointer;
+  width: fit-content;
+  color: #c4b5fd;
+}
+.contact-privacy .privacy-note {
+  margin: 0.65rem 0 0;
+  line-height: 1.7;
+}
+.intro-replay-link {
+  align-self: flex-start;
+  width: fit-content;
+  min-height: 44px;
+  padding: 0.6rem 0;
+  margin-top: 0.75rem;
+  border: 0;
+  background: transparent;
+  color: #a5b2c6;
+  font:
+    0.8rem 'Inter',
+    sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.intro-replay-link:hover {
+  color: #c4b5fd;
+}
+.intro-replay-link:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+@media (max-width: 1024px) {
+  .intro-replay-link {
+    align-self: center;
+  }
 }
 .motion-controls {
   position: relative;

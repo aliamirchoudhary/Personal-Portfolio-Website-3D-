@@ -1,7 +1,8 @@
 import projectDetails from './projectDetails.js'
 export const PERSONAL = {
   name: 'Muhammad Ali Aamir',
-  title: 'Data Science & AI Enthusiast | Full Stack Developer | Founder of Kryzect',
+  title: 'AI & Machine Learning | Data Science | Full-Stack Development',
+  tagline: 'Turning data into intelligence and AI ideas into full-stack applications.',
   email: 'aliamirchoudhary@gmail.com',
   phone: '+923283173130',
   location: 'Lahore, Pakistan',
@@ -219,20 +220,20 @@ export const EDUCATION = [
 ]
 
 export const TECHNICAL_SKILLS = [
-  { name: 'Python', pct: 94 },
+  { name: 'Python', pct: 94, featuredOrder: 1 },
   { name: 'C++', pct: 93 },
   { name: 'C', pct: 90 },
   { name: 'JavaScript', pct: 85 },
-  { name: 'SQL', pct: 87 },
-  { name: 'React', pct: 82 },
+  { name: 'SQL', pct: 87, featuredOrder: 5 },
+  { name: 'React', pct: 82, featuredOrder: 6 },
   { name: 'Flask', pct: 80 },
-  { name: 'MERN', pct: 81 },
+  { name: 'MERN', pct: 81, featuredOrder: 4 },
   { name: 'Git / GitHub', pct: 90 },
   { name: 'MultiVariable Calculus', pct: 82 },
   { name: 'Linear Algebra', pct: 85 },
   { name: 'Assembly Language', pct: 79 },
-  { name: 'Model Training', pct: 83 },
-  { name: 'Machine Learning', pct: 84 },
+  { name: 'Model Training', pct: 83, featuredOrder: 3 },
+  { name: 'Machine Learning', pct: 84, featuredOrder: 2 },
 ]
 
 export const PROFESSIONAL_SKILLS = [

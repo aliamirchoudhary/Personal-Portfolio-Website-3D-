@@ -1,6 +1,6 @@
 # Muhammad Ali Aamir — Portfolio
 
-An animated portfolio for a full stack developer and data-science enthusiast, built with React, Vite, CSS 3D, Canvas, and SVG. The purple/cyan desktop artwork alternates sides as visitors scroll; mobile renders each animation in its own section.
+An animated portfolio focused on AI, machine learning, data science, and full-stack development, built with React, Vite, CSS 3D, Canvas, and SVG. The purple/cyan desktop artwork alternates sides as visitors scroll; mobile renders each animation in its own section.
 
 Live site: https://ali-aamir-portfolio.vercel.app/
 
@@ -46,6 +46,8 @@ Fonts and technology icons are self-hosted with license copies in `public/fonts/
 Update shared data rather than duplicating text across section components. Run `npm run sync:config` when metadata changes so CSP hashes stay synchronized. Keep credentials in ignored environment files or provider secrets. The public form never sends automatic email to arbitrary visitors.
 
 See the [audit and remediation records](docs/audits/README.md) for baseline findings, implementation evidence, measurement limitations, and remaining acceptance work. Workstation-specific cleanup tracking is kept locally and is not part of the repository.
+
+See [interaction design](docs/INTERACTION_DESIGN.md) for introduction behavior, carousel controls, skill disclosure, and artwork transitions.
 
 ## License
 

@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import useMediaQuery from '../../hooks/useMediaQuery'
 import './ring-carousel.css'
 
@@ -7,13 +7,92 @@ export function RingCarousel({ cards = [], initialCenter = 0 }) {
   const [active, setActive] = useState(null)
   const [hovered, setHovered] = useState(null)
   const compact = useMediaQuery('(max-width: 1024px)')
+  const root = useRef(null),
+    stage = useRef(null),
+    centerRef = useRef(center)
+  const hintId = useId()
   const dialog = useRef(null),
     opener = useRef(null),
     drag = useRef(null)
   const titleId = useId()
-  const step = (direction) => {
-    if (cards.length) setCenter((value) => (value + direction + cards.length) % cards.length)
-  }
+  const step = useCallback(
+    (direction) => {
+      if (cards.length) setCenter((value) => (value + direction + cards.length) % cards.length)
+    },
+    [cards.length],
+  )
+  useEffect(() => {
+    centerRef.current = center
+  }, [center])
+  useEffect(() => {
+    const node = stage.current
+    const gesture = { total: 0, last: 0, direction: 0, locked: false }
+    const wheel = (event) => {
+      if (active || event.ctrlKey || cards.length < 2 || !event.target.closest('.project-card'))
+        return
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY
+      if (!delta) return
+      const now = performance.now(),
+        direction = Math.sign(delta)
+      if (now - gesture.last > 180 || direction !== gesture.direction) {
+        gesture.total = 0
+        gesture.locked = false
+      }
+      gesture.last = now
+      gesture.direction = direction
+      // Consume inertia from this gesture, then let a fresh gesture leave either end.
+      if (gesture.locked) {
+        event.preventDefault()
+        return
+      }
+      if (
+        (direction < 0 && centerRef.current === 0) ||
+        (direction > 0 && centerRef.current === cards.length - 1)
+      )
+        return
+      event.preventDefault()
+      gesture.total +=
+        delta * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? node.clientHeight : 1)
+      if (Math.abs(gesture.total) >= 32) {
+        root.current.focus({ preventScroll: true })
+        step(direction)
+        gesture.locked = true
+      }
+    }
+    node.addEventListener('wheel', wheel, { passive: false })
+    return () => node.removeEventListener('wheel', wheel)
+  }, [active, cards.length, step])
+  useEffect(() => {
+    const key = (event) => {
+      if (
+        active ||
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        event.target.closest('input,textarea,select,[contenteditable=true],dialog')
+      )
+        return
+      const focused = document.activeElement,
+        section = root.current.closest('section')
+      const inCarousel = root.current.contains(focused)
+      const onSectionHeading = focused?.matches('h2') && section?.contains(focused)
+      if (!inCarousel && !onSectionHeading) return
+      const bounds = root.current.getBoundingClientRect()
+      if (bounds.bottom <= 0 || bounds.top >= innerHeight) return
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault()
+        root.current.focus({ preventScroll: true })
+        step(event.key === 'ArrowLeft' ? -1 : 1)
+      } else if (event.key === 'Home' || event.key === 'End') {
+        event.preventDefault()
+        root.current.focus({ preventScroll: true })
+        setCenter(event.key === 'Home' ? 0 : Math.max(0, cards.length - 1))
+      }
+    }
+    document.addEventListener('keydown', key)
+    return () => document.removeEventListener('keydown', key)
+  }, [active, cards.length, step])
   const offset = (index) => {
     let difference = index - center
     if (difference > cards.length / 2) difference -= cards.length
@@ -39,6 +118,8 @@ export function RingCarousel({ cards = [], initialCenter = 0 }) {
     }
   }, [active])
   const pointerDown = (event) => {
+    if (event.target.closest('button,a')) return
+    root.current.focus({ preventScroll: true })
     drag.current = { x: event.clientX, moved: false, pointer: event.pointerId }
   }
   const pointerMove = (event) => {
@@ -55,19 +136,16 @@ export function RingCarousel({ cards = [], initialCenter = 0 }) {
   }
   return (
     <div
+      ref={root}
+      tabIndex={0}
       className="ring-carousel"
       role="region"
       aria-roledescription="carousel"
       aria-label="Project showcase"
-      onKeyDown={(event) => {
-        if (event.target.closest('dialog,input,textarea')) return
-        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-          event.preventDefault()
-          step(event.key === 'ArrowLeft' ? -1 : 1)
-        }
-      }}
+      aria-describedby={hintId}
     >
       <div
+        ref={stage}
         className="ring-carousel-stage"
         onPointerDown={pointerDown}
         onPointerMove={pointerMove}
@@ -136,6 +214,9 @@ export function RingCarousel({ cards = [], initialCenter = 0 }) {
           )
         })}
       </div>
+      <p id={hintId} className="carousel-hint">
+        Scroll over a card, drag, or use ← → to browse. Scroll outside the cards to continue.
+      </p>
       <div className="carousel-controls">
         <button type="button" aria-label="Previous project" onClick={() => step(-1)}>
           ←

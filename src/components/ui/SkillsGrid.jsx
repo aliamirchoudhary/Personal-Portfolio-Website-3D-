@@ -1,13 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useId, useRef } from 'react'
 import './skills-grid.css'
 
-// ─── Data (extracted exactly from old HTML) ───────────────────────────────────
-
 import { TECHNICAL_SKILLS, PROFESSIONAL_SKILLS } from '../../data/portfolioData'
-
-// ─── CSS injected once ────────────────────────────────────────────────────────
-
-// ─── SkillCard ────────────────────────────────────────────────────────────────
 
 function SkillCard({ name, pct, delay }) {
   const cardRef = useRef(null)
@@ -60,8 +54,30 @@ function SkillCard({ name, pct, delay }) {
 
 export default function SkillsGrid() {
   const [activeTab, setActiveTab] = useState('technical')
+  const [expanded, setExpanded] = useState(false)
+  const gridId = useId(),
+    toggle = useRef(null)
 
   const skills = activeTab === 'technical' ? TECHNICAL_SKILLS : PROFESSIONAL_SKILLS
+  const ordered = [
+    ...skills
+      .filter((skill) => skill.featuredOrder)
+      .sort((a, b) => a.featuredOrder - b.featuredOrder),
+    ...skills.filter((skill) => !skill.featuredOrder),
+  ]
+  const shown = expanded ? ordered : ordered.slice(0, 6)
+  const selectCategory = (category) => {
+    if (category === activeTab) return
+    setActiveTab(category)
+    setExpanded(false)
+  }
+  const collapse = () => {
+    setExpanded(false)
+    requestAnimationFrame(() => {
+      toggle.current?.focus({ preventScroll: true })
+      toggle.current?.scrollIntoView({ block: 'center', behavior: 'instant' })
+    })
+  }
 
   return (
     <div style={{ width: '100%', fontFamily: "'Inter', sans-serif", overflowX: 'hidden' }}>
@@ -72,14 +88,14 @@ export default function SkillsGrid() {
         <button
           className={`sg-tab-btn${activeTab === 'technical' ? ' active' : ''}`}
           aria-pressed={activeTab === 'technical'}
-          onClick={() => setActiveTab('technical')}
+          onClick={() => selectCategory('technical')}
         >
           Technical Skills
         </button>
         <button
           className={`sg-tab-btn${activeTab === 'professional' ? ' active' : ''}`}
           aria-pressed={activeTab === 'professional'}
-          onClick={() => setActiveTab('professional')}
+          onClick={() => selectCategory('professional')}
         >
           Professional Skills
         </button>
@@ -90,12 +106,26 @@ export default function SkillsGrid() {
       </p>
       {/* Skill grid */}
       <div className="sg-scrollable">
-        <div className="sg-grid">
-          {skills.map((s, i) => (
+        <div id={gridId} className="sg-grid">
+          {shown.map((s, i) => (
             <SkillCard key={`${activeTab}-${s.name}`} name={s.name} pct={s.pct} delay={i * 15} />
           ))}
         </div>
       </div>
+      {skills.length > 6 && (
+        <div className="skills-more">
+          <button
+            ref={toggle}
+            type="button"
+            className="secondary-button"
+            aria-expanded={expanded}
+            aria-controls={gridId}
+            onClick={() => (expanded ? collapse() : setExpanded(true))}
+          >
+            {expanded ? 'Show fewer skills' : `Show all ${skills.length} skills`}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

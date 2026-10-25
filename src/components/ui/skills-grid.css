@@ -6,6 +6,10 @@
     transform: translateX(100%);
   }
 }
+.skills-more {
+  display: flex;
+  margin-top: 1.5rem;
+}
 
 @keyframes skillBarGrow {
   from {

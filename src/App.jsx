@@ -13,6 +13,7 @@ import DecorationBoundary from './components/shared/DecorationBoundary'
 import { MotionProvider } from './context/MotionContext'
 import { useMotion } from './context/motion'
 import { NAV_LINKS } from './data/portfolioData'
+import BrandIntro from './components/loading/BrandIntro'
 
 const MorphTransitionSlot = lazy(() => import('./components/shared/MorphTransitionSlot'))
 // Active navigation and visibility updates must not rerender every content section.
@@ -28,6 +29,8 @@ const ContactSection = memo(ContactSectionView)
 
 function Portfolio() {
   const [activeSection, setActiveSection] = useState('home')
+  const [introRequest, setIntroRequest] = useState(0)
+  const replayIntro = useCallback(() => setIntroRequest((value) => value + 1), [])
   const { animate, isDesktop, paused, setPaused, reduced } = useMotion()
   const navigate = useCallback(
     (id, { history = true, focus = true } = {}) => {
@@ -81,6 +84,9 @@ function Portfolio() {
         Skip to content
       </a>
       <Navbar activeSection={activeSection} scrollToSection={navigate} />
+      <DecorationBoundary fallback={null}>
+        <BrandIntro requestId={introRequest} />
+      </DecorationBoundary>
       {isDesktop && (
         <DecorationBoundary
           fallback={
@@ -94,8 +100,28 @@ function Portfolio() {
           </Suspense>
         </DecorationBoundary>
       )}
-      <main id="main" className="main-wrap" tabIndex={-1}>
-        <HomeSection />
+      <main
+        id="main"
+        className="main-wrap"
+        tabIndex={-1}
+        onClick={(event) => {
+          if (
+            event.defaultPrevented ||
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+          )
+            return
+          const anchor = event.target.closest('a[href^="#"]')
+          const id = anchor?.getAttribute('href').slice(1)
+          if (anchor?.target === '_blank' || !NAV_LINKS.some((link) => link.id === id)) return
+          event.preventDefault()
+          navigate(id)
+        }}
+      >
+        <HomeSection onReplayIntro={replayIntro} />
         <AboutSection />
         <KryzectSection />
         <ExperienceSection />

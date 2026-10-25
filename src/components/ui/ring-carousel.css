@@ -1,6 +1,13 @@
 .ring-carousel {
   min-width: 0;
 }
+.carousel-hint {
+  color: #a5b2c6;
+  font-size: 0.78rem;
+  text-align: center;
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
 .ring-carousel-stage {
   position: relative;
   width: 100%;

@@ -4,8 +4,8 @@ import { useMotion } from '../../context/motion'
 import LazyMount from '../shared/LazyMount'
 const Portrait = lazy(() => import('../animated/HomeProfilePicture'))
 
-export default function HomeSection() {
-  const { animate, isDesktop, lowPower } = useMotion()
+export default function HomeSection({ onReplayIntro }) {
+  const { animate, isDesktop, lowPower, reduced, paused } = useMotion()
   const typeTitle = animate && isDesktop && !lowPower
   const [count, setCount] = useState(0)
   useEffect(() => {
@@ -52,10 +52,7 @@ export default function HomeSection() {
             <span className="typing-cursor">|</span>
           </span>
         </p>
-        <p className="hero-summary">
-          I build web applications and data-driven tools, from cricket analytics to machine-learning
-          classifiers.
-        </p>
+        <p className="hero-summary">{PERSONAL.tagline}</p>
         <div className="hero-actions">
           <a href="#projects" className="primary-button">
             View projects
@@ -71,6 +68,14 @@ export default function HomeSection() {
             Download resume
           </a>
         </div>
+        <button
+          type="button"
+          className="intro-replay-link"
+          onClick={onReplayIntro}
+          disabled={reduced || paused}
+        >
+          ↻ Replay introduction
+        </button>
       </div>
       <div className="home-mobile-profile">
         <LazyMount placeholder={portraitFallback}>

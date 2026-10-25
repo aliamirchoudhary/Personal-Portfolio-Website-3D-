@@ -2,6 +2,8 @@
 
 Implementation branch: `audit/portfolio-hardening`. This record describes repository changes and local validation; it does not imply production deployment or external account configuration. Artifact paths below are relative to the repository root.
 
+This record and its lab measurements describe the audit baseline implementation committed as `4541d9d`. Subsequent introduction, carousel, skills-disclosure, and scroll-motion behavior is documented in [interaction design](../INTERACTION_DESIGN.md); the earlier Lighthouse scores should not be treated as measurements of those later changes.
+
 The 45 baseline findings remain documented in `AUDIT_REPORT.md`; this file records their implementation. “Implemented” means the repository change is present and locally checked, not that the live Vercel deployment has changed. External acceptance work is listed explicitly below.
 
 ## Security and contact reliability

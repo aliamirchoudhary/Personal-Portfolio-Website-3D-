@@ -1,8 +1,12 @@
 import { createHash } from 'node:crypto'
 import { metadata } from './site-html.js'
-const hashes = [
+import { startupScript } from './startup.js'
+const scriptBodies = [
   ...metadata().matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g),
-].map(([, code]) => `'sha256-${createHash('sha256').update(code).digest('base64')}'`)
+].map(([, code]) => code)
+const hashes = [...scriptBodies, startupScript].map(
+  (code) => `'sha256-${createHash('sha256').update(code).digest('base64')}'`,
+)
 export const securityHeaders = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',

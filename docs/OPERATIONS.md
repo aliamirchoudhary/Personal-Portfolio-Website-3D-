@@ -31,7 +31,7 @@ Vercel's trusted `x-vercel-forwarded-for` header supplies the rate-limit client 
 
 ## Security headers
 
-`scripts/security.js` defines the Vercel and local-preview headers. Run `npm run sync:config` when metadata or the policy changes. Build/CI rejects stale `vercel.json` values, including JSON-LD hashes. CSP starts in **report-only** mode to allow preview verification before enforcement. Frame denial and nosniff are enforced separately. Inline styles remain allowed because the existing animation components use them.
+`scripts/security.js` defines the Vercel and local-preview headers. Run `npm run sync:config` when metadata, the startup bootstrap, or the policy changes. Build/CI rejects stale `vercel.json` values, including JSON-LD and startup-script hashes. CSP starts in **report-only** mode to allow preview verification before enforcement. Frame denial and nosniff are enforced separately. Inline styles remain allowed because the existing animation components use them.
 
 Before enforcing CSP, inspect browser violations on a preview deployment across all sections and contact states. Then change the header name in `scripts/security.js`, regenerate configuration, and repeat checks. No remote CSP collection endpoint has been configured. HTTP cache policy is immutable for fingerprinted Vite assets, with shorter revalidation for unversioned local fonts.
 

@@ -56,13 +56,7 @@ export default function ContactForm() {
     }
   }
   return (
-    <form
-      className="contact-form"
-      onSubmit={submit}
-      noValidate
-      aria-busy={sending}
-      aria-describedby="contact-privacy"
-    >
+    <form className="contact-form" onSubmit={submit} noValidate aria-busy={sending}>
       {['name', 'email', 'message'].map((field) => (
         <div key={field}>
           <label htmlFor={`contact-${field}`}>{field[0].toUpperCase() + field.slice(1)}</label>
@@ -125,14 +119,19 @@ export default function ContactForm() {
       >
         {status?.text}
       </div>
-      <p id="contact-privacy" className="privacy-note">
-        Your name, email, and message are sent to my Gmail inbox so I can reply. They are not
-        published here. Spam-protection records expire within 24 hours. To request deletion of your
-        message, <a href={`mailto:${PERSONAL.email}`}>email me</a>.
-      </p>
-      <p className="contact-alternative">
-        Prefer email? <a href={`mailto:${PERSONAL.email}`}>{PERSONAL.email}</a>
-      </p>
+      <div className="contact-form-footer">
+        <p className="contact-alternative">
+          Email directly: <a href={`mailto:${PERSONAL.email}`}>{PERSONAL.email}</a>
+        </p>
+        <details className="contact-privacy">
+          <summary>Message privacy</summary>
+          <p className="privacy-note">
+            Your name, email, and message go to my Gmail inbox so I can reply; they are not
+            published. Spam-protection records expire within 24 hours. To request deletion,{' '}
+            <a href={`mailto:${PERSONAL.email}`}>email me</a>.
+          </p>
+        </details>
+      </div>
     </form>
   )
 }

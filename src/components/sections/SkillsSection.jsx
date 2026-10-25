@@ -8,9 +8,10 @@ const SkillCube = lazy(() =>
 
 export default function SkillsSection() {
   return (
-    <section id="skills" className="portfolio-section">
+    <section id="skills" className="portfolio-section" aria-labelledby="skills-heading">
       <div className="section-content content-right">
         <h2
+          id="skills-heading"
           tabIndex={-1}
           className="gradient-text"
           style={{
