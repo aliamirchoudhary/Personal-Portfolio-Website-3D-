@@ -24,7 +24,7 @@ export function metadata() {
     '@type': 'Person',
     '@id': `${SITE}/#person`,
     name: PERSONAL.name,
-    alternateName: 'Ali Aamir',
+    alternateName: ['Ali Aamir', 'Ali Amir'],
     url: `${SITE}/`,
     image: `${SITE}/profile.jpg`,
     jobTitle: PERSONAL.title,
