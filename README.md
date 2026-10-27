@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:5173. The development server includes the contact API route. To enable real delivery, configure server variables using `.env.example`; automated tests mock delivery. Production contact protection requires shared Redis configuration. See [operations and deployment](docs/OPERATIONS.md).
+Open http://localhost:5173. Configure `VITE_WEB3FORMS_ACCESS_KEY` using `.env.example` for free browser-side contact delivery, or configure SMTP and Redis for the server fallback. Automated tests mock delivery. See [operations and deployment](docs/OPERATIONS.md).
 
 ## Checks and build
 

@@ -1,5 +1,6 @@
 import { useAnimationActivity } from '../../context/motion'
 import { useRef, useEffect, useMemo } from 'react'
+import useMediaQuery from '../../hooks/useMediaQuery'
 
 /**
  * TechFlowDiagram
@@ -103,6 +104,18 @@ function Icon({ name, size = 22, color }) {
 }
 
 export default function TechFlowDiagram() {
+  const compact = useMediaQuery('(max-width: 600px)')
+  const width = compact ? 400 : VB_W
+  const height = compact ? 560 : VB_H
+  const api = compact ? { ...API, x: 200, y: 340 } : API
+  const modules = useMemo(
+    () =>
+      compact
+        ? MODULES.map((node, i) => ({ ...node, x: i % 2 ? 300 : 100, y: i < 2 ? 65 : 175 }))
+        : MODULES,
+    [compact],
+  )
+  const client = compact ? { ...CLIENT, x: 200, y: 495 } : CLIENT
   const { ref: activityRef, animate } = useAnimationActivity()
   const lineRefs = useRef([])
   const nodeRefs = useRef({})
@@ -132,21 +145,21 @@ export default function TechFlowDiagram() {
     }
 
     const list = []
-    const topY = API.y - API.h / 2
-    const n = MODULES.length
-    MODULES.forEach((m, i) => {
-      const ax = API.x - API.w / 2 + (API.w * (i + 1)) / (n + 1)
+    const topY = api.y - api.h / 2
+    const n = modules.length
+    modules.forEach((m, i) => {
+      const ax = api.x - api.w / 2 + (api.w * (i + 1)) / (n + 1)
       list.push(make(m.id, { x: m.x, y: m.y + NODE_H / 2 }, { x: ax, y: topY }))
     })
     list.push(
       make(
         'client',
-        { x: CLIENT.x, y: API.y + API.h / 2 },
-        { x: CLIENT.x, y: CLIENT.y - NODE_H / 2 },
+        { x: client.x, y: api.y + api.h / 2 },
+        { x: client.x, y: client.y - NODE_H / 2 },
       ),
     )
     return list
-  }, [])
+  }, [modules, api.x, api.y, api.w, api.h, client.x, client.y])
 
   useEffect(() => {
     if (!animate) return
@@ -205,16 +218,15 @@ export default function TechFlowDiagram() {
       className="tfd-node"
       style={{
         position: 'absolute',
-        left: pct(node.x, VB_W),
-        top: pct(node.y, VB_H),
+        left: pct(node.x, width),
+        top: pct(node.y, height),
         transform: 'translate(-50%, -50%)',
-        width: pct(NODE_W, VB_W),
-        height: pct(NODE_H, VB_H),
-        minWidth: 90,
+        width: pct(NODE_W, width),
+        height: pct(NODE_H, height),
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
+        gap: compact ? 4 : 8,
         borderRadius: 16,
         border: `1px solid #ffffff14`,
         background: 'rgba(18, 18, 26, 0.55)',
@@ -268,12 +280,12 @@ export default function TechFlowDiagram() {
           position: 'relative',
           width: '100%',
           maxWidth: 760,
-          aspectRatio: `${VB_W} / ${VB_H}`,
+          aspectRatio: `${width} / ${height}`,
         }}
       >
         {/* SVG connections + travelling light pulses */}
         <svg
-          viewBox={`0 0 ${VB_W} ${VB_H}`}
+          viewBox={`0 0 ${width} ${height}`}
           width="100%"
           height="100%"
           style={{ position: 'absolute', inset: 0, display: 'block', overflow: 'hidden' }}
@@ -362,12 +374,11 @@ export default function TechFlowDiagram() {
           }}
           style={{
             position: 'absolute',
-            left: pct(API.x, VB_W),
-            top: pct(API.y, VB_H),
+            left: pct(api.x, width),
+            top: pct(api.y, height),
             transform: 'translate(-50%, -50%)',
-            width: pct(API.w, VB_W),
-            height: pct(API.h, VB_H),
-            minWidth: 170,
+            width: pct(api.w, width),
+            height: pct(api.h, height),
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -410,8 +421,8 @@ export default function TechFlowDiagram() {
         </div>
 
         {/* module nodes (top) + client node (bottom) */}
-        {MODULES.map((m) => renderNode(m, COLORS.secondary))}
-        {renderNode(CLIENT, COLORS.glow)}
+        {modules.map((m) => renderNode(m, COLORS.secondary))}
+        {renderNode(client, COLORS.glow)}
       </div>
     </div>
   )

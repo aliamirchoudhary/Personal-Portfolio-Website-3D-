@@ -30,7 +30,7 @@ export default function SkillsSection() {
         </div>
 
         <div className="mobile-animated-component">
-          <LazyMount>
+          <LazyMount margin="600px" unmountMargin="800px">
             <Suspense fallback={null}>
               <SkillCube />
             </Suspense>

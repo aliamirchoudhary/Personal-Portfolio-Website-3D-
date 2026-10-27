@@ -112,7 +112,7 @@ try {
       )
       await page.screenshot({ path: `test-results/${label}-${id}.png` })
     }
-    await page.route('**/send-contact', (route) =>
+    await page.route(/\/send-contact$|https:\/\/api\.web3forms\.com\/submit$/, (route) =>
       route.fulfill({ status: 502, contentType: 'text/html', body: 'Gateway unavailable' }),
     )
     await page.getByLabel('Name', { exact: true }).fill('Audit Person')

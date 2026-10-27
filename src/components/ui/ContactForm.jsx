@@ -3,6 +3,7 @@ import { CONTACT_LIMITS, validateContact } from '../../../shared/contact'
 import { PERSONAL } from '../../data/portfolioData'
 
 export default function ContactForm() {
+  const web3formsKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY?.trim()
   const [form, setForm] = useState({ name: '', email: '', message: '', website: '' })
   const [status, setStatus] = useState(null)
   const [sending, setSending] = useState(false)
@@ -28,12 +29,31 @@ export default function ContactForm() {
     setStatus({ type: 'pending', text: 'Sending your message…' })
     submission.current ??= crypto.randomUUID()
     try {
-      const response = await fetch('/send-contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Idempotency-Key': submission.current },
-        body: JSON.stringify({ ...validation.values, website: form.website }),
-        signal: AbortSignal.timeout(20000),
-      })
+      if (web3formsKey && form.website) {
+        setStatus({ type: 'success', text: 'Your message has been received.' })
+        return
+      }
+      const response = await fetch(
+        web3formsKey ? 'https://api.web3forms.com/submit' : '/send-contact',
+        {
+          method: 'POST',
+          headers: web3formsKey
+            ? { 'Content-Type': 'application/json' }
+            : { 'Content-Type': 'application/json', 'Idempotency-Key': submission.current },
+          body: JSON.stringify(
+            web3formsKey
+              ? {
+                  ...validation.values,
+                  access_key: web3formsKey,
+                  subject: 'New portfolio contact message',
+                  from_name: 'Ali Aamir Portfolio',
+                  botcheck: false,
+                }
+              : { ...validation.values, website: form.website },
+          ),
+          signal: AbortSignal.timeout(20000),
+        },
+      )
       const data = await response.json().catch(() => ({}))
       if (!response.ok || !data.success)
         throw new Error(
@@ -126,9 +146,11 @@ export default function ContactForm() {
         <details className="contact-privacy">
           <summary>Message privacy</summary>
           <p className="privacy-note">
-            Your name, email, and message go to my Gmail inbox so I can reply; they are not
-            published. Spam-protection records expire within 24 hours. To request deletion,{' '}
-            <a href={`mailto:${PERSONAL.email}`}>email me</a>.
+            Your name, email, and message{' '}
+            {web3formsKey ? 'are processed by Web3Forms and delivered' : 'go'} to my Gmail inbox so
+            I can reply; they are not published.{' '}
+            {!web3formsKey && 'Spam-protection records expire within 24 hours. '}To request
+            deletion, <a href={`mailto:${PERSONAL.email}`}>email me</a>.
           </p>
         </details>
       </div>

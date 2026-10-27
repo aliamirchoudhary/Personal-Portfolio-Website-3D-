@@ -81,7 +81,13 @@ function useGlobalStyles() {
       }
       .skillcube-face {
         background: rgba(18, 18, 26, 0.95);
+        backface-visibility: hidden;
+        box-shadow: inset 0 0 24px rgba(167,139,250,.12), 0 0 18px rgba(124,58,237,.2);
       }
+      @media (min-width: 769px) {
+        .skillcube-face { animation: sc-glow-pulse 4s ease-in-out infinite; }
+      }
+      [data-active="false"] .skillcube-face { animation-play-state: paused; }
     `
     document.head.appendChild(style)
   }, [])
@@ -232,9 +238,6 @@ export function SkillCube({ size = 200 }) {
               width: size,
               height: size,
               transform: faceTransforms[face.key],
-              background: 'rgba(18, 18, 26, 0.78)',
-              backdropFilter: 'blur(8px)',
-              WebkitBackdropFilter: 'blur(8px)',
               border: '1px solid #7c3aed30',
               borderRadius: 16,
               display: 'flex',
@@ -242,7 +245,6 @@ export function SkillCube({ size = 200 }) {
               alignItems: 'center',
               justifyContent: 'center',
               gap: 12,
-              animation: 'sc-glow-pulse 4s ease-in-out infinite',
               animationDelay: `${i * 0.66}s`,
               overflow: 'hidden',
             }}

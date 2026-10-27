@@ -10,7 +10,15 @@ The build produces client assets and a temporary server-rendering bundle in igno
 
 Build-time budgets cap the main JavaScript entry at 95,000 gzip bytes, each stylesheet at 10,000 gzip bytes, prerendered HTML at 30,000 gzip bytes and the large responsive portrait at 35,000 bytes. `scripts/check-budgets.mjs` fails the build if these limits are exceeded. These transfer limits complement browser interaction checks; they do not measure GPU smoothness or guarantee a Lighthouse score.
 
-## Required production environment
+## Free contact delivery with Web3Forms
+
+Create an access key at https://web3forms.com/#start and verify the recipient inbox (`aliamirchoudhary@gmail.com`). Add `VITE_WEB3FORMS_ACCESS_KEY` to ignored `.env` for local development and to the Vercel project's Production environment. Restart Vite locally; redeploy Vercel after changing the variable because Vite embeds it at build time. The Web3Forms access key is intentionally public, unlike SMTP and assistant API credentials.
+
+When this variable is populated, the browser sends validated name, email, and message directly to `https://api.web3forms.com/submit`. Web3Forms handles email delivery and its own spam protection; this path requires neither Gmail app passwords nor Redis. The form retains its honeypot, field bounds, duplicate-click prevention, error handling and direct-email alternative. SMTP idempotency and Redis limits apply only to the fallback below; a Web3Forms retry after a timeout may send a duplicate. The privacy disclosure changes to identify Web3Forms processing. See the [provider API reference](https://docs.web3forms.com/getting-started/api-reference).
+
+Check a controlled real submission and its Reply-To in the recipient inbox before considering delivery verified. Automated tests mock the external endpoint and send no email. Do not proxy Web3Forms through a Vercel Function: the free integration is browser-side.
+
+## SMTP fallback environment
 
 | Variable | Purpose |
 |---|---|
@@ -43,7 +51,7 @@ Contact failures log generic event names, never message text, email addresses, o
 
 ## Before production deployment
 
-1. Configure Redis and mail variables in the Vercel project/preview environment.
+1. Configure the Web3Forms access key, or the SMTP and Redis fallback variables, in Vercel; redeploy after build-time variable changes.
 2. Run `npm ci` and `npm run check`, then `npm audit --audit-level=moderate`.
 3. Inspect preview security headers and report-only CSP, all responsive sections, motion controls, keyboard navigation, direct hashes, and asset/chunk failure behavior.
 4. With an explicitly controlled staging mailbox, verify real notification delivery, reply-to, rate limits, and retry behavior. Local automated tests never send real mail.
