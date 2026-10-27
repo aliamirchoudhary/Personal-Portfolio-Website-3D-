@@ -23,8 +23,30 @@
 }
 html {
   background: var(--bg);
+  scrollbar-color: #7c3aed #12121a;
   scrollbar-gutter: stable;
   scroll-padding-top: var(--nav-height);
+}
+@supports not (scrollbar-color: auto) {
+  html::-webkit-scrollbar {
+    width: 14px;
+  }
+  html::-webkit-scrollbar-track {
+    background: #12121a;
+  }
+  html::-webkit-scrollbar-thumb {
+    background: #7c3aed;
+    border: 3px solid #12121a;
+    border-radius: 999px;
+  }
+  html::-webkit-scrollbar-thumb:hover {
+    background: #a78bfa;
+  }
+}
+@media (forced-colors: active) {
+  html {
+    scrollbar-color: auto;
+  }
 }
 body {
   margin: 0;
@@ -177,6 +199,7 @@ h2:focus {
   width: 100%;
   display: grid;
   place-items: center;
+  transform: translateX(clamp(-56px, -3vw, -24px));
 }
 .mobile-animated-component,
 .home-mobile-profile {
